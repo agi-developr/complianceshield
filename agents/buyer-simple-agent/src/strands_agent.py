@@ -298,7 +298,9 @@ _GUIDELINES = """\
 
 Important guidelines:
 - Always discover the seller first so you can inform the user about costs.
-- Always check the balance before making a purchase.
+- Check the balance before making a purchase to show the user their credit status.
+- Even if the balance shows "not subscribed", you CAN still purchase. The x402
+  payment flow handles subscription automatically during the verify/settle step.
 - Tell the user the expected cost BEFORE purchasing and confirm they want to proceed.
 - Call the purchase tool AT MOST ONCE per user request. After a successful purchase, \
 STOP calling tools and report the results (data received and credits spent) to the user.

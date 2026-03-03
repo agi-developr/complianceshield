@@ -13,7 +13,7 @@ def _fetch_url_content(url: str, max_chars: int = 2000) -> str:
     """Fetch and extract text content from a URL."""
     try:
         with httpx.Client(timeout=10.0, follow_redirects=True) as client:
-            response = client.get(url, headers={"User-Agent": "DataSellingAgent/1.0"})
+            response = client.get(url, headers={"User-Agent": "MCPServerAgent/1.0"})
             text = response.text
             text = re.sub(r"<[^>]+>", " ", text)
             text = re.sub(r"\s+", " ", text).strip()
@@ -23,14 +23,14 @@ def _fetch_url_content(url: str, max_chars: int = 2000) -> str:
 
 
 def research_market_impl(
-    query: str,
-    depth: str = "standard",
+    query: str, depth: str = "standard", openai_client: "OpenAI | None" = None
 ) -> dict:
     """Conduct market research by combining search, content fetching, and summarization.
 
     Args:
         query: The research topic or question.
-        depth: Research depth - 'standard' or 'deep'.
+        depth: Research depth - 'standard' (search + summarize) or 'deep' (+ URL fetching).
+        openai_client: Optional pre-configured OpenAI client (e.g. with observability).
 
     Returns:
         dict with status, content (for Strands), report, and sources.
@@ -70,7 +70,7 @@ def research_market_impl(
         combined_content = "\n\n".join(content_pieces)
 
         # Step 3: Synthesize with LLM
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
+        client = openai_client or OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
         model_id = os.environ.get("MODEL_ID", "gpt-4o-mini")
 
         completion = client.chat.completions.create(
