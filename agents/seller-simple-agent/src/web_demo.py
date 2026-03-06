@@ -390,10 +390,15 @@ async def scan(request: Request, body: ScanRequest) -> JSONResponse:
             html_report=html_report,
         )
 
+        # Generate shareable report ID
+        report_id = _generate_report_id()
+        _store_report(report_id, report, "text", body.detail_level, content)
+
         return JSONResponse(content={
             "status": result.get("status", "success"),
             "detail_level": body.detail_level,
             "report": report,
+            "report_id": report_id,
             "readable": readable,
             "compliance_score": report.get("compliance_score", None),
             "elapsed_seconds": elapsed,
@@ -472,10 +477,15 @@ async def scan_video(request: Request, body: VideoScanRequest) -> JSONResponse:
             html_report=html_report,
         )
 
+        # Generate shareable report ID
+        report_id = _generate_report_id()
+        _store_report(report_id, report, "video", body.detail_level, url)
+
         return JSONResponse(content={
             "status": result.get("status", "success"),
             "detail_level": body.detail_level,
             "report": report,
+            "report_id": report_id,
             "readable": readable,
             "compliance_score": report.get("compliance_score", None),
             "video": {
@@ -687,10 +697,15 @@ async def scan_upload(
             html_report=html_report,
         )
 
+        # Generate shareable report ID
+        report_id = _generate_report_id()
+        _store_report(report_id, report, "upload", detail_level, f"[{file.filename}]")
+
         return JSONResponse(content={
             "status": result.get("status", "success"),
             "detail_level": detail_level,
             "report": report,
+            "report_id": report_id,
             "readable": readable,
             "compliance_score": report.get("compliance_score", None),
             "upload": {
@@ -781,11 +796,16 @@ async def scan_url(request: Request, body: ScanUrlRequest) -> JSONResponse:
             html_report=html_report,
         )
 
+        # Generate shareable report ID
+        report_id = _generate_report_id()
+        _store_report(report_id, report, "url", body.detail_level, url)
+
         return JSONResponse(content={
             "status": result.get("status", "success"),
             "source_url": url,
             "detail_level": body.detail_level,
             "report": report,
+            "report_id": report_id,
             "readable": readable,
             "compliance_score": report.get("compliance_score", None),
             "content_length": len(plain_text),
@@ -895,6 +915,138 @@ async def proxy_agent_card():
         return JSONResponse(content=json.loads(data))
     except Exception:
         return _error_response(502, "A2A agent not reachable on port 9000")
+
+
+@app.get("/report/{report_id}")
+async def shareable_report(report_id: str):
+    """Serve a beautiful standalone HTML compliance report page."""
+    import html as html_mod
+
+    entry = _report_store.get(report_id)
+    if not entry:
+        return HTMLResponse(
+            content="<html><body style='font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0f;color:#fff;'>"
+            "<div style='text-align:center'><h1>404</h1><p>Report not found or expired.</p>"
+            "<a href='/' style='color:#6366f1;text-decoration:underline;'>Back to ComplianceShield</a></div></body></html>",
+            status_code=404,
+        )
+
+    report = entry["report"]
+    timestamp = entry["timestamp"]
+    scan_type = entry["scan_type"]
+    detail_level = entry["detail_level"]
+    risk_level = report.get("overall_risk", "UNKNOWN")
+    score = report.get("compliance_score", 0) or 0
+    summary = html_mod.escape(report.get("summary", "")) if report.get("summary") else ""
+    issues = report.get("issues", [])
+
+    risk_color = "#ef4444" if risk_level == "HIGH" else "#f59e0b" if risk_level == "MEDIUM" else "#10b981"
+    score_color = "#10b981" if score >= 70 else "#f59e0b" if score >= 40 else "#ef4444"
+
+    issues_html = ""
+    for issue in issues:
+        sev = issue.get("risk_level", "MEDIUM")
+        sev_color = "#ef4444" if sev == "HIGH" else "#f59e0b" if sev == "MEDIUM" else "#10b981"
+        cat = html_mod.escape(issue.get("category", "General"))
+        explanation = html_mod.escape(issue.get("explanation", ""))
+        quote = html_mod.escape(issue.get("problematic_text", ""))
+        regulation = html_mod.escape(issue.get("regulation", ""))
+        reg_url = issue.get("regulation_url", "")
+        fix = html_mod.escape(issue.get("recommended_fix", ""))
+
+        reg_link = ""
+        if reg_url:
+            reg_link = f' &mdash; <a href="{html_mod.escape(reg_url)}" target="_blank" rel="noopener" style="color:#818cf8;">View Source</a>'
+
+        issues_html += f"""
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px;margin-bottom:12px;">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+            <span style="background:{sev_color}22;color:{sev_color};padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">{sev} RISK</span>
+            <span style="background:#6366f1;color:white;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;">{cat}</span>
+          </div>
+          {"<div style='background:rgba(239,68,68,0.08);border-left:3px solid " + sev_color + ";padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:12px;font-style:italic;color:#94a3b8;font-size:14px;'>\"" + quote + "\"</div>" if quote else ""}
+          <p style="color:#e2e8f0;font-size:14px;line-height:1.6;margin:0 0 10px;">{explanation}</p>
+          {"<p style='color:#67e8f9;font-size:13px;margin:0 0 10px;'>Regulation: " + regulation + reg_link + "</p>" if regulation else ""}
+          {"<div style='background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:10px 14px;margin-top:8px;'><p style='color:#10b981;font-size:13px;margin:0;'>Recommended Fix: <span style=\"color:#94a3b8;\">" + fix + "</span></p></div>" if fix else ""}
+        </div>"""
+
+    page_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Report - ComplianceShield</title>
+<style>
+  * {{ margin:0; padding:0; box-sizing:border-box; }}
+  body {{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0a0a0f; color:#e2e8f0; min-height:100vh; }}
+  .container {{ max-width:800px; margin:0 auto; padding:32px 20px; }}
+  .header {{ display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:16px; }}
+  .logo {{ display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }}
+  .logo-icon {{ width:36px; height:36px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }}
+  .logo-text {{ font-size:20px; font-weight:700; }}
+  .logo-text span {{ color:#6366f1; }}
+  .meta {{ color:#64748b; font-size:13px; }}
+  .card {{ background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:28px; margin-bottom:24px; }}
+  .risk-row {{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }}
+  .risk-badge {{ padding:8px 20px; border-radius:30px; font-size:16px; font-weight:700; color:white; background:{risk_color}; }}
+  .score-circle {{ width:80px; height:80px; border-radius:50%; border:4px solid {score_color}; display:flex; flex-direction:column; align-items:center; justify-content:center; }}
+  .score-number {{ font-size:28px; font-weight:800; color:{score_color}; line-height:1; }}
+  .score-label {{ font-size:10px; color:#64748b; }}
+  .summary {{ color:#94a3b8; font-size:15px; line-height:1.7; margin-top:20px; }}
+  .issues-title {{ font-size:18px; font-weight:600; margin-bottom:16px; color:#e2e8f0; }}
+  .footer {{ text-align:center; margin-top:40px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.08); color:#64748b; font-size:13px; }}
+  .footer a {{ color:#6366f1; text-decoration:none; }}
+  .footer a:hover {{ text-decoration:underline; }}
+  @media print {{ body {{ background:#fff; color:#1e293b; }} .card {{ border-color:#e2e8f0; }} }}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <a href="/" class="logo">
+      <div class="logo-icon">S</div>
+      <div class="logo-text">Compliance<span>Shield</span></div>
+    </a>
+    <div class="meta">
+      Scanned {timestamp}<br>
+      Type: {scan_type} &middot; Detail: {detail_level}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="risk-row">
+      <div>
+        <div style="font-size:13px;color:#64748b;margin-bottom:4px;">Overall Risk</div>
+        <span class="risk-badge">{risk_level} RISK</span>
+      </div>
+      <div class="score-circle">
+        <span class="score-number">{score}</span>
+        <span class="score-label">/ 100</span>
+      </div>
+    </div>
+    {"<div class='summary'>" + summary + "</div>" if summary else ""}
+  </div>
+
+  <div class="card">
+    <div class="issues-title">{len(issues)} Issue{"s" if len(issues) != 1 else ""} Found</div>
+    {issues_html if issues_html else '<p style="color:#10b981;font-size:16px;">No compliance issues found. Content looks clean!</p>'}
+  </div>
+
+  <div class="card" style="background:rgba(99,102,241,0.05);border-color:rgba(99,102,241,0.15);">
+    <p style="color:#64748b;font-size:13px;line-height:1.6;">
+      This report was generated by ComplianceShield, an AI-powered compliance scanner.
+      This is AI-generated analysis, not legal advice. Consult a licensed attorney for compliance decisions.
+    </p>
+  </div>
+
+  <div class="footer">
+    <p>Generated by <a href="/">ComplianceShield</a> &middot; Report ID: {report_id}</p>
+  </div>
+</div>
+</body>
+</html>"""
+
+    return HTMLResponse(content=page_html)
 
 
 @app.get("/{full_path:path}")

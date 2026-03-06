@@ -1568,6 +1568,141 @@
         text-decoration-color: #991b1b !important;
       }
     }
+    /* ---- Theme Toggle Button ---- */
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.3s var(--ease-out-expo);
+      flex-shrink: 0;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .theme-toggle:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-blue);
+    }
+
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: inline; }
+
+    /* ---- Light Theme Overrides ---- */
+    body.light-theme {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.8);
+      --border-card: rgba(99, 102, 241, 0.12);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+    }
+
+    body.light-theme nav {
+      background: rgba(248, 250, 252, 0.8);
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .theme-toggle {
+      border-color: rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    body.light-theme .theme-toggle .icon-sun { display: inline; }
+    body.light-theme .theme-toggle .icon-moon { display: none; }
+
+    body.light-theme .scan-input-wrapper,
+    body.light-theme .scan-textarea {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-theme .tab-bar {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    body.light-theme .report-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    body.light-theme .report-header {
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .report-score-bar {
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .issue-item {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .protocol-card {
+      background: rgba(255, 255, 255, 0.7);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    body.light-theme .protocol-code {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-theme .drop-zone {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    body.light-theme .hero-cta a {
+      border-color: rgba(0, 0, 0, 0.15);
+      color: var(--text-primary);
+    }
+
+    body.light-theme .scanning-bar {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .score-gauge-track {
+      stroke: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme footer {
+      border-top-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .nav-links .nav-cta {
+      background: rgba(99, 102, 241, 0.08);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    body.light-theme .example-btn {
+      background: rgba(99, 102, 241, 0.06);
+      border-color: rgba(99, 102, 241, 0.12);
+    }
+
+    body.light-theme .scan-error-box {
+      background: rgba(239, 68, 68, 0.06);
+    }
+
+    body.light-theme .mobile-nav-overlay {
+      background: rgba(248, 250, 252, 0.98);
+    }
+
+    body.light-theme .mobile-nav-overlay a {
+      color: var(--text-primary);
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
   </style>
   <link rel="stylesheet" href="/mobile.css">
 </head>
@@ -1589,6 +1724,7 @@
       <li><a href="/connect.html">Connect</a></li>
       <li><a href="/api-docs.html">API Docs</a></li>
       <li><a href="/pricing.html">Pricing</a></li>
+      <li><button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme"><span class="icon-moon">&#9789;</span><span class="icon-sun">&#9788;</span></button></li>
       <li><a href="/login.html" class="nav-cta">Login</a></li>
     </ul>
     <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
@@ -2487,6 +2623,23 @@
     }
     updateHeroStats();
     setInterval(updateHeroStats, 15000);
+  </script>
+
+  <script>
+    // Theme toggle
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const saved = localStorage.getItem('cs-theme');
+      if (saved === 'light') document.body.classList.add('light-theme');
+
+      if (toggle) {
+        toggle.addEventListener('click', function() {
+          document.body.classList.toggle('light-theme');
+          const isLight = document.body.classList.contains('light-theme');
+          localStorage.setItem('cs-theme', isLight ? 'light' : 'dark');
+        });
+      }
+    })();
   </script>
 
 </body>
