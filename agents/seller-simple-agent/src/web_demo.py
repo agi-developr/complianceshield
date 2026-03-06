@@ -268,11 +268,37 @@ class BatchScanRequest(BaseModel):
 
 @app.get("/api/health")
 async def health() -> JSONResponse:
-    """Health check."""
+    """Health check with service discovery."""
+    # Check a2a_agent on port 9000
+    a2a_status = "down"
+    try:
+        req = urllib.request.Request("http://localhost:9000/", method="GET")
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            if resp.status < 500:
+                a2a_status = "up"
+    except Exception:
+        pass
+
+    # Check mcp_server on port 3000
+    mcp_status = "down"
+    try:
+        req = urllib.request.Request("http://localhost:3000/", method="GET")
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            if resp.status < 500:
+                mcp_status = "up"
+    except Exception:
+        pass
+
     return JSONResponse(content={
-        "status": "ok",
-        "service": "compliance-checker-demo",
+        "status": "healthy",
         "version": "1.0.0",
+        "services": {
+            "web_demo": "up",
+            "a2a_agent": a2a_status,
+            "mcp_server": mcp_status,
+        },
+        "uptime_seconds": round(time.time() - _start_time, 1),
+        "total_scans": _total_scans,
     })
 
 

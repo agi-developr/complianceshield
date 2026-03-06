@@ -89,3 +89,6 @@ Key number to memorize: $53,088 per FTC violation
 - [x] Keyboard shortcuts: Cmd+Enter to scan, aria-labels, focus styles
 - [x] Dark/light theme toggle with localStorage persistence
 - [x] Shareable report URLs: scan → get unique link → share with anyone (/report/{id})
+- [x] /api/health endpoint with service discovery (checks A2A + MCP status)
+- [x] Toast notification system (success/error/info slide-in toasts)
+- [x] 19 features shipped across 6 waves of parallel agent teams

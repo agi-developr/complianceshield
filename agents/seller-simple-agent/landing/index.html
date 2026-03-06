@@ -1370,6 +1370,14 @@
       text-align: right;
     }
 
+    /* ---- Toast Notifications ---- */
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
+    .toast { padding: 12px 20px; border-radius: 8px; margin-bottom: 8px; animation: slideIn 0.3s ease; color: white; font-size: 14px; max-width: 340px; font-family: var(--font-stack); }
+    .toast.success { background: #10b981; }
+    .toast.error { background: #ef4444; }
+    .toast.info { background: #6366f1; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
     /* ========== Print Styles ========== */
     @media print {
       /* Hide non-report UI */
@@ -2015,6 +2023,17 @@
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
+    // ---- Toast Notifications ----
+    function showToast(message, type = 'info') {
+      let container = document.querySelector('.toast-container');
+      if (!container) { container = document.createElement('div'); container.className = 'toast-container'; document.body.appendChild(container); }
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
     // ---- Helpers: clear errors & show error box ----
     function clearAllErrors() {
       document.getElementById('scan-error').style.display = 'none';
@@ -2200,11 +2219,14 @@
           duration: data.duration_seconds,
           report_id: data.report_id || null,
         });
+        showToast('Scan complete!', 'success');
       } catch (err) {
         if (isNetworkError(err)) {
           showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+          showToast('Scan failed: service unavailable', 'error');
         } else {
           showErrorBox(`Scan failed: ${err.message}`);
+          showToast('Scan failed: ' + err.message, 'error');
         }
       } finally {
         btn.classList.remove('loading');
@@ -2291,11 +2313,14 @@
           summary: report.summary,
           report_id: data.report_id || null,
         });
+        showToast('Scan complete!', 'success');
       } catch (err) {
         if (isNetworkError(err)) {
           showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+          showToast('Scan failed: service unavailable', 'error');
         } else {
           showErrorBox(`Upload scan failed: ${err.message}`);
+          showToast('Scan failed: ' + err.message, 'error');
         }
       } finally {
         btn.classList.remove('loading');
@@ -2371,11 +2396,14 @@
           summary: report.summary,
           report_id: data.report_id || null,
         });
+        showToast('Scan complete!', 'success');
       } catch (err) {
         if (isNetworkError(err)) {
           showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+          showToast('Scan failed: service unavailable', 'error');
         } else {
           showErrorBox(`Scan failed: ${err.message}`);
+          showToast('Scan failed: ' + err.message, 'error');
         }
       } finally {
         btn.classList.remove('loading');
@@ -2444,11 +2472,14 @@
           summary: report.summary,
           report_id: data.report_id || null,
         });
+        showToast('Scan complete!', 'success');
       } catch (err) {
         if (isNetworkError(err)) {
           showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+          showToast('Scan failed: service unavailable', 'error');
         } else {
           showErrorBox(`URL scan failed: ${err.message}`);
+          showToast('Scan failed: ' + err.message, 'error');
         }
       } finally {
         btn.classList.remove('loading');
@@ -2502,6 +2533,7 @@
         btn.innerHTML = '\u2705 Link copied!';
         btn.style.background = 'rgba(16,185,129,0.25)';
         btn.style.color = 'var(--accent-green)';
+        showToast('Report link copied!', 'success');
         setTimeout(() => {
           btn.innerHTML = original;
           btn.style.background = 'rgba(168,85,247,0.15)';
@@ -2661,6 +2693,7 @@
           document.body.classList.toggle('light-theme');
           const isLight = document.body.classList.contains('light-theme');
           localStorage.setItem('cs-theme', isLight ? 'light' : 'dark');
+          showToast('Switched to ' + (isLight ? 'light' : 'dark') + ' mode', 'info');
         });
       }
     })();
