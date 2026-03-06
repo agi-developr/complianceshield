@@ -2369,6 +2369,7 @@
             fix: i.recommended_fix,
           })),
           summary: report.summary,
+          report_id: data.report_id || null,
         });
       } catch (err) {
         if (isNetworkError(err)) {
@@ -2441,6 +2442,7 @@
             fix: i.recommended_fix,
           })),
           summary: report.summary,
+          report_id: data.report_id || null,
         });
       } catch (err) {
         if (isNetworkError(err)) {
@@ -2491,6 +2493,25 @@
     document.getElementById('webpage-url').addEventListener('input', () => {
       document.getElementById('url-validation').classList.remove('visible');
     });
+
+    // ---- Share Report URL ----
+    function shareReport(reportId, btn) {
+      const reportUrl = window.location.origin + '/report/' + reportId;
+      navigator.clipboard.writeText(reportUrl).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '\u2705 Link copied!';
+        btn.style.background = 'rgba(16,185,129,0.25)';
+        btn.style.color = 'var(--accent-green)';
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.style.background = 'rgba(168,85,247,0.15)';
+          btn.style.color = '#a855f7';
+        }, 2000);
+      }).catch(() => {
+        // Fallback: open in new tab
+        window.open('/report/' + reportId, '_blank');
+      });
+    }
 
     // ---- Render Scan Results ----
     function renderResults(data) {
@@ -2600,6 +2621,7 @@
           <div style="display: flex; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
             <button onclick="window.print()" style="flex: 1; padding: 10px; background: rgba(99,102,241,0.15); color: var(--accent-blue); border: 1px solid rgba(99,102,241,0.3); border-radius: var(--radius-xs); cursor: pointer; font-size: 14px; font-weight: 500;">\u{1F5A8}\uFE0F Save Report</button>
             <button onclick="navigator.clipboard.writeText(document.querySelector('.report-card').innerText).then(()=>this.textContent='\u2705 Copied!')" style="flex: 1; padding: 10px; background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-xs); cursor: pointer; font-size: 14px; font-weight: 500;">\u{1F4CB} Copy Report</button>
+            ${data.report_id ? `<button onclick="shareReport('${data.report_id}', this)" style="flex: 1; padding: 10px; background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); border-radius: var(--radius-xs); cursor: pointer; font-size: 14px; font-weight: 500;">\u{1F517} Share Report</button>` : ''}
           </div>
         </div>
       `;

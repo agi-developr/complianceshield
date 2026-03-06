@@ -84,3 +84,8 @@ Key number to memorize: $53,088 per FTC violation
 - [x] Clean URL routing (/dashboard works without .html)
 - [x] Professional 404 page with gradient text and quick links
 - [x] Full visual QA validation: all 6 test categories passed
+- [x] Mobile CSS added to ALL 13 pages (not just 5)
+- [x] Print-friendly CSS for compliance reports (A4, white bg, proper margins)
+- [x] Keyboard shortcuts: Cmd+Enter to scan, aria-labels, focus styles
+- [x] Dark/light theme toggle with localStorage persistence
+- [x] Shareable report URLs: scan → get unique link → share with anyone (/report/{id})
