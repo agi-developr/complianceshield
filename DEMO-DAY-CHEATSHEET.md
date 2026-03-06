@@ -30,9 +30,9 @@ curl -s localhost:8000 > /dev/null && echo "Buyer: OK" || echo "Buyer: DOWN"
 
 | Video | URL | Expected |
 |-------|-----|----------|
-| Liver King | `https://www.youtube.com/watch?v=q_Vd7i4ZpgA` | Health claims, FTC |
-| Coffeezilla CryptoZoo | `https://www.youtube.com/watch?v=386p68_lDHA` | Financial fraud |
-| Coffeezilla sponsor | `https://www.youtube.com/watch?v=mHJ3rJZv2a4` | Undisclosed sponsorship |
+| Liver King (BEST) | `https://www.youtube.com/watch?v=q_Vd7i4ZpgA` | 6 issues, score 42, 3 HIGH (health+FTC). ~23s |
+| Coffeezilla sponsor | `https://www.youtube.com/watch?v=mHJ3rJZv2a4` | 7 issues, score 28, 2 HIGH (FTC). ~22s |
+| Coffeezilla CryptoZoo | `https://www.youtube.com/watch?v=386p68_lDHA` | Clean (investigative journalism). ~21s |
 
 ## Backup Text (if YouTube fails)
 
@@ -49,7 +49,7 @@ Hey guys! So I've been using this amazing new supplement called KetoBlast Pro an
 **[90s] Live Demo:**
 1. Open localhost:8080 - "This is ComplianceShield"
 2. Paste Liver King URL - wait 30s - report appears
-3. Show issues: "3 FTC violations, 2 health claims, each with the specific law"
+3. Show issues: "6 violations found — 3 HIGH risk. Health claims, FTC deception, each with the specific law and a link to it"
 4. Switch to text tab - paste backup text - instant scan
 
 **[30s] Agent Economy:**
