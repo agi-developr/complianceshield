@@ -166,8 +166,12 @@
     /* -- Responsive -- */
     @media (max-width: 768px) { .nav-links { display: none; } .page-hero h1 { font-size: 2rem; } .badge-grid, .steps-grid { grid-template-columns: 1fr; } .steps-grid::before { display: none; } }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <nav>
     <a class="nav-logo" href="/index.html">
@@ -183,8 +187,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
     </ul>
-    <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').style.display = document.querySelector('.nav-links').style.display === 'flex' ? 'none' : 'flex'" style="display:none; background:none; border:none; color:var(--text-primary); font-size:1.5rem; cursor:pointer;">&#9776;</button>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <!-- Hero -->
   <section class="page-hero">
@@ -430,14 +449,7 @@ report: https://complianceshield.ai/report/YOUR_ID</pre>
       });
     }
 
-    /* Show mobile menu button on small screens */
-    (function() {
-      var mql = window.matchMedia('(max-width: 768px)');
-      var btn = document.querySelector('.mobile-menu-btn');
-      function check(e) { if (btn) btn.style.display = e.matches ? 'block' : 'none'; }
-      check(mql);
-      mql.addEventListener('change', check);
-    })();
+    /* Mobile nav handled by mobile.css */
   </script>
 
 </body>

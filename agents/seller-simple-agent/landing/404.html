@@ -96,8 +96,12 @@
       .quick-links-grid { flex-direction: column; align-items: center; }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
 </head>
 <body>
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
+
   <nav>
     <a class="nav-logo" href="/"><span class="shield-icon">&#x1F6E1;</span>ComplianceShield</a>
     <ul class="nav-links">
@@ -109,7 +113,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" class="nav-cta">Login</a></li>
     </ul>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <main>
     <div class="code-404">404</div>
