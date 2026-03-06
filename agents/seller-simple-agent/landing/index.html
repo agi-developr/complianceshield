@@ -1682,18 +1682,21 @@
 
       <!-- Text input -->
       <div id="input-text" style="display: none;">
-        <textarea id="text-content" class="scan-textarea" placeholder="Paste your script, transcript, or post..." maxlength="50000"></textarea>
-        <div class="char-counter" id="char-counter">0 / 50,000 characters</div>
+        <textarea id="text-content" class="scan-textarea" placeholder="Paste your script, transcript, or post..." maxlength="50000" aria-label="Text content to scan for compliance"></textarea>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="kbd-hint">Cmd+Enter to scan</span>
+          <div class="char-counter" id="char-counter">0 / 50,000 characters</div>
+        </div>
         <div class="validation-msg" id="text-validation">Please enter content to scan</div>
-        <button class="scan-btn" id="scan-btn-text" onclick="handleTextScan()" style="margin-top: 8px; width: 100%;">
+        <button class="scan-btn" id="scan-btn-text" onclick="handleTextScan()" style="margin-top: 8px; width: 100%;" aria-label="Scan text for compliance">
           <span class="btn-text">Scan Text</span>
           <span class="spinner"></span>
         </button>
         <div class="example-buttons">
-          <button class="try-sample-btn" onclick="fillSampleText()" style="margin: 0;">Try sample text</button>
-          <button class="example-btn" onclick="fillExample('health')">Health Claims</button>
-          <button class="example-btn" onclick="fillExample('finance')">Financial</button>
-          <button class="example-btn" onclick="fillExample('privacy')">Privacy</button>
+          <button class="try-sample-btn" onclick="fillSampleText()" style="margin: 0;" aria-label="Fill sample text example">Try sample text</button>
+          <button class="example-btn" onclick="fillExample('health')" aria-label="Fill health claims example">Health Claims</button>
+          <button class="example-btn" onclick="fillExample('finance')" aria-label="Fill financial claims example">Financial</button>
+          <button class="example-btn" onclick="fillExample('privacy')" aria-label="Fill privacy claims example">Privacy</button>
         </div>
       </div>
 

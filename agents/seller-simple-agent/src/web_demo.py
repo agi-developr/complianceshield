@@ -15,6 +15,7 @@ import os
 import threading
 import time
 import urllib.request
+import uuid
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -99,6 +100,7 @@ _scan_history: list = []        # last N scan results (capped at 50)
 _webhooks: list[str] = []       # registered webhook URLs
 
 _HISTORY_MAX = 50
+_report_store: dict[str, dict] = {}   # report_id -> full scan result for shareable URLs
 
 _RISK_SCORE_MAP = {"HIGH": 9, "MEDIUM": 5, "LOW": 2}
 
@@ -108,6 +110,23 @@ def _next_scan_id() -> str:
     global _scan_counter
     _scan_counter += 1
     return f"scan_{_scan_counter}"
+
+
+def _generate_report_id() -> str:
+    """Generate a short unique report ID (first 8 chars of uuid4)."""
+    return uuid.uuid4().hex[:8]
+
+
+def _store_report(report_id: str, report: dict, scan_type: str, detail_level: str, content_preview: str) -> None:
+    """Store a full scan report for shareable URL access."""
+    _report_store[report_id] = {
+        "report_id": report_id,
+        "report": report,
+        "scan_type": scan_type,
+        "detail_level": detail_level,
+        "content_preview": content_preview[:200],
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
 
 
 def _extract_risk_level(report: dict) -> str:
