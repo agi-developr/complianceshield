@@ -827,8 +827,12 @@
       .form-header h2 { font-size: 1.4rem; }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <!-- Navigation -->
   <nav>
@@ -845,7 +849,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" class="active" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
     </ul>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <div class="split-layout">
 

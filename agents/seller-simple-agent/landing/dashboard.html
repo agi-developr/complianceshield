@@ -857,6 +857,14 @@
       margin-bottom: 6px;
     }
 
+    .stat-value, .stat-change {
+      transition: opacity 0.35s ease;
+    }
+
+    .stat-value.loading, .stat-change.loading {
+      opacity: 0;
+    }
+
     /* ── Animations ── */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(16px); }
@@ -1613,6 +1621,15 @@
     /* ═══════════════════════════════════════════
        Stats Loading
     ═══════════════════════════════════════════ */
+    // Helper: fade out skeleton, replace content, fade in
+    function revealStat(el, applyFn) {
+      el.classList.add('loading');
+      setTimeout(function() {
+        applyFn(el);
+        el.classList.remove('loading');
+      }, 50);
+    }
+
     async function loadStats() {
       try {
         const res = await fetch(API_BASE + '/api/stats');
@@ -1621,71 +1638,80 @@
 
         // Total Scans
         const totalEl = document.getElementById('stat-scans');
-        totalEl.textContent = s.total_scans;
+        revealStat(totalEl, function(el) { el.textContent = s.total_scans; });
         const changeEl = document.getElementById('stat-scans-change');
-        changeEl.innerHTML = '<span class="trend-arrow">&#x2191;</span> ' + s.text_scans + ' text, ' + s.video_scans + ' video';
-        changeEl.className = 'stat-change up';
+        revealStat(changeEl, function(el) {
+          el.innerHTML = '<span class="trend-arrow">&#x2191;</span> ' + s.text_scans + ' text, ' + s.video_scans + ' video';
+          el.className = 'stat-change up';
+        });
 
         // Issues Found
-        document.getElementById('stat-issues').textContent = s.issues_found;
-        const issuesChange = document.getElementById('stat-issues-change');
-        issuesChange.textContent = 'Across all scans';
-        issuesChange.className = 'stat-change';
+        revealStat(document.getElementById('stat-issues'), function(el) { el.textContent = s.issues_found; });
+        revealStat(document.getElementById('stat-issues-change'), function(el) {
+          el.textContent = 'Across all scans';
+          el.className = 'stat-change';
+        });
 
         // Avg Risk Score
         const riskEl = document.getElementById('stat-risk');
-        const riskVal = s.avg_risk_score > 0 ? s.avg_risk_score.toFixed(1) : 'N/A';
-        riskEl.textContent = riskVal;
+        revealStat(riskEl, function(el) {
+          var riskVal = s.avg_risk_score > 0 ? s.avg_risk_score.toFixed(1) : 'N/A';
+          el.textContent = riskVal;
+          if (s.avg_risk_score >= 7) {
+            el.style.color = 'var(--accent-red)';
+          } else if (s.avg_risk_score >= 4) {
+            el.style.color = 'var(--accent-amber)';
+          } else if (s.avg_risk_score > 0) {
+            el.style.color = 'var(--accent-green)';
+          } else {
+            el.style.color = 'var(--text-muted)';
+          }
+        });
 
-        if (s.avg_risk_score >= 7) {
-          riskEl.style.color = 'var(--accent-red)';
-        } else if (s.avg_risk_score >= 4) {
-          riskEl.style.color = 'var(--accent-amber)';
-        } else if (s.avg_risk_score > 0) {
-          riskEl.style.color = 'var(--accent-green)';
-        } else {
-          riskEl.style.color = 'var(--text-muted)';
-        }
-
-        const riskLabel = s.avg_risk_score >= 7 ? 'High risk zone' :
-                          s.avg_risk_score >= 4 ? 'Moderate risk' :
-                          s.avg_risk_score > 0 ? 'Low risk' : 'No data yet';
-        const riskChange = document.getElementById('stat-risk-change');
-        riskChange.textContent = riskLabel + ' (scale 0-10)';
+        var riskLabel = s.avg_risk_score >= 7 ? 'High risk zone' :
+                        s.avg_risk_score >= 4 ? 'Moderate risk' :
+                        s.avg_risk_score > 0 ? 'Low risk' : 'No data yet';
+        revealStat(document.getElementById('stat-risk-change'), function(el) {
+          el.textContent = riskLabel + ' (scale 0-10)';
+        });
 
         // Uptime
-        const uptimeEl = document.getElementById('stat-uptime');
-        const totalSecs = Math.floor(s.uptime_seconds || 0);
-        const hrs = Math.floor(totalSecs / 3600);
-        const mins = Math.floor((totalSecs % 3600) / 60);
-        const remainSecs = totalSecs % 60;
-        if (hrs > 0) {
-          uptimeEl.textContent = hrs + 'h ' + mins + 'm';
-        } else {
-          uptimeEl.textContent = mins + 'm ' + remainSecs + 's';
-        }
-        uptimeEl.style.background = 'linear-gradient(135deg, var(--accent-green), var(--accent-cyan))';
-        uptimeEl.style.webkitBackgroundClip = 'text';
-        uptimeEl.style.backgroundClip = 'text';
-        uptimeEl.style.webkitTextFillColor = 'transparent';
+        revealStat(document.getElementById('stat-uptime'), function(el) {
+          var totalSecs = Math.floor(s.uptime_seconds || 0);
+          var hrs = Math.floor(totalSecs / 3600);
+          var mins = Math.floor((totalSecs % 3600) / 60);
+          var remainSecs = totalSecs % 60;
+          if (hrs > 0) {
+            el.textContent = hrs + 'h ' + mins + 'm';
+          } else {
+            el.textContent = mins + 'm ' + remainSecs + 's';
+          }
+          el.style.background = 'linear-gradient(135deg, var(--accent-green), var(--accent-cyan))';
+          el.style.webkitBackgroundClip = 'text';
+          el.style.backgroundClip = 'text';
+          el.style.webkitTextFillColor = 'transparent';
+        });
 
-        const uptimeChange = document.getElementById('stat-uptime-change');
-        uptimeChange.innerHTML = '<span class="trend-arrow">&#x2191;</span> Server healthy';
-        uptimeChange.className = 'stat-change up';
+        revealStat(document.getElementById('stat-uptime-change'), function(el) {
+          el.innerHTML = '<span class="trend-arrow">&#x2191;</span> Server healthy';
+          el.className = 'stat-change up';
+        });
 
         // Revenue card
-        const totalCredits = s.credits_earned || s.total_scans || 0;
-        const revenue = (totalCredits * CREDIT_PRICE).toFixed(2);
-        const revenueEl = document.getElementById('stat-revenue');
-        revenueEl.textContent = '$' + revenue;
-        revenueEl.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
-        revenueEl.style.webkitBackgroundClip = 'text';
-        revenueEl.style.backgroundClip = 'text';
-        revenueEl.style.webkitTextFillColor = 'transparent';
+        var totalCredits = s.credits_earned || s.total_scans || 0;
+        var revenue = (totalCredits * CREDIT_PRICE).toFixed(2);
+        revealStat(document.getElementById('stat-revenue'), function(el) {
+          el.textContent = '$' + revenue;
+          el.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+          el.style.webkitBackgroundClip = 'text';
+          el.style.backgroundClip = 'text';
+          el.style.webkitTextFillColor = 'transparent';
+        });
 
-        const revenueChange = document.getElementById('stat-revenue-change');
-        revenueChange.innerHTML = '<span class="trend-arrow">&#x2191;</span> ' + totalCredits + ' credits earned';
-        revenueChange.className = 'stat-change up';
+        revealStat(document.getElementById('stat-revenue-change'), function(el) {
+          el.innerHTML = '<span class="trend-arrow">&#x2191;</span> ' + totalCredits + ' credits earned';
+          el.className = 'stat-change up';
+        });
 
         // Update charts
         const uploadCount = s.upload_scans || 0;
@@ -1705,14 +1731,12 @@
 
       } catch (e) {
         console.warn('Stats unavailable:', e.message);
-        // Show fallback
-        document.getElementById('stat-scans').textContent = '--';
-        document.getElementById('stat-issues').textContent = '--';
-        document.getElementById('stat-risk').textContent = '--';
-        document.getElementById('stat-uptime').textContent = '--';
-        document.getElementById('stat-revenue').textContent = '--';
-        document.getElementById('stat-scans-change').textContent = 'API unavailable';
-        document.getElementById('stat-revenue-change').textContent = 'API unavailable';
+        // Show fallback - clear skeletons with fade
+        ['stat-scans','stat-issues','stat-risk','stat-uptime','stat-revenue'].forEach(function(id) {
+          revealStat(document.getElementById(id), function(el) { el.textContent = '--'; });
+        });
+        revealStat(document.getElementById('stat-scans-change'), function(el) { el.textContent = 'API unavailable'; });
+        revealStat(document.getElementById('stat-revenue-change'), function(el) { el.textContent = 'API unavailable'; });
         initChart(0, 0, 0);
         initVolumeChart(0);
       }

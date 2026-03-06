@@ -894,6 +894,13 @@ async def serve_landing(request: Request, full_path: str):
         if file_path.is_file():
             return FileResponse(file_path)
 
+        # If no extension and file doesn't exist, try adding .html
+        candidate = Path(file_path)
+        if not candidate.suffix and not candidate.is_file():
+            html_candidate = candidate.with_suffix('.html')
+            if html_candidate.is_file():
+                return FileResponse(html_candidate)
+
         # Fallback: serve 404 page if available, else JSON error
         notfound = _LANDING_DIR / "404.html"
         if notfound.is_file():
