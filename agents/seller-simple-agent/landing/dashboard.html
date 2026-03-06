@@ -257,6 +257,50 @@
       50% { opacity: 0.6; box-shadow: 0 0 16px rgba(16, 185, 129, 0.3); }
     }
 
+    .service-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .service-status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .service-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .service-dot.online {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+
+    .service-dot.offline {
+      background: var(--accent-red);
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    }
+
+    .status-timestamp {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
     /* ── Buttons ── */
     .btn-primary {
       padding: 0.6rem 1.35rem;
@@ -1050,6 +1094,27 @@
       </div>
     </div>
 
+    <!-- Service Status Bar -->
+    <div class="service-status-bar animate-in delay-2">
+      <div class="service-status-item">
+        <div class="service-dot" id="svc-a2a"></div>
+        <span>A2A Agent</span>
+      </div>
+      <div class="service-status-item">
+        <div class="service-dot" id="svc-mcp"></div>
+        <span>MCP Server</span>
+      </div>
+      <div class="service-status-item">
+        <div class="service-dot" id="svc-rest"></div>
+        <span>REST API</span>
+      </div>
+      <div class="service-status-item">
+        <div class="service-dot" id="svc-buyer"></div>
+        <span>Buyer Agent</span>
+      </div>
+      <span class="status-timestamp" id="status-check-time">Checking...</span>
+    </div>
+
     <!-- Stats Cards -->
     <div class="stats-grid">
       <div class="stat-card animate-in delay-1">
@@ -1113,6 +1178,19 @@
           <div class="skeleton skeleton-number"></div>
         </div>
         <div class="stat-change" id="stat-uptime-change">
+          <div class="skeleton skeleton-text"></div>
+        </div>
+      </div>
+
+      <div class="stat-card animate-in delay-6">
+        <div class="stat-top">
+          <span class="stat-label">Rate Limit</span>
+          <div class="stat-icon cyan">&#x1F6AB;</div>
+        </div>
+        <div class="stat-value" id="stat-rate-limit">
+          <div class="skeleton skeleton-number"></div>
+        </div>
+        <div class="stat-change" id="stat-rate-limit-change">
           <div class="skeleton skeleton-text"></div>
         </div>
       </div>
@@ -1314,6 +1392,49 @@
                 <td><span class="skeleton skeleton-text" style="width:80px;"></span></td>
                 <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
                 <td><span class="skeleton skeleton-text" style="width:30px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction History (A2A Payments) -->
+    <div class="grid-full animate-in" style="animation-delay: 0.3s;">
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">💳</span> Transaction History</h3>
+          <span class="refresh-badge"><span class="dot"></span> Auto-refresh 30s</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="scan-table">
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Buyer</th>
+                <th>Tool</th>
+                <th>Credits Spent</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="transactions-tbody">
+              <!-- Skeleton rows -->
+              <tr>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:80px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:50px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+              </tr>
+              <tr>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:80px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:50px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
                 <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
               </tr>
             </tbody>
@@ -1713,6 +1834,26 @@
           el.className = 'stat-change up';
         });
 
+        // Rate Limit Usage
+        var rateUsed = s.rate_limit_used || 0;
+        var rateMax = s.rate_limit_max || 30;
+        var ratePercent = Math.round((rateUsed / rateMax) * 100);
+        revealStat(document.getElementById('stat-rate-limit'), function(el) {
+          el.textContent = rateUsed + '/' + rateMax;
+          if (ratePercent > 80) {
+            el.style.color = 'var(--accent-red)';
+          } else if (ratePercent > 50) {
+            el.style.color = 'var(--accent-amber)';
+          } else {
+            el.style.color = 'var(--accent-cyan)';
+          }
+        });
+
+        revealStat(document.getElementById('stat-rate-limit-change'), function(el) {
+          el.innerHTML = '<span>&#x1F4CA;</span> ' + ratePercent + '% used (per minute)';
+          el.className = 'stat-change';
+        });
+
         // Update charts
         const uploadCount = s.upload_scans || 0;
         initChart(s.text_scans || 0, s.video_scans || 0, uploadCount);
@@ -1732,7 +1873,7 @@
       } catch (e) {
         console.warn('Stats unavailable:', e.message);
         // Show fallback - clear skeletons with fade
-        ['stat-scans','stat-issues','stat-risk','stat-uptime','stat-revenue'].forEach(function(id) {
+        ['stat-scans','stat-issues','stat-risk','stat-uptime','stat-revenue','stat-rate-limit'].forEach(function(id) {
           revealStat(document.getElementById(id), function(el) { el.textContent = '--'; });
         });
         revealStat(document.getElementById('stat-scans-change'), function(el) { el.textContent = 'API unavailable'; });
@@ -1798,16 +1939,54 @@
       }
     }
 
+    async function loadTransactions() {
+      try {
+        const res = await fetch(API_BASE + '/api/transactions');
+        if (!res.ok) throw new Error('Transactions API error');
+        const t = await res.json();
+        const tbody = document.getElementById('transactions-tbody');
+
+        if (!t.transactions || t.transactions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">&#x1F4B3;</div><p>No transactions yet. Start an A2A transaction to see payment history here.</p></div></td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = t.transactions.slice(0, 8).map(function(tx, idx) {
+          const statusClass = tx.status === 'completed' ? 'completed' : tx.status === 'pending' ? 'pending' : 'error';
+          const statusEmoji = tx.status === 'completed' ? '✓' : tx.status === 'pending' ? '⏳' : '✗';
+          const txId = tx.id ? tx.id.substring(0, 8) : ('tx-' + (idx + 1));
+          const buyerId = tx.buyer_id || 'anonymous';
+          const tool = tx.tool_name || 'unknown';
+          const credits = tx.credits_spent || 0;
+
+          return '<tr>' +
+            '<td class="mono">' + txId + '</td>' +
+            '<td><span class="type-badge" style="background: rgba(34, 211, 238, 0.1); color: #22d3ee;"><span class="emoji">&#x1F464;</span> ' + buyerId.substring(0, 12) + '</span></td>' +
+            '<td>' + tool + '</td>' +
+            '<td><span style="font-weight: 600; color: var(--accent-purple);">' + credits + '</span></td>' +
+            '<td><span class="risk-pill ' + statusClass + '" style="text-transform: capitalize;">' + statusEmoji + ' ' + tx.status + '</span></td>' +
+            '<td>' + formatTimeAgo(tx.timestamp) + '</td>' +
+          '</tr>';
+        }).join('');
+      } catch (e) {
+        console.warn('Transactions unavailable:', e.message);
+        document.getElementById('transactions-tbody').innerHTML =
+          '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">&#x1F4E1;</div><p>Waiting for API connection...</p></div></td></tr>';
+      }
+    }
+
     /* ═══════════════════════════════════════════
        Agent Health Checks
     ═══════════════════════════════════════════ */
     async function checkHealth(name, dotId, labelId) {
       const dot = document.getElementById(dotId);
-      const label = document.getElementById(labelId);
+      const label = labelId ? document.getElementById(labelId) : null;
 
       dot.className = 'status-dot-indicator checking';
-      label.className = 'status-label checking';
-      label.textContent = 'Checking...';
+      if (label) {
+        label.className = 'status-label checking';
+        label.textContent = 'Checking...';
+      }
 
       try {
         const controller = new AbortController();
@@ -1821,6 +2000,9 @@
         } else if (name === 'mcp') {
           // MCP is on a different port — try direct
           fetchUrl = MCP_URL + '/';
+        } else if (name === 'buyer') {
+          // Buyer agent dashboard
+          fetchUrl = 'http://localhost:8000/';
         } else if (name === 'rest') {
           fetchUrl = API_BASE + '/api/stats';
         } else {
@@ -1836,8 +2018,10 @@
 
         if (res.ok || res.status === 200) {
           dot.className = 'status-dot-indicator online';
-          label.className = 'status-label online';
-          label.textContent = 'Online';
+          if (label) {
+            label.className = 'status-label online';
+            label.textContent = 'Online';
+          }
         } else {
           throw new Error('Status ' + res.status);
         }
@@ -1847,20 +2031,25 @@
           let directUrl;
           if (name === 'a2a') directUrl = A2A_URL + '/.well-known/agent.json';
           else if (name === 'mcp') directUrl = MCP_URL + '/';
+          else if (name === 'buyer') directUrl = 'http://localhost:8000/';
           else directUrl = REST_URL + '/api/stats';
 
           const res2 = await fetch(directUrl, { method: 'GET', mode: 'cors' });
           if (res2.ok) {
             dot.className = 'status-dot-indicator online';
-            label.className = 'status-label online';
-            label.textContent = 'Online';
+            if (label) {
+              label.className = 'status-label online';
+              label.textContent = 'Online';
+            }
             return;
           }
         } catch (_) { /* ignore fallback errors */ }
 
         dot.className = 'status-dot-indicator offline';
-        label.className = 'status-label offline';
-        label.textContent = 'Offline';
+        if (label) {
+          label.className = 'status-label offline';
+          label.textContent = 'Offline';
+        }
       }
     }
 
@@ -1868,6 +2057,32 @@
       checkHealth('a2a', 'dot-a2a', 'label-a2a');
       checkHealth('mcp', 'dot-mcp', 'label-mcp');
       checkHealth('rest', 'dot-rest', 'label-rest');
+
+      // Also check buyer agent and update service bar
+      checkHealth('buyer', 'svc-buyer', null);
+      updateServiceBar();
+    }
+
+    function updateServiceBar() {
+      const dots = {
+        'svc-a2a': document.getElementById('dot-a2a')?.className.includes('online'),
+        'svc-mcp': document.getElementById('dot-mcp')?.className.includes('online'),
+        'svc-rest': document.getElementById('dot-rest')?.className.includes('online'),
+        'svc-buyer': document.getElementById('svc-buyer')?.className.includes('online')
+      };
+
+      Object.entries(dots).forEach(([id, isOnline]) => {
+        const dot = document.getElementById(id);
+        if (dot) {
+          dot.className = 'service-dot ' + (isOnline ? 'online' : 'offline');
+        }
+      });
+
+      const timestamp = document.getElementById('status-check-time');
+      if (timestamp) {
+        const now = new Date();
+        timestamp.textContent = 'Updated ' + formatTimeAgo(now.toISOString());
+      }
     }
 
     /* ═══════════════════════════════════════════
@@ -1902,12 +2117,14 @@
     (function init() {
       loadStats();
       loadHistory();
+      loadTransactions();
       checkAllHealth();
 
-      // Auto-refresh stats and history every 30 seconds
+      // Auto-refresh stats, history, and transactions every 30 seconds
       setInterval(function() {
         loadStats();
         loadHistory();
+        loadTransactions();
       }, REFRESH_INTERVAL);
 
       // Re-check health every 30 seconds (aligned with stats refresh)

@@ -375,7 +375,7 @@ def main():
             "Analyzes scripts, transcripts, and posts for FTC, health, "
             "financial, and privacy compliance issues."
         ),
-        "url": f"http://localhost:{port}",
+        "url": os.getenv("PUBLIC_URL", f"http://localhost:{port}"),
         "version": "0.1.0",
         "skills": [s.model_dump() for s in skills],
         "capabilities": {

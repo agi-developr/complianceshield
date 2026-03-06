@@ -102,6 +102,11 @@ _webhooks: list[str] = []       # registered webhook URLs
 _HISTORY_MAX = 50
 _report_store: dict[str, dict] = {}   # report_id -> full scan result for shareable URLs
 
+# Transaction history for A2A/payment flows
+_transaction_counter: int = 0
+_transaction_history: list = []        # list of transactions (buyer/seller interactions)
+_TRANSACTION_MAX = 100
+
 _RISK_SCORE_MAP = {"HIGH": 9, "MEDIUM": 5, "LOW": 2}
 
 
@@ -201,6 +206,35 @@ def _fire_webhook(url: str, payload: bytes) -> None:
         urllib.request.urlopen(req, timeout=5)
     except Exception:
         pass  # best-effort — don't crash on webhook failure
+
+
+def _record_transaction(
+    buyer_id: str,
+    seller_id: str,
+    tool_name: str,
+    credits_spent: int,
+    status: str = "completed",
+    detail_level: str = "quick",
+) -> None:
+    """Record a buyer-seller transaction (A2A payment interaction)."""
+    global _transaction_counter
+
+    _transaction_counter += 1
+    entry = {
+        "id": f"tx_{_transaction_counter}",
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "buyer_id": buyer_id[:16] if buyer_id else "anonymous",
+        "seller_id": seller_id[:16] if seller_id else "seller",
+        "tool_name": tool_name,
+        "credits_spent": credits_spent,
+        "status": status,
+        "detail_level": detail_level,
+    }
+    _transaction_history.append(entry)
+
+    # Cap history at _TRANSACTION_MAX
+    if len(_transaction_history) > _TRANSACTION_MAX:
+        _transaction_history.pop(0)
 
 
 app = FastAPI(
@@ -543,6 +577,14 @@ async def stats() -> JSONResponse:
         if _risk_scores:
             avg_risk = round(sum(_risk_scores) / len(_risk_scores), 1)
 
+        # Calculate rate limit stats (assuming localhost client)
+        localhost_entry = _rate_limit_store.get("127.0.0.1")
+        rate_limit_used = 0
+        if localhost_entry:
+            count, window_start = localhost_entry
+            if time.time() - window_start < _RATE_LIMIT_WINDOW:
+                rate_limit_used = count
+
         return JSONResponse(content={
             "total_scans": _total_scans,
             "text_scans": _text_scans,
@@ -550,6 +592,9 @@ async def stats() -> JSONResponse:
             "issues_found": _issues_found,
             "avg_risk_score": avg_risk,
             "uptime_seconds": round(time.time() - _start_time, 1),
+            "rate_limit_max": _RATE_LIMIT_MAX,
+            "rate_limit_used": rate_limit_used,
+            "rate_limit_window": _RATE_LIMIT_WINDOW,
         })
     except Exception as exc:
         return _error_response(500, f"Internal server error: {exc}")
@@ -563,6 +608,19 @@ async def history() -> JSONResponse:
         return JSONResponse(content={
             "scans": scans,
             "total": len(_scan_history),
+        })
+    except Exception as exc:
+        return _error_response(500, f"Internal server error: {exc}")
+
+
+@app.get("/api/transactions")
+async def transactions() -> JSONResponse:
+    """Return the last 100 transactions (buyer-seller interactions, newest first)."""
+    try:
+        txns = list(reversed(_transaction_history))
+        return JSONResponse(content={
+            "transactions": txns,
+            "total": len(_transaction_history),
         })
     except Exception as exc:
         return _error_response(500, f"Internal server error: {exc}")
@@ -984,16 +1042,21 @@ async def shareable_report(report_id: str):
         if reg_url:
             reg_link = f' &mdash; <a href="{html_mod.escape(reg_url)}" target="_blank" rel="noopener" style="color:#818cf8;">View Source</a>'
 
+        # Extract ternary operators outside f-string for Python 3.9 compatibility
+        quote_html = (f'<div style="background:rgba(239,68,68,0.08);border-left:3px solid {sev_color};padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:12px;font-style:italic;color:#94a3b8;font-size:14px;">"{quote}"</div>' if quote else "")
+        regulation_html = (f'<p style="color:#67e8f9;font-size:13px;margin:0 0 10px;">Regulation: {regulation}{reg_link}</p>' if regulation else "")
+        fix_html = (f'<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:10px 14px;margin-top:8px;"><p style="color:#10b981;font-size:13px;margin:0;">Recommended Fix: <span style="color:#94a3b8;">{fix}</span></p></div>' if fix else "")
+
         issues_html += f"""
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px;margin-bottom:12px;">
           <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
             <span style="background:{sev_color}22;color:{sev_color};padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">{sev} RISK</span>
             <span style="background:#6366f1;color:white;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;">{cat}</span>
           </div>
-          {"<div style='background:rgba(239,68,68,0.08);border-left:3px solid " + sev_color + ";padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:12px;font-style:italic;color:#94a3b8;font-size:14px;'>\"" + quote + "\"</div>" if quote else ""}
+          {quote_html}
           <p style="color:#e2e8f0;font-size:14px;line-height:1.6;margin:0 0 10px;">{explanation}</p>
-          {"<p style='color:#67e8f9;font-size:13px;margin:0 0 10px;'>Regulation: " + regulation + reg_link + "</p>" if regulation else ""}
-          {"<div style='background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:10px 14px;margin-top:8px;'><p style='color:#10b981;font-size:13px;margin:0;'>Recommended Fix: <span style=\"color:#94a3b8;\">" + fix + "</span></p></div>" if fix else ""}
+          {regulation_html}
+          {fix_html}
         </div>"""
 
     page_html = f"""<!DOCTYPE html>
