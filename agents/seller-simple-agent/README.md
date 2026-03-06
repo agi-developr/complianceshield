@@ -1,306 +1,130 @@
-# Seller Simple Agent
+# ComplianceShield
 
-A data-selling agent with x402 payment-protected tools powered by Strands SDK and Nevermined.
+**AI-Powered Legal Compliance for Content Creators**
 
-## Overview
+> Your content. Legally clear.
 
-This agent demonstrates how to sell data and services with tiered pricing using the `@requires_payment` decorator from `payments-py`. It includes three tools at different price points, two deployment modes, and built-in usage analytics.
+Built at the [Nevermined Autonomous Business Hackathon](https://nevermined.io) | March 5-6, 2026 | AWS Loft, San Francisco
 
-## Architecture
+---
+
+## What It Does
+
+ComplianceShield scans content (YouTube videos, text, audio, URLs) for legal compliance issues across **8 regulatory frameworks**: FTC, FDA, SEC, FINRA, COPPA, CAN-SPAM, CCPA, and GDPR.
+
+Every issue includes the **exact problematic text**, the **specific regulation** it violates, a **link to the official law**, and a **recommended fix**.
 
 ```
-                    ┌──────────────────────────────────┐
-                    │       Strands Agent Core          │
-                    │                                   │
-                    │  ┌────────────┐  ┌─────────────┐ │
-                    │  │search_data │  │summarize_data│ │
-                    │  │  (1 credit)│  │  (5 credits) │ │
-                    │  └────────────┘  └─────────────┘ │
-                    │         ┌──────────────┐         │
-                    │         │research_data │         │
-                    │         │ (10 credits) │         │
-                    │         └──────────────┘         │
-                    └──────────┬───────────┬───────────┘
-                               │           │
-                    ┌──────────▼──┐  ┌─────▼──────────┐
-                    │  FastAPI    │  │  AgentCore      │
-                    │  + OpenAI   │  │  + Bedrock      │
-                    │  (local)    │  │  (AWS)          │
-                    └─────────────┘  └────────────────┘
+Input:  "This supplement cures cancer! Use code HEALTH50 for 50% off!"
+Output: 3 HIGH-risk issues (FDA, FTC, Health Claims) — Score: 5/100
 ```
+
+## Three Protocols, One Engine
+
+| Protocol | Port | For | How It Works |
+|----------|------|-----|-------------|
+| **A2A** (Agent-to-Agent) | 9000 | AI agents | Agent card discovery + x402 paid JSON-RPC |
+| **MCP** (Model Context Protocol) | 3000 | Claude Desktop, Cursor | 4 payment-gated tools |
+| **REST** (Web Demo) | 8080 | Humans | Free scanning, dashboard, 14 API endpoints |
 
 ## Quick Start
 
 ```bash
+cd agents/seller-simple-agent
 poetry install
 cp .env.example .env
-# Edit .env with your credentials
+# Set: NVM_API_KEY, NVM_PLAN_ID, NVM_AGENT_ID, ANTHROPIC_API_KEY
 
-# Option 1: Run as FastAPI server (x402 protected HTTP endpoints)
-poetry run agent
+# Start all services
+bash ../../restart-all.sh
 
-# Option 2: Run Strands agent directly (for testing tools)
-poetry run demo
-
-# Option 3: Test with client
-poetry run client
+# Public access for other agents
+ngrok http 9000
 ```
 
-## How It Works
-
-```
-┌─────────┐                              ┌─────────┐
-│  Client │                              │  Seller │
-│ (Buyer) │                              │  Agent  │
-└────┬────┘                              └────┬────┘
-     │                                        │
-     │  1. POST /data (no token)              │
-     │───────────────────────────────────────>│
-     │                                        │
-     │  2. 402 Payment Required               │
-     │     Header: payment-required           │
-     │<───────────────────────────────────────│
-     │                                        │
-     │  3. Get x402 token from Nevermined     │
-     │                                        │
-     │  4. POST /data                         │
-     │     Header: payment-signature          │
-     │───────────────────────────────────────>│
-     │                                        │
-     │     - Verify permissions               │
-     │     - Process request                  │
-     │     - Settle credits                   │
-     │                                        │
-     │  5. 200 OK + data                      │
-     │     Header: payment-response           │
-     │<───────────────────────────────────────│
-```
-
-## Tool Pricing
+## Pricing
 
 | Tool | Credits | Description |
 |------|---------|-------------|
-| `search_data` | 1 | Quick data lookup — search for specific data points |
-| `summarize_data` | 5 | Summarize and analyze a dataset or topic |
-| `research_data` | 10 | Deep research — multi-source analysis with citations |
+| `quick_scan` | 1 | Fast scan for obvious issues |
+| `full_analysis` | 5 | Detailed per-section compliance report |
+| `scan_video` | 8 | YouTube URL to compliance report |
+| `deep_review` | 10 | Full analysis + legal citations + rewrites + penalties |
 
-## Deployment Modes
+## Architecture
 
-### Local (FastAPI + OpenAI)
+```
+  A2A (9000)  ──┐
+  MCP (3000)  ──┼──> Compliance Engine (Claude Haiku 4.5)
+  REST (8080) ──┘         │
+                    ┌─────┼──────┐
+                    │     │      │
+              YouTube  Groq    25+ Regulation
+              Transcript Whisper  Link Resolver
+              API      (Audio)   (Official URLs)
+                          │
+                    Nevermined x402
+                    Payment Layer
+```
 
-Run the agent as a FastAPI server. Payment protection is handled by `@requires_payment` on each Strands tool — the server is a thin HTTP wrapper. Uses OpenAI for LLM inference.
+## Features
+
+- 4 input modes: YouTube URL, text, audio/video upload, webpage URL
+- Batch scanning (up to 20 items)
+- Animated compliance score gauge (0-100)
+- Professional HTML reports with clickable regulation links
+- SVG badges for creator websites
+- Webhook notifications
+- Telegram bot integration
+- 10-page product frontend (landing, dashboard, API docs, pricing, etc.)
+- Rate limiting (30 req/min)
+- Input validation on all endpoints
+
+## Live Endpoints
+
+| Endpoint | URL |
+|----------|-----|
+| Product Page | http://localhost:8080 |
+| Dashboard | http://localhost:8080/dashboard.html |
+| API Docs | http://localhost:8080/api-docs.html |
+| Agent Card | http://localhost:9000/.well-known/agent.json |
+| MCP Server | http://localhost:3000/mcp |
+| Buyer Agent | http://localhost:8000 |
+
+## API Examples
 
 ```bash
-poetry run agent   # Starts FastAPI on http://localhost:3000
+# Text scan
+curl -X POST http://localhost:8080/api/scan \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Buy now! Guaranteed results!", "detail_level": "quick"}'
+
+# YouTube video scan
+curl -X POST http://localhost:8080/api/scan-video \
+  -H "Content-Type: application/json" \
+  -d '{"youtube_url": "https://youtube.com/watch?v=VIDEO_ID", "detail_level": "full"}'
+
+# Stats
+curl http://localhost:8080/api/stats
 ```
 
-### AWS (AgentCore + Bedrock)
+## Regulation Coverage
 
-Deploy the A2A server to AgentCore for production use with header remapping and Bedrock LLM inference.
+25+ regulations mapped to official sources:
 
-```bash
-# Install with AgentCore extras
-poetry install -E agentcore
+| Category | Regulations |
+|----------|------------|
+| FTC / Advertising | 16 CFR Part 255, FTC Act Section 5 |
+| Health / FDA | 21 CFR Part 101, 21 CFR Part 343, FDCA |
+| Financial / SEC | SEC Rule 10b-5, FINRA Rule 2210 |
+| Privacy | COPPA, CAN-SPAM, HIPAA, CCPA, GDPR, FERPA |
+| IP / Copyright | Lanham Act, DMCA |
+| Platform | YouTube, Instagram, TikTok guidelines |
 
-# Local test (AgentCore-compatible mode)
-poetry run agent-a2a-agentcore
+## Tech Stack
 
-# Deploy to AgentCore
-agentcore init    # Interactive setup (entry point: src/agent_a2a_agentcore.py)
-agentcore deploy  # Build, push, and deploy
-```
+Python 3.12 | FastAPI | Claude Haiku 4.5 | Groq Whisper | Strands SDK | Nevermined payments-py | a2a-python | ngrok
 
-**Key differences from local mode:**
-- Adds `AgentCoreHeaderMiddleware` that remaps `X-Amzn-Bedrock-AgentCore-Runtime-Custom-Payment-Signature` → `payment-signature` (AgentCore strips standard custom headers)
-- Rewrites `/invocations` → `/` (AgentCore routes all traffic to `/invocations`)
-- Requires a **header allowlist** in `.bedrock_agentcore.yaml`:
-  ```yaml
-      request_header_configuration:
-        requestHeaderAllowlist:
-        - X-Amzn-Bedrock-AgentCore-Runtime-Custom-Payment-Signature
-  ```
-- Reads `PORT` and `AGENT_URL` from env vars set by AgentCore runtime
+---
 
-**Key file:** `src/agent_a2a_agentcore.py` — header remapping middleware + A2A server setup
-
-See [Deploy to AgentCore](../../docs/deploy-to-agentcore.md) for the full walkthrough.
-
-## Configuration
-
-### Environment Variables
-
-```bash
-# Required
-NVM_API_KEY=sandbox:your-api-key
-NVM_ENVIRONMENT=sandbox
-NVM_PLAN_ID=your-plan-id
-OPENAI_API_KEY=sk-your-key
-
-# Optional
-NVM_AGENT_ID=your-agent-id
-MODEL_ID=gpt-4o-mini
-PORT=3000
-```
-
-### Creating a Payment Plan
-
-1. Go to [https://nevermined.app/](https://nevermined.app/)
-2. Navigate to "My Pricing Plans"
-3. Create a new plan with:
-   - Plan type: Credit-based
-   - Endpoints: `POST /data`
-   - Price per credit: Set your rate
-4. Copy the Plan ID to your `.env`
-
-## API
-
-### POST /data
-
-Query data (payment protected).
-
-**Request Headers:**
-```
-Content-Type: application/json
-payment-signature: <x402-access-token>
-```
-
-**Request Body:**
-```json
-{
-  "query": "market data for AAPL"
-}
-```
-
-**Response (200):**
-```json
-{
-  "response": "Found 5 results for 'market data for AAPL'...",
-  "credits_used": 1
-}
-```
-
-**Response (402 - No Token):**
-```json
-{
-  "error": "Payment Required",
-  "message": "Send x402 token in payment-signature header"
-}
-```
-
-### GET /pricing
-
-Get pricing information.
-
-**Response:**
-```json
-{
-  "planId": "plan-xxx",
-  "tiers": {
-    "simple": { "credits": 1, "description": "Basic web search", "tool": "search_data" },
-    "medium": { "credits": 5, "description": "Content summarization", "tool": "summarize_data" },
-    "complex": { "credits": 10, "description": "Full market research", "tool": "research_data" }
-  }
-}
-```
-
-### GET /stats
-
-Get usage statistics.
-
-**Response:**
-```json
-{
-  "totalRequests": 1500,
-  "totalCreditsEarned": 7500,
-  "uniqueSubscribers": 45,
-  "averageCreditsPerRequest": 5
-}
-```
-
-## Dynamic Pricing
-
-```python
-@tool(context=True)
-@requires_payment(payments=payments, plan_id=PLAN_ID, credits=1)
-def search_data(query: str, tool_context=None) -> dict:
-    """Quick data lookup (1 credit)."""
-    return {"status": "success", "content": [{"text": f"Results for: {query}"}]}
-
-@tool(context=True)
-@requires_payment(payments=payments, plan_id=PLAN_ID, credits=10)
-def research_data(query: str, tool_context=None) -> dict:
-    """Deep research with citations (10 credits)."""
-    return {"status": "success", "content": [{"text": f"Research report: {query}"}]}
-```
-
-## A2A Mode
-
-Run the seller as an A2A-compliant agent with standard agent card discovery and payment-protected JSON-RPC messaging.
-
-### Start in A2A Mode
-
-```bash
-poetry run agent-a2a   # Starts A2A server on http://localhost:9000
-```
-
-### CLI Flags
-
-| Flag | Description | Example |
-|------|-------------|---------|
-| `--tools` | Comma-separated tools to expose (`search`, `summarize`, `research`) | `--tools search` |
-| `--port` | Port to run on (default: 9000) | `--port 9001` |
-| `--buyer-url` | Buyer URL to auto-register with | `--buyer-url http://localhost:8000` |
-
-Example — run with only the search tool on port 9001, auto-registering with a buyer:
-
-```bash
-poetry run python -m src.agent_a2a --tools search --port 9001 --buyer-url http://localhost:8000
-```
-
-### Agent Card
-
-The agent card is served at `/.well-known/agent.json` and includes a `urn:nevermined:payment` extension with plan ID, agent ID, and pricing info.
-
-```bash
-curl -s http://localhost:9000/.well-known/agent.json | python3 -m json.tool
-```
-
-### How A2A Differs from HTTP Mode
-
-| Aspect | HTTP Mode (`poetry run agent`) | A2A Mode (`poetry run agent-a2a`) |
-|--------|-------------------------------|----------------------------------|
-| Discovery | `GET /pricing` (custom) | `/.well-known/agent.json` (standard) |
-| Communication | REST `POST /data` | A2A JSON-RPC messages |
-| Payment handling | `@requires_payment` per tool | `PaymentsRequestHandler` per request |
-| Token transport | `payment-signature` header | `payment-signature` header |
-| Port | 3000 | 9000 |
-| Interoperability | Custom protocol | Any A2A-compatible agent |
-
-### Configuration
-
-Add to your `.env`:
-
-```bash
-A2A_PORT=9000  # Default: 9000
-```
-
-## Multi-Agent Demo
-
-For a full walkthrough of running multiple sellers with a buyer agent (CLI and web UI), see the [Buyer Agent README](../buyer-simple-agent/README.md#multi-agent-demo-cli).
-
-The demo shows:
-- Starting a buyer with no sellers, then adding sellers incrementally
-- Running sellers with `--tools` and `--port` flags for different capabilities
-- Auto-registration via `--buyer-url`
-- Purchasing data from specific sellers
-- Credit balance and budget tracking
-
-## Customization Ideas
-
-1. **Swap data sources** — Integrate Exa, Tavily, Apify, or your own APIs
-2. **Add domain-specific tools** — Financial data, weather, legal documents, etc.
-3. **Dynamic pricing** — Adjust credits based on data freshness, volume, or complexity
-4. **Tiered access** — Different data quality at different price points
-5. **Subscription discounts** — Lower per-credit cost for frequent users
-6. **Data freshness pricing** — Real-time data costs more than historical
-7. **Volume discounts** — Reduce price for bulk queries
+**ComplianceShield — Stop getting fined. Start creating safely.**

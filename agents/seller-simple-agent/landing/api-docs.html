@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>API Documentation — ComplianceShield</title>
+  <title>API Documentation — ComplianceShield | AI Compliance for Creators</title>
   <meta name="description" content="ComplianceShield API documentation. REST API, A2A Protocol, MCP Server, and Telegram Bot integration guides.">
+  <meta property="og:title" content="ComplianceShield - API Documentation">
+  <meta property="og:description" content="Complete API documentation for REST, A2A Protocol, MCP Server, and Telegram Bot integrations.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://complianceshield.ai/api-docs.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ComplianceShield - API Docs">
+  <meta name="twitter:description" content="Complete API documentation for REST, A2A Protocol, MCP Server, and Telegram Bot integrations.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
   <style>
     *, *::before, *::after {
       margin: 0;
@@ -796,11 +804,44 @@
       pre {
         font-size: 0.75rem;
         padding: 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .endpoint-card {
+        padding: 1.25rem;
+      }
+
+      .docs-hero {
+        padding: 6rem 1.25rem 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .docs-hero h1 {
+        font-size: 1.5rem;
+      }
+
+      h2.section-heading {
+        font-size: 1.15rem;
+      }
+
+      pre {
+        font-size: 0.7rem;
+        padding: 0.75rem;
+      }
+
+      .main-content {
+        padding: 1rem 0.75rem 2rem;
       }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <!-- Navigation -->
   <nav>
@@ -817,7 +858,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
     </ul>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html" class="active">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <div class="page-wrapper">
 

@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connect to ComplianceShield — AI Compliance from Any Tool</title>
   <meta name="description" content="Connect ComplianceShield to Claude Desktop, MCP clients, A2A agents, Telegram, and REST API. Compliance scanning from your favorite AI tools.">
+  <meta property="og:title" content="ComplianceShield - Connect Your Tools">
+  <meta property="og:description" content="Connect ComplianceShield to Claude Desktop, MCP clients, A2A agents, Telegram, and REST API.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://complianceshield.ai/connect.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ComplianceShield - Connect">
+  <meta name="twitter:description" content="Connect ComplianceShield to Claude Desktop, MCP, A2A agents, Telegram, and REST API.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -536,9 +543,9 @@ print(response.json())</div>
           <span>Quick scan &mdash; no auth required</span>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
-        <div class="code-body">curl -X POST http://localhost:3000/api/scan \
+        <div class="code-body">curl -X POST http://localhost:8080/api/scan \
   -H "Content-Type: application/json" \
-  -d '{"text": "Buy now! Limited time offer, guaranteed results!"}'</div>
+  -d '{"content": "Buy now! Limited time offer, guaranteed results!"}'</div>
       </div>
 
       <p>For full endpoint documentation including video scanning, upload, history, and stats, see the <a href="/api-docs.html" style="color:var(--accent-cyan); text-decoration:none; font-weight:600;">API Docs &rarr;</a></p>

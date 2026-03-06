@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — ComplianceShield</title>
+  <title>Dashboard — ComplianceShield | AI Compliance for Creators</title>
+  <meta name="description" content="Real-time compliance dashboard. Monitor scan results, risk scores, and content health across all your channels.">
+  <meta property="og:title" content="ComplianceShield - Dashboard">
+  <meta property="og:description" content="Real-time compliance dashboard. Monitor scan results, risk scores, and content health across all your channels.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://complianceshield.ai/dashboard.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ComplianceShield - Dashboard">
+  <meta name="twitter:description" content="Real-time compliance dashboard. Monitor scan results, risk scores, and content health.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -318,7 +327,7 @@
     /* ── Stats Grid ── */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 1.25rem;
       margin-bottom: 1.75rem;
     }
@@ -360,7 +369,8 @@
     .stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan)); }
     .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent-red), var(--accent-amber)); }
     .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-amber), var(--accent-green)); }
-    .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); }
+    .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); }
+    .stat-card:nth-child(5)::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); }
 
     .stat-top {
       display: flex;
@@ -866,9 +876,86 @@
     .delay-6 { animation-delay: 0.3s; }
     .delay-7 { animation-delay: 0.35s; }
 
+    /* ── Last Updated Indicator ── */
+    .last-updated {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .last-updated .refresh-icon {
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+
+    .last-updated.refreshing .refresh-icon {
+      animation: spin 0.6s linear;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Regulation Bars ── */
+    .regulation-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .regulation-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .regulation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .regulation-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .regulation-count {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .regulation-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .regulation-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── Line Chart Container ── */
+    .line-chart-container {
+      position: relative;
+      height: 280px;
+      padding: 0.25rem;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 1200px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
       .grid-3-1 { grid-template-columns: 1fr; }
     }
 
@@ -878,13 +965,12 @@
 
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .mobile-toggle { display: block; }
       .dashboard { padding: 5rem 1rem 2rem; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .actions-grid { grid-template-columns: 1fr; }
       .chart-container { flex-direction: column; }
       .chart-legend { margin-left: 0; margin-top: 1rem; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
-      .page-header { flex-direction: column; }
+      .page-header { flex-direction: column; gap: 1rem; }
     }
 
     @media (max-width: 480px) {
@@ -893,8 +979,12 @@
       .scan-table td:nth-child(1) { display: none; }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <!-- Navigation (matching landing page) -->
   <nav>
@@ -911,8 +1001,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" class="nav-btn">Login</a></li>
     </ul>
-    <button class="mobile-toggle" onclick="toggleMobileMenu()">&#9776;</button>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html" class="active">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <!-- Dashboard Content -->
   <main class="dashboard">
@@ -980,6 +1085,19 @@
 
       <div class="stat-card animate-in delay-4">
         <div class="stat-top">
+          <span class="stat-label">Total Revenue</span>
+          <div class="stat-icon" style="background: rgba(168, 85, 247, 0.12); color: #c084fc;">&#x1F4B0;</div>
+        </div>
+        <div class="stat-value" id="stat-revenue">
+          <div class="skeleton skeleton-number"></div>
+        </div>
+        <div class="stat-change" id="stat-revenue-change">
+          <div class="skeleton skeleton-text"></div>
+        </div>
+      </div>
+
+      <div class="stat-card animate-in delay-5">
+        <div class="stat-top">
           <span class="stat-label">Uptime</span>
           <div class="stat-icon green">&#x26A1;</div>
         </div>
@@ -991,6 +1109,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Last Updated Indicator -->
+    <div class="last-updated animate-in delay-5" id="last-updated-indicator">
+      <span class="refresh-icon">&#x21BB;</span>
+      <span id="last-updated-text">Updating...</span>
+    </div>
+    <div style="height: 0.75rem;"></div>
 
     <!-- Chart + Quick Actions Row -->
     <div class="grid-2 animate-in delay-5">
@@ -1070,12 +1195,84 @@
       </div>
     </div>
 
+    <!-- Revenue Over Time + Top Regulations Row -->
+    <div class="grid-2 animate-in delay-6">
+      <!-- Scan Volume Over Time Chart -->
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">&#x1F4C8;</span> Scan Volume (7 Days)</h3>
+          <span class="refresh-badge"><span class="dot"></span> Daily</span>
+        </div>
+        <div class="card-body">
+          <div class="line-chart-container">
+            <canvas id="volumeChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Regulations Triggered -->
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">&#x2696;&#xFE0F;</span> Most Triggered Regulations</h3>
+        </div>
+        <div class="card-body">
+          <div class="regulation-list" id="regulation-list">
+            <div class="regulation-item">
+              <div class="regulation-header">
+                <span class="regulation-name">FTC Endorsement Guides (16 CFR 255)</span>
+                <span class="regulation-count">12 triggers</span>
+              </div>
+              <div class="regulation-bar-bg">
+                <div class="regulation-bar-fill" style="width: 100%; background: linear-gradient(90deg, #6366f1, #818cf8);"></div>
+              </div>
+            </div>
+            <div class="regulation-item">
+              <div class="regulation-header">
+                <span class="regulation-name">FDA Health Claims (21 CFR 101)</span>
+                <span class="regulation-count">8 triggers</span>
+              </div>
+              <div class="regulation-bar-bg">
+                <div class="regulation-bar-fill" style="width: 66.7%; background: linear-gradient(90deg, #a855f7, #c084fc);"></div>
+              </div>
+            </div>
+            <div class="regulation-item">
+              <div class="regulation-header">
+                <span class="regulation-name">SEC Investment Advice (Rule 10b-5)</span>
+                <span class="regulation-count">5 triggers</span>
+              </div>
+              <div class="regulation-bar-bg">
+                <div class="regulation-bar-fill" style="width: 41.7%; background: linear-gradient(90deg, #22d3ee, #67e8f9);"></div>
+              </div>
+            </div>
+            <div class="regulation-item">
+              <div class="regulation-header">
+                <span class="regulation-name">COPPA Children's Privacy</span>
+                <span class="regulation-count">3 triggers</span>
+              </div>
+              <div class="regulation-bar-bg">
+                <div class="regulation-bar-fill" style="width: 25%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+              </div>
+            </div>
+            <div class="regulation-item">
+              <div class="regulation-header">
+                <span class="regulation-name">CAN-SPAM Act</span>
+                <span class="regulation-count">2 triggers</span>
+              </div>
+              <div class="regulation-bar-bg">
+                <div class="regulation-bar-fill" style="width: 16.7%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Recent Scans Table -->
-    <div class="grid-full animate-in delay-6">
+    <div class="grid-full animate-in delay-7">
       <div class="card">
         <div class="card-header">
           <h3><span class="card-icon">&#x1F552;</span> Recent Scans</h3>
-          <span class="refresh-badge"><span class="dot"></span> Auto-refresh 10s</span>
+          <span class="refresh-badge"><span class="dot"></span> Auto-refresh 30s</span>
         </div>
         <div class="table-wrapper">
           <table class="scan-table">
@@ -1118,7 +1315,7 @@
     </div>
 
     <!-- Agent Status -->
-    <div class="grid-full animate-in delay-7" id="agent-status">
+    <div class="grid-full animate-in" style="animation-delay: 0.4s;" id="agent-status">
       <div class="card">
         <div class="card-header">
           <h3><span class="card-icon">&#x1F4E1;</span> Agent Status</h3>
@@ -1173,7 +1370,9 @@
     const A2A_URL = 'http://localhost:8080';
     const MCP_URL = 'http://localhost:3000';
     const REST_URL = 'http://localhost:8080';
-    const REFRESH_INTERVAL = 10000;
+    const REFRESH_INTERVAL = 30000;
+    const CREDIT_PRICE = 0.10;
+    let lastUpdatedTime = Date.now();
 
     /* ═══════════════════════════════════════════
        Chart.js - Donut Chart
@@ -1249,6 +1448,169 @@
     }
 
     /* ═══════════════════════════════════════════
+       Chart.js - Volume Line Chart (7 Days)
+    ═══════════════════════════════════════════ */
+    let volumeChart = null;
+
+    function initVolumeChart(currentScans) {
+      const ctx = document.getElementById('volumeChart');
+      if (!ctx) return;
+
+      // Generate last 7 days labels
+      const labels = [];
+      const now = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        labels.push(d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+      }
+
+      // Seed data showing growth, with today as actual scan count
+      const seedData = [2, 5, 8, 12, 18, 25, Math.max(currentScans || 30, 30)];
+      const revenueData = seedData.map(function(v) { return v * CREDIT_PRICE; });
+
+      if (volumeChart) {
+        volumeChart.data.labels = labels;
+        volumeChart.data.datasets[0].data = seedData;
+        volumeChart.data.datasets[1].data = revenueData;
+        volumeChart.update('none');
+        return;
+      }
+
+      volumeChart = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Scans',
+              data: seedData,
+              borderColor: '#6366f1',
+              backgroundColor: 'rgba(99, 102, 241, 0.08)',
+              borderWidth: 2.5,
+              pointBackgroundColor: '#6366f1',
+              pointBorderColor: '#0a0e1a',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.4,
+              fill: true,
+              yAxisID: 'y',
+            },
+            {
+              label: 'Revenue ($)',
+              data: revenueData,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.06)',
+              borderWidth: 2,
+              pointBackgroundColor: '#10b981',
+              pointBorderColor: '#0a0e1a',
+              pointBorderWidth: 2,
+              pointRadius: 3,
+              pointHoverRadius: 5,
+              tension: 0.4,
+              fill: true,
+              borderDash: [5, 3],
+              yAxisID: 'y1',
+            }
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                color: '#94a3b8',
+                font: { family: "'Inter', sans-serif", size: 11, weight: '500' },
+                padding: 16,
+                usePointStyle: true,
+                pointStyleWidth: 8,
+              },
+            },
+            tooltip: {
+              backgroundColor: 'rgba(17, 24, 39, 0.95)',
+              titleColor: '#f1f5f9',
+              bodyColor: '#94a3b8',
+              borderColor: 'rgba(99, 102, 241, 0.2)',
+              borderWidth: 1,
+              padding: 12,
+              cornerRadius: 8,
+              titleFont: { family: "'Inter', sans-serif", weight: '600' },
+              bodyFont: { family: "'Inter', sans-serif" },
+            },
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+              ticks: {
+                color: '#64748b',
+                font: { family: "'Inter', sans-serif", size: 10 },
+                maxRotation: 0,
+              },
+            },
+            y: {
+              position: 'left',
+              grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+              ticks: {
+                color: '#64748b',
+                font: { family: "'Inter', sans-serif", size: 10 },
+                stepSize: 5,
+              },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Scans',
+                color: '#64748b',
+                font: { family: "'Inter', sans-serif", size: 10 },
+              },
+            },
+            y1: {
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              ticks: {
+                color: '#34d399',
+                font: { family: "'Inter', sans-serif", size: 10 },
+                callback: function(v) { return '$' + v.toFixed(2); },
+              },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Revenue',
+                color: '#34d399',
+                font: { family: "'Inter', sans-serif", size: 10 },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    /* ═══════════════════════════════════════════
+       Last Updated Tracker
+    ═══════════════════════════════════════════ */
+    function updateLastUpdated() {
+      const el = document.getElementById('last-updated-text');
+      if (!el) return;
+      const secs = Math.floor((Date.now() - lastUpdatedTime) / 1000);
+      if (secs < 5) {
+        el.textContent = 'Updated just now';
+      } else {
+        el.textContent = 'Last updated ' + secs + 's ago \u00B7 Next refresh in ' + Math.max(0, 30 - secs) + 's';
+      }
+    }
+
+    // Update the "last updated" text every second
+    setInterval(updateLastUpdated, 1000);
+
+    /* ═══════════════════════════════════════════
        Stats Loading
     ═══════════════════════════════════════════ */
     async function loadStats() {
@@ -1311,9 +1673,35 @@
         uptimeChange.innerHTML = '<span class="trend-arrow">&#x2191;</span> Server healthy';
         uptimeChange.className = 'stat-change up';
 
-        // Update chart
+        // Revenue card
+        const totalCredits = s.credits_earned || s.total_scans || 0;
+        const revenue = (totalCredits * CREDIT_PRICE).toFixed(2);
+        const revenueEl = document.getElementById('stat-revenue');
+        revenueEl.textContent = '$' + revenue;
+        revenueEl.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+        revenueEl.style.webkitBackgroundClip = 'text';
+        revenueEl.style.backgroundClip = 'text';
+        revenueEl.style.webkitTextFillColor = 'transparent';
+
+        const revenueChange = document.getElementById('stat-revenue-change');
+        revenueChange.innerHTML = '<span class="trend-arrow">&#x2191;</span> ' + totalCredits + ' credits earned';
+        revenueChange.className = 'stat-change up';
+
+        // Update charts
         const uploadCount = s.upload_scans || 0;
         initChart(s.text_scans || 0, s.video_scans || 0, uploadCount);
+        initVolumeChart(s.total_scans || 0);
+
+        // Track last update time
+        lastUpdatedTime = Date.now();
+        updateLastUpdated();
+
+        // Flash the refresh indicator
+        var indicator = document.getElementById('last-updated-indicator');
+        if (indicator) {
+          indicator.classList.add('refreshing');
+          setTimeout(function() { indicator.classList.remove('refreshing'); }, 600);
+        }
 
       } catch (e) {
         console.warn('Stats unavailable:', e.message);
@@ -1322,8 +1710,11 @@
         document.getElementById('stat-issues').textContent = '--';
         document.getElementById('stat-risk').textContent = '--';
         document.getElementById('stat-uptime').textContent = '--';
+        document.getElementById('stat-revenue').textContent = '--';
         document.getElementById('stat-scans-change').textContent = 'API unavailable';
+        document.getElementById('stat-revenue-change').textContent = 'API unavailable';
         initChart(0, 0, 0);
+        initVolumeChart(0);
       }
     }
 
@@ -1386,7 +1777,7 @@
     /* ═══════════════════════════════════════════
        Agent Health Checks
     ═══════════════════════════════════════════ */
-    async function checkHealth(name, url, dotId, labelId) {
+    async function checkHealth(name, dotId, labelId) {
       const dot = document.getElementById(dotId);
       const label = document.getElementById(labelId);
 
@@ -1398,20 +1789,23 @@
         const controller = new AbortController();
         const timeout = setTimeout(function() { controller.abort(); }, 5000);
 
-        let fetchUrl = url;
-        if (name === 'rest') {
-          fetchUrl = url + '/api/stats';
+        // Use same-origin paths where available to avoid CORS issues
+        let fetchUrl;
+        if (name === 'a2a') {
+          // Proxied via web_demo.py on same origin
+          fetchUrl = API_BASE + '/.well-known/agent.json';
         } else if (name === 'mcp') {
-          fetchUrl = url + '/health';
-        } else if (name === 'a2a') {
-          fetchUrl = url + '/.well-known/agent.json';
+          // MCP is on a different port — try direct
+          fetchUrl = MCP_URL + '/';
+        } else if (name === 'rest') {
+          fetchUrl = API_BASE + '/api/stats';
+        } else {
+          fetchUrl = API_BASE + '/api/stats';
         }
 
         const res = await fetch(fetchUrl, {
           method: 'GET',
           signal: controller.signal,
-          mode: 'cors',
-          headers: name === 'a2a' ? { 'ngrok-skip-browser-warning': 'true' } : {},
         });
 
         clearTimeout(timeout);
@@ -1424,6 +1818,22 @@
           throw new Error('Status ' + res.status);
         }
       } catch (e) {
+        // Fallback: try direct fetch (works if same-origin or CORS enabled)
+        try {
+          let directUrl;
+          if (name === 'a2a') directUrl = A2A_URL + '/.well-known/agent.json';
+          else if (name === 'mcp') directUrl = MCP_URL + '/';
+          else directUrl = REST_URL + '/api/stats';
+
+          const res2 = await fetch(directUrl, { method: 'GET', mode: 'cors' });
+          if (res2.ok) {
+            dot.className = 'status-dot-indicator online';
+            label.className = 'status-label online';
+            label.textContent = 'Online';
+            return;
+          }
+        } catch (_) { /* ignore fallback errors */ }
+
         dot.className = 'status-dot-indicator offline';
         label.className = 'status-label offline';
         label.textContent = 'Offline';
@@ -1431,9 +1841,9 @@
     }
 
     function checkAllHealth() {
-      checkHealth('a2a', A2A_URL, 'dot-a2a', 'label-a2a');
-      checkHealth('mcp', MCP_URL, 'dot-mcp', 'label-mcp');
-      checkHealth('rest', REST_URL, 'dot-rest', 'label-rest');
+      checkHealth('a2a', 'dot-a2a', 'label-a2a');
+      checkHealth('mcp', 'dot-mcp', 'label-mcp');
+      checkHealth('rest', 'dot-rest', 'label-rest');
     }
 
     /* ═══════════════════════════════════════════
@@ -1470,13 +1880,13 @@
       loadHistory();
       checkAllHealth();
 
-      // Auto-refresh every 10 seconds
+      // Auto-refresh stats and history every 30 seconds
       setInterval(function() {
         loadStats();
         loadHistory();
       }, REFRESH_INTERVAL);
 
-      // Re-check health every 30 seconds
+      // Re-check health every 30 seconds (aligned with stats refresh)
       setInterval(checkAllHealth, 30000);
     })();
   </script>

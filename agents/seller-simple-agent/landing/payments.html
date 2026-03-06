@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment & Revenue Dashboard — ComplianceShield</title>
+  <title>Payment & Revenue Dashboard — ComplianceShield | AI Compliance for Creators</title>
   <meta name="description" content="Agent Economy Revenue Dashboard. See how AI agents pay for compliance scans using x402 credits via Nevermined.">
+  <meta property="og:title" content="ComplianceShield - Payment & Revenue Dashboard">
+  <meta property="og:description" content="Agent Economy Revenue Dashboard. See how AI agents pay for compliance scans using x402 credits via Nevermined.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://complianceshield.ai/payments.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ComplianceShield - Payments">
+  <meta name="twitter:description" content="Agent Economy Revenue Dashboard. AI agents pay for compliance scans using x402 credits.">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -139,11 +146,16 @@
     .nvm-plan-id { display: inline-block; margin-top: .75rem; font-family: var(--font-mono); font-size: .78rem; color: var(--text-muted); background: rgba(99,102,241,0.08); padding: .3rem .8rem; border-radius: var(--radius-xs); }
     footer { padding: 2rem; text-align: center; border-top: 1px solid rgba(99,102,241,0.1); color: var(--text-muted); font-size: .82rem; }
     @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2,1fr); } .flow-container { flex-direction: column; align-items: center; } .flow-arrow { transform: rotate(90deg); min-width: unset; min-height: 30px; } .flow-step { max-width: 340px; width: 100%; padding: .75rem 0; } }
-    @media (max-width: 640px) { .hero h1 { font-size: 2rem; } .stats-grid { grid-template-columns: 1fr 1fr; } .nav-links { display: none; } .pricing-table { font-size: .82rem; } .tab-bar { flex-wrap: wrap; } }
+    @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .hero { padding: 6rem 1.25rem 2.5rem; } .stats-grid { grid-template-columns: 1fr 1fr; } .nav-links { display: none; } .pricing-table { font-size: .82rem; } .tab-bar { flex-wrap: wrap; } .tx-table th:nth-child(4), .tx-table td:nth-child(4) { display: none; } .tx-table th:nth-child(5), .tx-table td:nth-child(5) { display: none; } }
+    @media (max-width: 480px) { .hero h1 { font-size: 1.65rem; } .stats-grid { grid-template-columns: 1fr; } .stat-card .stat-value { font-size: 1.8rem; } h2 { font-size: 1.6rem; } }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <!-- Navigation -->
   <nav>
@@ -160,7 +172,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" class="nav-cta">Login</a></li>
     </ul>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html" class="active">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <!-- Hero -->
   <section class="hero">
@@ -269,6 +297,7 @@
       <h2>Tool <span class="gradient-text">Pricing</span></h2>
       <p class="section-sub">Each tool costs a fixed number of credits per invocation. Credits are deducted atomically on each call.</p>
 
+      <div class="mobile-table-wrap">
       <table class="pricing-table">
         <thead>
           <tr>
@@ -305,6 +334,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
   </section>
 
@@ -419,7 +449,7 @@ resp = requests.post(
       <h2>Transaction <span class="gradient-text">Log</span></h2>
       <p class="section-sub">Recent agent-to-agent payment transactions and credit settlements.</p>
 
-      <div class="card" style="padding: 0; overflow: hidden;">
+      <div class="card mobile-table-wrap" style="padding: 0; overflow: hidden;">
         <table class="tx-table" id="tx-table">
           <thead>
             <tr>

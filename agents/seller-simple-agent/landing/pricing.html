@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pricing — ComplianceShield | AI Compliance for Content Creators</title>
   <meta name="description" content="Choose the right ComplianceShield plan. Free, Pro, or Enterprise — AI-powered compliance scanning for content creators.">
+  <meta property="og:title" content="ComplianceShield - Pricing">
+  <meta property="og:description" content="Choose the right ComplianceShield plan. Free, Pro, or Enterprise AI-powered compliance scanning.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://complianceshield.ai/pricing.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ComplianceShield - Pricing">
+  <meta name="twitter:description" content="Choose the right ComplianceShield plan. Free, Pro, or Enterprise AI-powered compliance scanning.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
   <style>
     *, *::before, *::after {
       margin: 0;
@@ -992,11 +1000,15 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <!-- Floating particles -->
   <div class="particles" id="particles"></div>
@@ -1016,8 +1028,23 @@
       <li><a href="/pricing.html" class="active">Pricing</a></li>
       <li><a href="/login.html" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
     </ul>
-    <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').style.display = document.querySelector('.nav-links').style.display === 'flex' ? 'none' : 'flex'">&#9776;</button>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html" class="active">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <!-- Page Header -->
   <section class="page-header">

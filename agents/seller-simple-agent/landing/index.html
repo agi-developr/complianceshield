@@ -548,6 +548,106 @@
       font-weight: 300;
     }
 
+    .scan-error-box {
+      display: none;
+      margin-top: 1rem;
+      padding: 14px 18px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: var(--radius-sm);
+      color: #f87171;
+      font-size: 0.88rem;
+      font-weight: 400;
+      line-height: 1.6;
+      animation: fadeInSoft 0.3s var(--ease-out-expo);
+    }
+
+    .scan-error-box.visible {
+      display: block;
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 300;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .char-counter.near-limit {
+      color: var(--accent-amber);
+    }
+
+    .char-counter.at-limit {
+      color: var(--accent-red);
+    }
+
+    .validation-msg {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--accent-amber);
+      margin-top: 6px;
+      font-weight: 400;
+      animation: fadeInSoft 0.2s var(--ease-out-expo);
+    }
+
+    .validation-msg.visible {
+      display: block;
+    }
+
+    .example-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      justify-content: center;
+    }
+
+    .example-btn {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      color: var(--text-secondary);
+      font-family: var(--font-stack);
+      font-size: 0.75rem;
+      font-weight: 400;
+      padding: 5px 12px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .example-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: var(--accent-blue);
+    }
+
+    .scan-again-btn {
+      display: none;
+      margin: 20px auto 0;
+      padding: 10px 24px;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--accent-blue);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 100px;
+      font-family: var(--font-stack);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .scan-again-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
+    }
+
+    .scan-again-btn.visible {
+      display: block;
+    }
+
     /* ---- Results Area ---- */
     #results-area {
       margin-top: 3rem;
@@ -1249,8 +1349,12 @@
       .hero h1 { font-size: 2rem; }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css">
 </head>
 <body>
+
+  <!-- Mobile Nav Toggle (CSS-only) -->
+  <input type="checkbox" id="mobile-nav-toggle" aria-hidden="true">
 
   <!-- Navigation -->
   <nav>
@@ -1267,7 +1371,23 @@
       <li><a href="/pricing.html">Pricing</a></li>
       <li><a href="/login.html" class="nav-cta">Login</a></li>
     </ul>
+    <label for="mobile-nav-toggle" class="hamburger-label" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <a href="/">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/payments.html">Payments</a>
+    <a href="/connect.html">Connect</a>
+    <a href="/api-docs.html">API Docs</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/login.html" class="mobile-nav-cta">Login</a>
+  </div>
 
   <!-- Section 1: The Reveal -->
   <section class="hero">
@@ -1320,19 +1440,25 @@
           <span class="spinner"></span>
         </button>
       </div>
+      <div class="validation-msg" id="video-validation">Please enter a valid YouTube URL</div>
       <div id="sample-video" style="text-align: center; margin-top: 6px;">
         <button class="try-sample-btn" onclick="fillSampleVideo()">Try sample video</button>
       </div>
 
       <!-- Text input -->
       <div id="input-text" style="display: none;">
-        <textarea id="text-content" class="scan-textarea" placeholder="Paste your script, transcript, or post..."></textarea>
+        <textarea id="text-content" class="scan-textarea" placeholder="Paste your script, transcript, or post..." maxlength="50000"></textarea>
+        <div class="char-counter" id="char-counter">0 / 50,000 characters</div>
+        <div class="validation-msg" id="text-validation">Please enter content to scan</div>
         <button class="scan-btn" id="scan-btn-text" onclick="handleTextScan()" style="margin-top: 8px; width: 100%;">
           <span class="btn-text">Scan Text</span>
           <span class="spinner"></span>
         </button>
-        <div style="text-align: center; margin-top: 6px;">
-          <button class="try-sample-btn" onclick="fillSampleText()">Try sample text</button>
+        <div class="example-buttons">
+          <button class="try-sample-btn" onclick="fillSampleText()" style="margin: 0;">Try sample text</button>
+          <button class="example-btn" onclick="fillExample('health')">Health Claims</button>
+          <button class="example-btn" onclick="fillExample('finance')">Financial</button>
+          <button class="example-btn" onclick="fillExample('privacy')">Privacy</button>
         </div>
       </div>
 
@@ -1369,6 +1495,7 @@
             <span class="spinner"></span>
           </button>
         </div>
+        <div class="validation-msg" id="url-validation">Please enter a valid URL (e.g., https://example.com)</div>
       </div>
 
       <!-- Scanning progress -->
@@ -1378,11 +1505,13 @@
       </div>
 
       <div class="scan-error" id="scan-error"></div>
+      <div class="scan-error-box" id="scan-error-box"></div>
     </div>
 
     <!-- Results area -->
     <div style="width: 100%; max-width: 800px;">
       <div id="results-area"></div>
+      <button class="scan-again-btn" id="scan-again-btn" onclick="scanAgain()">Scan Again</button>
     </div>
   </section>
 
@@ -1506,6 +1635,32 @@
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
+    // ---- Helpers: clear errors & show error box ----
+    function clearAllErrors() {
+      document.getElementById('scan-error').style.display = 'none';
+      document.getElementById('scan-error').textContent = '';
+      const errorBox = document.getElementById('scan-error-box');
+      errorBox.classList.remove('visible');
+      errorBox.textContent = '';
+      document.querySelectorAll('.validation-msg').forEach(el => el.classList.remove('visible'));
+    }
+
+    function showErrorBox(message) {
+      const errorBox = document.getElementById('scan-error-box');
+      errorBox.textContent = message;
+      errorBox.classList.add('visible');
+    }
+
+    function showValidation(id, message) {
+      const el = document.getElementById(id);
+      if (message) el.textContent = message;
+      el.classList.add('visible');
+    }
+
+    function isNetworkError(err) {
+      return err instanceof TypeError && err.message.toLowerCase().includes('fetch');
+    }
+
     // ---- YouTube URL Validation ----
     function isValidYouTubeUrl(url) {
       const patterns = [
@@ -1514,6 +1669,15 @@
         /^https?:\/\/(www\.)?youtube\.com\/shorts\/[\w-]+/,
       ];
       return patterns.some((p) => p.test(url));
+    }
+
+    function isValidUrl(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+      } catch {
+        return false;
+      }
     }
 
     // ---- Scanning Indicator Helpers ----
@@ -1525,33 +1689,87 @@
       document.getElementById('scanning-indicator').classList.remove('active');
     }
 
+    // ---- Character Counter ----
+    const textContentEl = document.getElementById('text-content');
+    const charCounter = document.getElementById('char-counter');
+    const MAX_CHARS = 50000;
+
+    function updateCharCounter() {
+      const len = textContentEl.value.length;
+      charCounter.textContent = `${len.toLocaleString()} / 50,000 characters`;
+      charCounter.classList.remove('near-limit', 'at-limit');
+      if (len >= MAX_CHARS) {
+        charCounter.classList.add('at-limit');
+      } else if (len >= MAX_CHARS * 0.9) {
+        charCounter.classList.add('near-limit');
+      }
+    }
+
+    textContentEl.addEventListener('input', updateCharCounter);
+
+    // ---- Example Content Fillers ----
+    const EXAMPLES = {
+      health: "This supplement cures diabetes and guarantees weight loss in 7 days. Clinical trials prove it eliminates cancer cells. FDA approved for all conditions. Buy now before it's banned!",
+      finance: "Buy this crypto token now for guaranteed 10x returns, endorsed by celebrities. Our AI trading bot has never lost money. Invest your retirement savings today for risk-free passive income!",
+      privacy: "We collect and sell all user data including children's browsing history. Our app tracks your location 24/7 and shares it with advertisers. No opt-out available. Data retained forever.",
+    };
+
+    function fillExample(type) {
+      const example = EXAMPLES[type];
+      if (!example) return;
+      textContentEl.value = example;
+      updateCharCounter();
+      textContentEl.focus();
+      document.getElementById('text-validation').classList.remove('visible');
+    }
+
+    // ---- Scan Again ----
+    function scanAgain() {
+      const resultsArea = document.getElementById('results-area');
+      resultsArea.classList.remove('visible');
+      resultsArea.innerHTML = '';
+      document.getElementById('scan-again-btn').classList.remove('visible');
+      clearAllErrors();
+
+      document.querySelector('.scan-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        if (activeTab === 'video') {
+          document.getElementById('youtube-url').value = '';
+          document.getElementById('youtube-url').focus();
+        } else if (activeTab === 'text') {
+          textContentEl.value = '';
+          updateCharCounter();
+          textContentEl.focus();
+        } else if (activeTab === 'url') {
+          document.getElementById('webpage-url').value = '';
+          document.getElementById('webpage-url').focus();
+        }
+      }, 500);
+    }
+
     // ---- Scan Handler (YouTube Video) ----
     async function handleScan() {
       const input = document.getElementById('youtube-url');
       const btn = document.getElementById('scan-btn');
-      const errorEl = document.getElementById('scan-error');
       const resultsArea = document.getElementById('results-area');
       const url = input.value.trim();
 
-      // Reset
-      errorEl.style.display = 'none';
-      errorEl.textContent = '';
+      clearAllErrors();
       resultsArea.classList.remove('visible');
+      document.getElementById('scan-again-btn').classList.remove('visible');
 
-      // Validate
       if (!url) {
-        errorEl.textContent = 'Please enter a YouTube video URL.';
-        errorEl.style.display = 'block';
+        showValidation('video-validation', 'Please enter a YouTube video URL');
+        input.focus();
         return;
       }
 
       if (!isValidYouTubeUrl(url)) {
-        errorEl.textContent = 'Please enter a valid YouTube URL (e.g., https://youtube.com/watch?v=...)';
-        errorEl.style.display = 'block';
+        showValidation('video-validation', 'Please enter a valid YouTube URL (e.g., https://youtube.com/watch?v=...)');
+        input.focus();
         return;
       }
 
-      // Start loading
       btn.classList.add('loading');
       btn.disabled = true;
       showScanningIndicator();
@@ -1563,13 +1781,19 @@
           body: JSON.stringify({ youtube_url: url, detail_level: 'full' }),
         });
 
+        const data = await response.json().catch(() => null);
+
         if (!response.ok) {
-          throw new Error(`Server returned ${response.status}`);
+          showErrorBox((data && data.error) ? data.error : `Server returned ${response.status}`);
+          return;
         }
 
-        const data = await response.json();
-        // Map API response to renderer format
-        const report = data.report || {};
+        if (data && data.status === 'error') {
+          showErrorBox(data.error || 'An unexpected error occurred during scanning.');
+          return;
+        }
+
+        const report = (data && data.report) || {};
         renderResults({
           risk_level: report.overall_risk || 'UNKNOWN',
           score: report.compliance_score ?? (report.overall_risk === 'LOW' ? 85 : report.overall_risk === 'MEDIUM' ? 55 : 25),
@@ -1588,8 +1812,11 @@
           duration: data.duration_seconds,
         });
       } catch (err) {
-        errorEl.textContent = `Scan failed: ${err.message}. Make sure the demo server is running (poetry run web-demo).`;
-        errorEl.style.display = 'block';
+        if (isNetworkError(err)) {
+          showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+        } else {
+          showErrorBox(`Scan failed: ${err.message}`);
+        }
       } finally {
         btn.classList.remove('loading');
         btn.disabled = false;
@@ -1601,6 +1828,7 @@
     let activeTab = 'video';
     function switchTab(tab) {
       activeTab = tab;
+      clearAllErrors();
       document.getElementById('input-video').style.display = tab === 'video' ? '' : 'none';
       document.getElementById('sample-video').style.display = tab === 'video' ? '' : 'none';
       document.getElementById('input-text').style.display = tab === 'text' ? '' : 'none';
@@ -1628,11 +1856,11 @@
     async function handleUploadScan() {
       if (!uploadedFile) return;
       const btn = document.getElementById('scan-btn-upload');
-      const errorEl = document.getElementById('scan-error');
       const resultsArea = document.getElementById('results-area');
 
-      errorEl.style.display = 'none';
+      clearAllErrors();
       resultsArea.classList.remove('visible');
+      document.getElementById('scan-again-btn').classList.remove('visible');
       btn.classList.add('loading');
       btn.disabled = true;
       showScanningIndicator();
@@ -1646,12 +1874,20 @@
           method: 'POST',
           body: formData,
         });
+
+        const data = await response.json().catch(() => null);
+
         if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(errData.error || `Server returned ${response.status}`);
+          showErrorBox((data && data.error) ? data.error : `Server returned ${response.status}`);
+          return;
         }
-        const data = await response.json();
-        const report = data.report || {};
+
+        if (data && data.status === 'error') {
+          showErrorBox(data.error || 'An unexpected error occurred during scanning.');
+          return;
+        }
+
+        const report = (data && data.report) || {};
         document.getElementById('youtube-url').value = `Uploaded: ${uploadedFile.name}`;
         renderResults({
           risk_level: report.overall_risk || 'UNKNOWN',
@@ -1665,8 +1901,11 @@
           summary: report.summary,
         });
       } catch (err) {
-        errorEl.textContent = `Upload scan failed: ${err.message}`;
-        errorEl.style.display = 'block';
+        if (isNetworkError(err)) {
+          showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+        } else {
+          showErrorBox(`Upload scan failed: ${err.message}`);
+        }
       } finally {
         btn.classList.remove('loading');
         btn.disabled = false;
@@ -1678,27 +1917,29 @@
     function fillSampleVideo() {
       document.getElementById('youtube-url').value = 'https://www.youtube.com/watch?v=q_Vd7i4ZpgA';
       document.getElementById('youtube-url').focus();
+      document.getElementById('video-validation').classList.remove('visible');
     }
 
     function fillSampleText() {
-      document.getElementById('text-content').value = "Hey guys! I've been using this amazing supplement called KetoBlast Pro and I lost 30 pounds in just 2 weeks! You HAVE to try it - it literally cures inflammation and reverses aging. My doctor was SHOCKED. Use my code HEALTH50 for 50% off at the link in my bio. Also, I've been investing in this new crypto token and it's guaranteed to 10x by next month - not financial advice lol but seriously put your savings in it.";
-      document.getElementById('text-content').focus();
+      textContentEl.value = "Hey guys! I've been using this amazing supplement called KetoBlast Pro and I lost 30 pounds in just 2 weeks! You HAVE to try it - it literally cures inflammation and reverses aging. My doctor was SHOCKED. Use my code HEALTH50 for 50% off at the link in my bio. Also, I've been investing in this new crypto token and it's guaranteed to 10x by next month - not financial advice lol but seriously put your savings in it.";
+      updateCharCounter();
+      textContentEl.focus();
+      document.getElementById('text-validation').classList.remove('visible');
     }
 
     // ---- Text Scan Handler ----
     async function handleTextScan() {
-      const textarea = document.getElementById('text-content');
       const btn = document.getElementById('scan-btn-text');
-      const errorEl = document.getElementById('scan-error');
       const resultsArea = document.getElementById('results-area');
-      const text = textarea.value.trim();
+      const text = textContentEl.value.trim();
 
-      errorEl.style.display = 'none';
+      clearAllErrors();
       resultsArea.classList.remove('visible');
+      document.getElementById('scan-again-btn').classList.remove('visible');
 
       if (!text) {
-        errorEl.textContent = 'Please paste some content to scan.';
-        errorEl.style.display = 'block';
+        showValidation('text-validation', 'Please enter content to scan');
+        textContentEl.focus();
         return;
       }
 
@@ -1712,9 +1953,20 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: text, detail_level: 'full' }),
         });
-        if (!response.ok) throw new Error(`Server returned ${response.status}`);
-        const data = await response.json();
-        const report = data.report || {};
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          showErrorBox((data && data.error) ? data.error : `Server returned ${response.status}`);
+          return;
+        }
+
+        if (data && data.status === 'error') {
+          showErrorBox(data.error || 'An unexpected error occurred during scanning.');
+          return;
+        }
+
+        const report = (data && data.report) || {};
         document.getElementById('youtube-url').value = 'Text content scan';
         renderResults({
           risk_level: report.overall_risk || 'UNKNOWN',
@@ -1728,8 +1980,11 @@
           summary: report.summary,
         });
       } catch (err) {
-        errorEl.textContent = `Scan failed: ${err.message}`;
-        errorEl.style.display = 'block';
+        if (isNetworkError(err)) {
+          showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+        } else {
+          showErrorBox(`Scan failed: ${err.message}`);
+        }
       } finally {
         btn.classList.remove('loading');
         btn.disabled = false;
@@ -1741,16 +1996,22 @@
     async function handleUrlScan() {
       const urlInput = document.getElementById('webpage-url');
       const btn = document.getElementById('scan-btn-url');
-      const errorEl = document.getElementById('scan-error');
       const resultsArea = document.getElementById('results-area');
       const url = urlInput.value.trim();
 
-      errorEl.style.display = 'none';
+      clearAllErrors();
       resultsArea.classList.remove('visible');
+      document.getElementById('scan-again-btn').classList.remove('visible');
 
       if (!url) {
-        errorEl.textContent = 'Please enter a webpage URL to scan.';
-        errorEl.style.display = 'block';
+        showValidation('url-validation', 'Please enter a webpage URL to scan');
+        urlInput.focus();
+        return;
+      }
+
+      if (!isValidUrl(url)) {
+        showValidation('url-validation', 'Please enter a valid URL (e.g., https://example.com)');
+        urlInput.focus();
         return;
       }
 
@@ -1764,12 +2025,20 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: url, detail_level: 'full' }),
         });
+
+        const data = await response.json().catch(() => null);
+
         if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(errData.error || `Server returned ${response.status}`);
+          showErrorBox((data && data.error) ? data.error : `Server returned ${response.status}`);
+          return;
         }
-        const data = await response.json();
-        const report = data.report || {};
+
+        if (data && data.status === 'error') {
+          showErrorBox(data.error || 'An unexpected error occurred during scanning.');
+          return;
+        }
+
+        const report = (data && data.report) || {};
         document.getElementById('youtube-url').value = url;
         renderResults({
           risk_level: report.overall_risk || 'UNKNOWN',
@@ -1783,8 +2052,11 @@
           summary: report.summary,
         });
       } catch (err) {
-        errorEl.textContent = `URL scan failed: ${err.message}`;
-        errorEl.style.display = 'block';
+        if (isNetworkError(err)) {
+          showErrorBox('Scanner temporarily unavailable. Try again in a moment.');
+        } else {
+          showErrorBox(`URL scan failed: ${err.message}`);
+        }
       } finally {
         btn.classList.remove('loading');
         btn.disabled = false;
@@ -1796,12 +2068,11 @@
     function scrollToScanner(tab) {
       switchTab(tab);
       document.querySelector('.scan-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Focus the appropriate input after scroll
       setTimeout(() => {
         if (tab === 'video') {
           document.getElementById('youtube-url').focus();
         } else if (tab === 'text') {
-          document.getElementById('text-content').focus();
+          textContentEl.focus();
         } else if (tab === 'url') {
           document.getElementById('webpage-url').focus();
         }
@@ -1812,11 +2083,22 @@
     document.getElementById('youtube-url').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') handleScan();
     });
-    document.getElementById('text-content').addEventListener('keydown', (e) => {
+    textContentEl.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && e.ctrlKey) handleTextScan();
     });
     document.getElementById('webpage-url').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') handleUrlScan();
+    });
+
+    // ---- Clear validation on input ----
+    document.getElementById('youtube-url').addEventListener('input', () => {
+      document.getElementById('video-validation').classList.remove('visible');
+    });
+    textContentEl.addEventListener('input', () => {
+      document.getElementById('text-validation').classList.remove('visible');
+    });
+    document.getElementById('webpage-url').addEventListener('input', () => {
+      document.getElementById('url-validation').classList.remove('visible');
     });
 
     // ---- Render Scan Results ----
@@ -1932,6 +2214,7 @@
       `;
 
       resultsArea.classList.add('visible');
+      document.getElementById('scan-again-btn').classList.add('visible');
       resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   </script>
