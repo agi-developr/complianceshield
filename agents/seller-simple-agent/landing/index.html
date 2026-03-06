@@ -2198,6 +2198,7 @@
           summary: report.summary,
           video_id: data.video_id,
           duration: data.duration_seconds,
+          report_id: data.report_id || null,
         });
       } catch (err) {
         if (isNetworkError(err)) {
@@ -2288,6 +2289,7 @@
             fix: i.recommended_fix,
           })),
           summary: report.summary,
+          report_id: data.report_id || null,
         });
       } catch (err) {
         if (isNetworkError(err)) {
