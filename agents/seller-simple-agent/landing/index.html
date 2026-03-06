@@ -1348,6 +1348,226 @@
     @media (max-width: 480px) {
       .hero h1 { font-size: 2rem; }
     }
+
+    /* ---- Keyboard Focus Styles ---- */
+    :focus-visible {
+      outline: 2px solid #a855f7;
+      outline-offset: 2px;
+    }
+
+    .scan-textarea:focus-visible {
+      outline: 2px solid #a855f7;
+      outline-offset: 2px;
+      border-color: rgba(168, 85, 247, 0.3);
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.06);
+    }
+
+    .kbd-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    /* ========== Print Styles ========== */
+    @media print {
+      /* Hide non-report UI */
+      nav,
+      footer,
+      .mobile-nav-overlay,
+      #mobile-nav-toggle,
+      .hero,
+      .problem,
+      .how-section,
+      .protocols-section,
+      .final-cta,
+      .scanner-label,
+      .scan-container,
+      .tab-bar,
+      .scan-btn,
+      .scan-input-wrapper,
+      .try-sample-btn,
+      .example-buttons,
+      .example-btn,
+      .scan-again-btn,
+      .scanning-indicator,
+      .scan-error,
+      .scan-error-box,
+      .validation-msg,
+      .char-counter,
+      #input-video,
+      #input-text,
+      #input-upload,
+      #input-url,
+      #sample-video,
+      #scanner-container,
+      .hamburger-label,
+      .hero-cta,
+      .report-actions-row,
+      .report-action-btn {
+        display: none !important;
+      }
+
+      /* Reset page layout for print */
+      * {
+        color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      body {
+        background: white !important;
+        color: #111 !important;
+        font-size: 11pt;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+      }
+
+      .scanner-section {
+        padding: 0 !important;
+        min-height: auto !important;
+        background: none !important;
+      }
+
+      #results-area {
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+
+      /* Print header - generated via CSS */
+      #results-area::before {
+        content: "ComplianceShield Compliance Report";
+        display: block;
+        font-size: 18pt;
+        font-weight: 700;
+        color: #111;
+        border-bottom: 2px solid #333;
+        padding-bottom: 8pt;
+        margin-bottom: 16pt;
+      }
+
+      #results-area::after {
+        content: "Printed: " attr(data-print-date);
+        display: block;
+        font-size: 8pt;
+        color: #666;
+        margin-top: 16pt;
+        padding-top: 8pt;
+        border-top: 1px solid #ccc;
+      }
+
+      /* Report card print styling */
+      .report-card {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin-bottom: 12pt !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .report-header,
+      .report-header-left,
+      .report-header-right {
+        background: none !important;
+        color: #111 !important;
+      }
+
+      .report-header h3,
+      .report-card h3,
+      .report-card h4 {
+        color: #111 !important;
+      }
+
+      .report-score-bar {
+        border: 1px solid #ccc !important;
+        background: #f5f5f5 !important;
+      }
+
+      .report-issues,
+      .report-card p,
+      .report-card li,
+      .report-card td,
+      .report-card th {
+        color: #333 !important;
+      }
+
+      /* Severity badges print-friendly */
+      .severity-badge.high,
+      .risk-high {
+        background: #fecaca !important;
+        color: #991b1b !important;
+        border: 1px solid #991b1b !important;
+      }
+
+      .severity-badge.medium,
+      .risk-medium {
+        background: #fef3c7 !important;
+        color: #92400e !important;
+        border: 1px solid #92400e !important;
+      }
+
+      .severity-badge.low,
+      .risk-low {
+        background: #d1fae5 !important;
+        color: #065f46 !important;
+        border: 1px solid #065f46 !important;
+      }
+
+      /* Show link URLs as text */
+      a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 8pt;
+        color: #666;
+        word-break: break-all;
+      }
+
+      a.nav-logo::after,
+      a.nav-btn::after {
+        content: none;
+      }
+
+      /* Page margins */
+      @page {
+        margin: 2cm;
+        size: A4;
+      }
+
+      /* Page breaks between major sections */
+      .section-card,
+      .category-grid {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .category-card {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* Fix item before/after blocks */
+      .fix-item {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        border: 1px solid #ccc !important;
+        background: white !important;
+      }
+
+      .fix-text {
+        color: #333 !important;
+        background: #f9f9f9 !important;
+        border: 1px solid #ddd !important;
+        text-decoration: none !important;
+      }
+
+      .fix-text.before-text {
+        text-decoration: line-through !important;
+        text-decoration-color: #991b1b !important;
+      }
+    }
   </style>
   <link rel="stylesheet" href="/mobile.css">
 </head>
@@ -1405,6 +1625,21 @@
     <div class="hero-cta">
       <a href="#scanner">Try it free <span class="arrow">&rarr;</span></a>
     </div>
+
+    <div style="display:flex;gap:2.5rem;margin-top:3rem;opacity:0;animation:fadeInSoft 1.2s var(--ease-out-expo) 1s forwards;">
+      <div style="text-align:center;">
+        <div id="hero-scans" style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-variant-numeric:tabular-nums;">--</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;">Scans Run</div>
+      </div>
+      <div style="text-align:center;">
+        <div id="hero-issues" style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-amber),var(--accent-red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-variant-numeric:tabular-nums;">--</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;">Issues Caught</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">8</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem;">Regulations</div>
+      </div>
+    </div>
   </section>
 
   <!-- Section 2: The Problem -->
@@ -1415,16 +1650,16 @@
   </section>
 
   <!-- Section 3: The Scanner -->
-  <section class="scanner-section" id="scanner">
+  <section class="scanner-section" id="scanner" aria-label="Compliance scanner">
     <span class="scanner-label reveal">Try it</span>
 
     <div class="scan-container reveal reveal-delay-1" id="scanner-container">
       <!-- Tab toggle -->
-      <div class="tab-bar">
-        <button id="tab-video" onclick="switchTab('video')" class="active">YouTube</button>
-        <button id="tab-text" onclick="switchTab('text')">Text</button>
-        <button id="tab-upload" onclick="switchTab('upload')">Upload</button>
-        <button id="tab-url" onclick="switchTab('url')">URL</button>
+      <div class="tab-bar" role="tablist" aria-label="Scanner input type">
+        <button id="tab-video" onclick="switchTab('video')" class="active" role="tab" aria-selected="true" aria-label="YouTube scanner">YouTube</button>
+        <button id="tab-text" onclick="switchTab('text')" role="tab" aria-selected="false" aria-label="Text scanner">Text</button>
+        <button id="tab-upload" onclick="switchTab('upload')" role="tab" aria-selected="false" aria-label="Upload scanner">Upload</button>
+        <button id="tab-url" onclick="switchTab('url')" role="tab" aria-selected="false" aria-label="URL scanner">URL</button>
       </div>
 
       <!-- Video input -->
@@ -1435,7 +1670,7 @@
           placeholder="Paste a YouTube URL..."
           aria-label="YouTube video URL"
         >
-        <button class="scan-btn" id="scan-btn" onclick="handleScan()">
+        <button class="scan-btn" id="scan-btn" onclick="handleScan()" aria-label="Scan YouTube video for compliance">
           <span class="btn-text">Scan</span>
           <span class="spinner"></span>
         </button>
@@ -1475,7 +1710,7 @@
           <span id="file-name" style="color: var(--accent-cyan); font-size: 0.8rem; display: none;"></span>
         </div>
         <input type="file" id="file-input" accept=".mp3,.mp4,.wav,.webm,.m4a,.ogg,.flac" style="display: none;" onchange="handleFileDrop(this.files[0])">
-        <button class="scan-btn" id="scan-btn-upload" onclick="handleUploadScan()" style="margin-top: 8px; width: 100%;" disabled>
+        <button class="scan-btn" id="scan-btn-upload" onclick="handleUploadScan()" style="margin-top: 8px; width: 100%;" disabled aria-label="Transcribe and scan uploaded file for compliance">
           <span class="btn-text">Transcribe &amp; Scan</span>
           <span class="spinner"></span>
         </button>
@@ -1490,7 +1725,7 @@
             placeholder="Paste any webpage URL..."
             aria-label="Webpage URL"
           >
-          <button class="scan-btn" id="scan-btn-url" onclick="handleUrlScan()">
+          <button class="scan-btn" id="scan-btn-url" onclick="handleUrlScan()" aria-label="Scan URL for compliance">
             <span class="btn-text">Scan URL</span>
             <span class="spinner"></span>
           </button>
@@ -1510,8 +1745,8 @@
 
     <!-- Results area -->
     <div style="width: 100%; max-width: 800px;">
-      <div id="results-area"></div>
-      <button class="scan-again-btn" id="scan-again-btn" onclick="scanAgain()">Scan Again</button>
+      <div id="results-area" aria-label="Compliance scan results" aria-live="polite"></div>
+      <button class="scan-again-btn" id="scan-again-btn" onclick="scanAgain()" aria-label="Start a new compliance scan">Scan Again</button>
     </div>
   </section>
 
@@ -1621,6 +1856,12 @@
   </footer>
 
   <script>
+    // Set print date for @media print timestamp
+    window.addEventListener('beforeprint', function() {
+      var el = document.getElementById('results-area');
+      if (el) el.setAttribute('data-print-date', new Date().toLocaleString());
+    });
+
     // ---- Scroll Reveal (IntersectionObserver) ----
     const observer = new IntersectionObserver(
       (entries) => {
@@ -1706,6 +1947,14 @@
     }
 
     textContentEl.addEventListener('input', updateCharCounter);
+
+    // ---- Keyboard Shortcut: Cmd/Ctrl+Enter to scan ----
+    textContentEl.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleTextScan();
+      }
+    });
 
     // ---- Example Content Fillers ----
     const EXAMPLES = {
@@ -1838,6 +2087,7 @@
         const el = document.getElementById(id);
         const isActive = id === 'tab-' + tab;
         el.classList.toggle('active', isActive);
+        el.setAttribute('aria-selected', isActive ? 'true' : 'false');
       });
     }
 
@@ -2217,6 +2467,23 @@
       document.getElementById('scan-again-btn').classList.add('visible');
       resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  </script>
+
+  <script>
+    // Live hero stats from API
+    async function updateHeroStats() {
+      try {
+        const r = await fetch('/api/stats', { signal: AbortSignal.timeout(3000) });
+        if (!r.ok) return;
+        const d = await r.json();
+        const scansEl = document.getElementById('hero-scans');
+        const issuesEl = document.getElementById('hero-issues');
+        if (scansEl) scansEl.textContent = (d.total_scans ?? 0).toLocaleString();
+        if (issuesEl) issuesEl.textContent = (d.issues_found ?? 0).toLocaleString();
+      } catch {}
+    }
+    updateHeroStats();
+    setInterval(updateHeroStats, 15000);
   </script>
 
 </body>

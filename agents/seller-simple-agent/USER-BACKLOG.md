@@ -74,10 +74,13 @@ Key number to memorize: $53,088 per FTC violation
 - [x] Dashboard bugs fixed (uptime formatting, CORS)
 - [x] Landing page spacing optimized
 - [x] 25+ stale ngrok URLs replaced
-- [x] Meta tags and Open Graph added to all pages
-- [x] Mobile responsiveness fixed
-- [x] Scanner UX improved (error handling, examples, validation)
-- [x] Security hardening (CORS, rate limiting, input validation)
-- [x] Professional screenshots taken
-- [x] Comprehensive E2E testing passed
-- [x] Dashboard improved with auto-refresh and better charts
+- [x] Meta tags and Open Graph added to all 13 pages (og:title, twitter:card, favicon)
+- [x] Mobile responsiveness on all 13 pages (CSS-only hamburger menu)
+- [x] Scanner UX improved (error handling, "Try an Example" buttons, character counter, "Scan Again")
+- [x] Security hardening (CORS restricted, rate limiting 30/min, input validation 50K char max)
+- [x] Professional screenshots taken (8 images in screenshots/ folder)
+- [x] Comprehensive E2E testing: 19/19 tests passed
+- [x] Dashboard upgraded: revenue chart, top regulations, auto-refresh, skeleton loading, live agent status
+- [x] Clean URL routing (/dashboard works without .html)
+- [x] Professional 404 page with gradient text and quick links
+- [x] Full visual QA validation: all 6 test categories passed
