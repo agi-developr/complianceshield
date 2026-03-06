@@ -2,10 +2,7 @@
 Plain Strands tools WITHOUT @requires_payment — for A2A mode.
 
 In A2A mode, payment validation and credit settlement happen at the A2A
-message level via PaymentsRequestHandler. Individual tools don't need
-the @requires_payment decorator.
-
-The tool functions delegate to the same implementations in tools/.
+message level via PaymentsRequestHandler.
 
 Usage:
     from src.strands_agent_plain import create_plain_agent, CREDIT_MAP, resolve_tools
@@ -14,9 +11,8 @@ Usage:
 from a2a.types import AgentSkill
 from strands import Agent, tool
 
-from .tools.market_research import research_market_impl
-from .tools.summarize import summarize_content_impl
-from .tools.web_search import search_web
+from .tools.compliance_check import quick_scan_impl, full_analysis_impl, deep_review_impl
+from .tools.youtube_transcript import get_transcript_impl
 
 
 # ---------------------------------------------------------------------------
@@ -24,86 +20,136 @@ from .tools.web_search import search_web
 # ---------------------------------------------------------------------------
 
 @tool
-def search_data(query: str, max_results: int = 5) -> dict:
-    """Search the web for data. Costs 1 credit per request.
+def quick_scan(content: str) -> dict:
+    """Quick compliance scan of content. Costs 1 credit.
+
+    Flags obvious legal issues: undisclosed sponsorships, health claims,
+    financial advice, privacy concerns.
 
     Args:
-        query: The search query to run.
-        max_results: Maximum number of results to return.
+        content: The text content (script, transcript, post) to scan.
     """
-    return search_web(query, max_results)
+    return quick_scan_impl(content)
 
 
 @tool
-def summarize_data(content: str, focus: str = "key_findings") -> dict:
-    """Summarize content with LLM-powered analysis. Costs 5 credits per request.
+def full_analysis(content: str, focus: str = "all") -> dict:
+    """Full compliance analysis of content. Costs 5 credits.
+
+    Detailed per-section compliance report with risk scores for each category.
 
     Args:
-        content: The text content to summarize.
-        focus: Focus area - 'key_findings', 'action_items', 'trends', or 'risks'.
+        content: The text content to analyze.
+        focus: Focus area - 'all', 'health', 'financial', 'ftc', 'privacy'.
     """
-    return summarize_content_impl(content, focus)
+    return full_analysis_impl(content, focus)
 
 
 @tool
-def research_data(query: str, depth: str = "standard") -> dict:
-    """Conduct full market research with a multi-source report. Costs 10 credits per request.
+def deep_review(content: str) -> dict:
+    """Deep compliance review with legal citations. Costs 10 credits.
+
+    Comprehensive analysis with specific law citations, compliant rewrites,
+    and potential penalty estimates.
 
     Args:
-        query: The research topic or question.
-        depth: Research depth - 'standard' or 'deep'.
+        content: The text content to deeply review.
     """
-    return research_market_impl(query, depth)
+    return deep_review_impl(content)
+
+
+@tool
+def scan_video(youtube_url: str, detail_level: str = "full") -> dict:
+    """Scan a YouTube video for compliance issues. Costs 8 credits.
+
+    Extracts the video transcript and runs a compliance analysis on it.
+    Catches FTC violations, health claims, financial advice issues, and more.
+
+    Args:
+        youtube_url: YouTube video URL or video ID.
+        detail_level: 'quick', 'full', or 'deep' analysis depth.
+    """
+    # Step 1: Extract transcript
+    transcript_result = get_transcript_impl(youtube_url)
+    if transcript_result["status"] == "error":
+        return transcript_result
+
+    transcript = transcript_result["transcript"]
+    video_id = transcript_result["video_id"]
+    duration = transcript_result["duration_seconds"]
+
+    # Step 2: Run compliance analysis on transcript
+    if detail_level == "quick":
+        report = quick_scan_impl(transcript)
+    elif detail_level == "deep":
+        report = deep_review_impl(transcript)
+    else:
+        report = full_analysis_impl(transcript)
+
+    # Enrich with video metadata
+    if report.get("status") == "success":
+        header = (
+            f"📹 Video Compliance Report\n"
+            f"Video: https://youtube.com/watch?v={video_id}\n"
+            f"Duration: {duration // 60}m {duration % 60}s\n"
+            f"Transcript length: {len(transcript)} chars\n\n"
+        )
+        report["content"] = [{"text": header + report["content"][0]["text"]}]
+        report["video_id"] = video_id
+
+    return report
 
 
 # ---------------------------------------------------------------------------
-# ALL_TOOLS registry — maps short names to (tool_fn, credits, AgentSkill)
+# ALL_TOOLS registry
 # ---------------------------------------------------------------------------
 
 ALL_TOOLS = {
-    "search": {
-        "tool": search_data,
+    "quick": {
+        "tool": quick_scan,
         "credits": 1,
         "skill": AgentSkill(
-            id="search_data",
-            name="Web Search",
-            description="Search the web for data. Costs 1 credit per request.",
-            tags=["search", "data", "web"],
+            id="quick_scan",
+            name="Quick Compliance Scan",
+            description="Quick scan for legal compliance issues in content. Costs 1 credit.",
+            tags=["compliance", "legal", "scan", "quick"],
         ),
     },
-    "summarize": {
-        "tool": summarize_data,
+    "full": {
+        "tool": full_analysis,
         "credits": 5,
         "skill": AgentSkill(
-            id="summarize_data",
-            name="Content Summarization",
-            description="Summarize content with LLM-powered analysis. Costs 5 credits.",
-            tags=["summarize", "analysis", "llm"],
+            id="full_analysis",
+            name="Full Compliance Analysis",
+            description="Detailed compliance analysis with per-section risk scores. Costs 5 credits.",
+            tags=["compliance", "legal", "analysis", "detailed"],
         ),
     },
-    "research": {
-        "tool": research_data,
+    "deep": {
+        "tool": deep_review,
         "credits": 10,
         "skill": AgentSkill(
-            id="research_data",
-            name="Market Research",
-            description="Full market research with multi-source report. Costs 10 credits.",
-            tags=["research", "market", "report"],
+            id="deep_review",
+            name="Deep Compliance Review",
+            description="Comprehensive legal review with citations and rewrite suggestions. Costs 10 credits.",
+            tags=["compliance", "legal", "review", "citations"],
+        ),
+    },
+    "video": {
+        "tool": scan_video,
+        "credits": 8,
+        "skill": AgentSkill(
+            id="scan_video",
+            name="YouTube Video Compliance Scan",
+            description="Extract transcript from a YouTube video and run compliance analysis. Costs 8 credits.",
+            tags=["compliance", "legal", "youtube", "video", "transcript"],
         ),
     },
 }
 
 
 def resolve_tools(tool_names: list[str] | None = None):
-    """Resolve tool short names to (tools, credit_map, skills).
-
-    Args:
-        tool_names: List of short names (e.g. ["search", "summarize"]).
-                    None or empty means all tools.
-
-    Returns:
-        Tuple of (tools_list, credit_map_dict, skills_list).
-    """
+    """Resolve tool short names to (tools, credit_map, skills)."""
     names = tool_names if tool_names else list(ALL_TOOLS.keys())
     tools = []
     credit_map = {}
@@ -117,7 +163,7 @@ def resolve_tools(tool_names: list[str] | None = None):
     return tools, credit_map, skills
 
 
-# Module-level defaults (backward compatibility)
+# Module-level defaults
 CREDIT_MAP = {fn.__name__: e["credits"] for fn, e in
                ((ALL_TOOLS[n]["tool"], ALL_TOOLS[n]) for n in ALL_TOOLS)}
 TOOLS = [ALL_TOOLS[n]["tool"] for n in ALL_TOOLS]
@@ -127,49 +173,41 @@ TOOLS = [ALL_TOOLS[n]["tool"] for n in ALL_TOOLS]
 # ---------------------------------------------------------------------------
 
 SYSTEM_PROMPT = """\
-You are a data selling agent. You provide data services at three pricing tiers:
+You are a compliance checker agent for content creators (YouTubers, TikTokers, podcasters).
+You analyze content for legal and regulatory compliance issues.
 
-1. **search_data** (1 credit) - Basic web search. Use this for quick lookups.
-2. **summarize_data** (5 credits) - LLM-powered content summarization. Use this \
-when the user wants analysis of specific content.
-3. **research_data** (10 credits) - Full market research report. Use this for \
-comprehensive research questions.
+You provide these services:
 
-Choose the appropriate tool based on the user's request complexity. If the user \
-asks for a simple search, use search_data. If they want analysis or summary, use \
-summarize_data. For in-depth research, use research_data.
+1. **quick_scan** (1 credit) - Quick scan for obvious compliance issues in text.
+2. **full_analysis** (5 credits) - Detailed compliance analysis with risk scores.
+3. **deep_review** (10 credits) - Comprehensive review with legal citations.
+4. **scan_video** (8 credits) - Extract YouTube video transcript and run compliance analysis.
 
-Always be helpful and explain what data you found."""
+When given a YouTube URL, use scan_video. When given text content, choose the appropriate
+text analysis tool based on complexity. Always explain findings clearly and recommend actions."""
 
 
 def _build_system_prompt(tools_list):
     """Build a system prompt that only mentions the available tools."""
     tool_names = {t.__name__ for t in tools_list}
-    lines = ["You are a data selling agent. You provide data services:\n"]
-    if "search_data" in tool_names:
-        lines.append("- **search_data** (1 credit) - Basic web search for quick lookups.")
-    if "summarize_data" in tool_names:
-        lines.append("- **summarize_data** (5 credits) - LLM-powered content summarization.")
-    if "research_data" in tool_names:
-        lines.append("- **research_data** (10 credits) - Full market research report.")
+    lines = ["You are a compliance checker agent for content creators.\n"]
+    if "quick_scan" in tool_names:
+        lines.append("- **quick_scan** (1 credit) - Quick compliance scan for obvious issues.")
+    if "full_analysis" in tool_names:
+        lines.append("- **full_analysis** (5 credits) - Detailed compliance analysis with risk scores.")
+    if "deep_review" in tool_names:
+        lines.append("- **deep_review** (10 credits) - Comprehensive review with legal citations.")
+    if "scan_video" in tool_names:
+        lines.append("- **scan_video** (8 credits) - Extract YouTube transcript and run compliance analysis.")
     lines.append(
-        "\nChoose the appropriate tool based on the user's request complexity. "
-        "Always be helpful and explain what data you found."
+        "\nChoose the appropriate tool based on the user's request. "
+        "Always explain findings clearly and recommend actions."
     )
     return "\n".join(lines)
 
 
 def create_plain_agent(model, tool_names: list[str] | None = None) -> Agent:
-    """Create a Strands agent with plain (non-payment) tools.
-
-    Args:
-        model: A Strands-compatible model (OpenAIModel, BedrockModel, etc.)
-        tool_names: Optional list of tool short names to include.
-                    None means all tools.
-
-    Returns:
-        Configured Strands Agent with plain tools for A2A mode.
-    """
+    """Create a Strands agent with plain (non-payment) compliance tools."""
     if tool_names:
         tools, _, _ = resolve_tools(tool_names)
         prompt = _build_system_prompt(tools)

@@ -1,9 +1,5 @@
 """
-Strands agent definition with Nevermined x402 payment-protected tools.
-
-This is the heart of the kit. Both agent.py (FastAPI) and agent_agentcore.py
-(AWS) import from here. The tools use plain functions from tools/ modules,
-wrapped with @tool + @requires_payment decorators.
+Strands agent definition with Nevermined x402 payment-protected compliance tools.
 
 Usage:
     from src.strands_agent import payments, create_agent, NVM_PLAN_ID
@@ -17,9 +13,8 @@ from strands import Agent, tool
 from payments_py import Payments, PaymentOptions
 from payments_py.x402.strands import requires_payment
 
-from .tools.market_research import research_market_impl
-from .tools.summarize import summarize_content_impl
-from .tools.web_search import search_web
+from .tools.compliance_check import quick_scan_impl, full_analysis_impl, deep_review_impl
+from .tools.youtube_transcript import get_transcript_impl
 
 load_dotenv()
 
@@ -44,14 +39,16 @@ payments = Payments.get_instance(
     credits=1,
     agent_id=NVM_AGENT_ID,
 )
-def search_data(query: str, max_results: int = 5, tool_context=None) -> dict:
-    """Search the web for data. Costs 1 credit per request.
+def quick_scan(content: str, tool_context=None) -> dict:
+    """Quick compliance scan of content. Costs 1 credit.
+
+    Flags obvious legal issues: undisclosed sponsorships, health claims,
+    financial advice, privacy concerns.
 
     Args:
-        query: The search query to run.
-        max_results: Maximum number of results to return.
+        content: The text content (script, transcript, post) to scan.
     """
-    return search_web(query, max_results)
+    return quick_scan_impl(content)
 
 
 @tool(context=True)
@@ -61,14 +58,16 @@ def search_data(query: str, max_results: int = 5, tool_context=None) -> dict:
     credits=5,
     agent_id=NVM_AGENT_ID,
 )
-def summarize_data(content: str, focus: str = "key_findings", tool_context=None) -> dict:
-    """Summarize content with LLM-powered analysis. Costs 5 credits per request.
+def full_analysis(content: str, focus: str = "all", tool_context=None) -> dict:
+    """Full compliance analysis of content. Costs 5 credits.
+
+    Detailed per-section compliance report with risk scores for each category.
 
     Args:
-        content: The text content to summarize.
-        focus: Focus area - 'key_findings', 'action_items', 'trends', or 'risks'.
+        content: The text content to analyze.
+        focus: Focus area - 'all', 'health', 'financial', 'ftc', 'privacy'.
     """
-    return summarize_content_impl(content, focus)
+    return full_analysis_impl(content, focus)
 
 
 @tool(context=True)
@@ -78,14 +77,60 @@ def summarize_data(content: str, focus: str = "key_findings", tool_context=None)
     credits=10,
     agent_id=NVM_AGENT_ID,
 )
-def research_data(query: str, depth: str = "standard", tool_context=None) -> dict:
-    """Conduct full market research with a multi-source report. Costs 10 credits per request.
+def deep_review(content: str, tool_context=None) -> dict:
+    """Deep compliance review with legal citations. Costs 10 credits.
+
+    Comprehensive analysis with specific law citations, compliant rewrites,
+    and potential penalty estimates.
 
     Args:
-        query: The research topic or question.
-        depth: Research depth - 'standard' or 'deep'.
+        content: The text content to deeply review.
     """
-    return research_market_impl(query, depth)
+    return deep_review_impl(content)
+
+
+@tool(context=True)
+@requires_payment(
+    payments=payments,
+    plan_id=NVM_PLAN_ID,
+    credits=8,
+    agent_id=NVM_AGENT_ID,
+)
+def scan_video(youtube_url: str, detail_level: str = "full", tool_context=None) -> dict:
+    """Scan a YouTube video for compliance issues. Costs 8 credits.
+
+    Extracts the video transcript and runs a compliance analysis on it.
+
+    Args:
+        youtube_url: YouTube video URL or video ID.
+        detail_level: 'quick', 'full', or 'deep' analysis depth.
+    """
+    transcript_result = get_transcript_impl(youtube_url)
+    if transcript_result["status"] == "error":
+        return transcript_result
+
+    transcript = transcript_result["transcript"]
+    video_id = transcript_result["video_id"]
+    duration = transcript_result["duration_seconds"]
+
+    if detail_level == "quick":
+        report = quick_scan_impl(transcript)
+    elif detail_level == "deep":
+        report = deep_review_impl(transcript)
+    else:
+        report = full_analysis_impl(transcript)
+
+    if report.get("status") == "success":
+        header = (
+            f"📹 Video Compliance Report\n"
+            f"Video: https://youtube.com/watch?v={video_id}\n"
+            f"Duration: {duration // 60}m {duration % 60}s\n"
+            f"Transcript length: {len(transcript)} chars\n\n"
+        )
+        report["content"] = [{"text": header + report["content"][0]["text"]}]
+        report["video_id"] = video_id
+
+    return report
 
 
 # ---------------------------------------------------------------------------
@@ -93,32 +138,24 @@ def research_data(query: str, depth: str = "standard", tool_context=None) -> dic
 # ---------------------------------------------------------------------------
 
 SYSTEM_PROMPT = """\
-You are a data selling agent. You provide data services at three pricing tiers:
+You are a compliance checker agent for content creators (YouTubers, TikTokers, podcasters).
+You analyze content for legal and regulatory compliance issues.
 
-1. **search_data** (1 credit) - Basic web search. Use this for quick lookups.
-2. **summarize_data** (5 credits) - LLM-powered content summarization. Use this \
-when the user wants analysis of specific content.
-3. **research_data** (10 credits) - Full market research report. Use this for \
-comprehensive research questions.
+You provide these services:
 
-Choose the appropriate tool based on the user's request complexity. If the user \
-asks for a simple search, use search_data. If they want analysis or summary, use \
-summarize_data. For in-depth research, use research_data.
+1. **quick_scan** (1 credit) - Quick scan for obvious compliance issues in text.
+2. **full_analysis** (5 credits) - Detailed compliance analysis with risk scores.
+3. **deep_review** (10 credits) - Comprehensive review with legal citations.
+4. **scan_video** (8 credits) - Extract YouTube video transcript and run compliance analysis.
 
-Always be helpful and explain what data you found."""
+When given a YouTube URL, use scan_video. When given text content, choose the appropriate
+text analysis tool based on complexity. Always explain findings clearly and recommend actions."""
 
-TOOLS = [search_data, summarize_data, research_data]
+TOOLS = [quick_scan, full_analysis, deep_review, scan_video]
 
 
 def create_agent(model) -> Agent:
-    """Create a Strands agent with the given model.
-
-    Args:
-        model: A Strands-compatible model (OpenAIModel, BedrockModel, etc.)
-
-    Returns:
-        Configured Strands Agent with payment-protected tools.
-    """
+    """Create a Strands agent with payment-protected compliance tools."""
     return Agent(
         model=model,
         tools=TOOLS,

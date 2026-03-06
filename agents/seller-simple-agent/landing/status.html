@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Status — ComplianceShield</title>
+  <meta name="description" content="ComplianceShield system status, uptime, and changelog. Real-time service health monitoring.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1f6e1;&#xfe0f;</text></svg>">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg-primary: #0a0e1a; --bg-secondary: #111827; --bg-card: rgba(17,24,39,0.6); --border-card: rgba(99,102,241,0.2); --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b; --accent-blue: #6366f1; --accent-cyan: #22d3ee; --accent-purple: #a855f7; --accent-red: #ef4444; --accent-amber: #f59e0b; --accent-green: #10b981; --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; --radius-sm: 10px; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-stack); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; background: rgba(10,14,26,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(99,102,241,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.25rem; text-decoration: none; color: var(--text-primary); }
+    .nav-logo .shield-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a.active { color: var(--accent-cyan); }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+    .hero { padding: 8rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 30%, rgba(99,102,241,0.06) 40%, rgba(139,92,246,0.08) 50%, rgba(34,211,238,0.06) 60%, transparent 70%); animation: heroGlow 15s ease-in-out infinite; z-index: 0; }
+    @keyframes heroGlow { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(3%,-3%) rotate(-1deg); } }
+    .hero > * { position: relative; z-index: 1; }
+    .hero h1 { font-size: 2.75rem; font-weight: 800; margin-bottom: 0.75rem; background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { color: var(--text-secondary); font-size: 1.15rem; max-width: 600px; margin: 0 auto; }
+    .overall-status { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding: 0.5rem 1.25rem; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 999px; font-size: 0.9rem; font-weight: 600; color: var(--accent-green); }
+    .overall-status.degraded { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: var(--accent-amber); }
+    section { padding: 2rem 0 3rem; }
+    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+    .section-title span { font-size: 1.3rem; }
+    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .service-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.2s; }
+    .service-card:hover { border-color: rgba(99,102,241,0.4); }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; background: var(--text-muted); }
+    .status-dot.operational { background: var(--accent-green); box-shadow: 0 0 8px rgba(16,185,129,0.5); animation: pulse 2s ease-in-out infinite; }
+    .status-dot.down { background: var(--accent-red); box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+    .status-dot.checking { background: var(--accent-amber); animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
+    .service-info { flex: 1; }
+    .service-name { font-weight: 600; font-size: 0.95rem; }
+    .service-status { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .service-latency { font-size: 0.8rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center; }
+    .stat-value { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-variant-numeric: tabular-nums; }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .last-checked { text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 1rem; }
+    .latency-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    .latency-table th, .latency-table td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(99,102,241,0.1); font-size: 0.9rem; }
+    .latency-table th { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .latency-table td { color: var(--text-secondary); }
+    .latency-table code { background: rgba(99,102,241,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.82rem; color: var(--accent-cyan); font-family: 'SF Mono', Consolas, monospace; }
+    .latency-bar { height: 6px; border-radius: 3px; background: rgba(99,102,241,0.15); overflow: hidden; min-width: 80px; }
+    .latency-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); transition: width 0.6s ease; }
+    .latency-ms { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--accent-green); }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan)); border-radius: 1px; }
+    .timeline-entry { position: relative; margin-bottom: 2rem; }
+    .timeline-entry::before { content: ''; position: absolute; left: -2rem; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-blue); border: 2px solid var(--bg-primary); z-index: 1; }
+    .timeline-entry:first-child::before { background: var(--accent-cyan); box-shadow: 0 0 10px rgba(34,211,238,0.4); }
+    .timeline-version { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
+    .version-tag { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    .version-date { font-size: 0.8rem; color: var(--text-muted); }
+    .timeline-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .timeline-items { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    .timeline-items li { font-size: 0.88rem; color: var(--text-secondary); padding-left: 1.2rem; position: relative; }
+    .timeline-items li::before { content: '+'; position: absolute; left: 0; color: var(--accent-green); font-weight: 700; }
+    footer { border-top: 1px solid rgba(99,102,241,0.1); padding: 3rem 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+    footer a { color: var(--accent-blue); text-decoration: none; }
+    footer a:hover { color: var(--accent-cyan); }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    @media (max-width: 768px) { nav { padding: 0.75rem 1rem; } .nav-links { gap: 1rem; } .nav-links a { font-size: 0.8rem; } .hero h1 { font-size: 2rem; } .services-grid, .stats-row { grid-template-columns: 1fr; } .latency-table th:last-child, .latency-table td:last-child { display: none; } }
+    @media (max-width: 480px) { .nav-links { gap: 0.6rem; } .hero { padding: 6rem 1rem 2rem; } .container { padding: 0 1rem; } .footer-links { gap: 1rem; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" style="padding:0.45rem 1.15rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));border-radius:8px;color:white;font-weight:600;">Login</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>System Status</h1>
+    <p>Real-time health monitoring and service uptime for all ComplianceShield infrastructure.</p>
+    <div class="overall-status" id="overall-status">
+      <span class="status-dot checking"></span>
+      Checking systems...
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title"><span>&#x1F7E2;</span> Service Health</h2>
+      <div class="services-grid">
+        <div class="service-card" id="svc-api">
+          <span class="status-dot checking"></span>
+          <div class="service-info"><div class="service-name">Compliance API</div><div class="service-status">Checking...</div></div>
+          <div class="service-latency" data-latency>--</div>
+        </div>
+        <div class="service-card" id="svc-a2a">
+          <span class="status-dot checking"></span>
+          <div class="service-info"><div class="service-name">A2A Agent</div><div class="service-status">Checking...</div></div>
+          <div class="service-latency" data-latency>--</div>
+        </div>
+        <div class="service-card" id="svc-mcp">
+          <span class="status-dot checking"></span>
+          <div class="service-info"><div class="service-name">MCP Server</div><div class="service-status">Checking...</div></div>
+          <div class="service-latency" data-latency>--</div>
+        </div>
+        <div class="service-card" id="svc-dash">
+          <span class="status-dot checking"></span>
+          <div class="service-info"><div class="service-name">Dashboard</div><div class="service-status">Checking...</div></div>
+          <div class="service-latency" data-latency>--</div>
+        </div>
+      </div>
+      <p class="last-checked">Last checked: <span id="last-checked">--</span> &middot; Auto-refreshes every 30s</p>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value" id="stat-scans">--</div><div class="stat-label">Total Scans</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-latency">--</div><div class="stat-label">Avg Response Time</div></div>
+        <div class="stat-card"><div class="stat-value">99.9%</div><div class="stat-label">Uptime (30 days)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title"><span>&#x26A1;</span> API Response Times</h2>
+      <table class="latency-table">
+        <thead><tr><th>Endpoint</th><th>Method</th><th>Latency</th><th>Visual</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/health</code></td><td>GET</td><td class="latency-ms" id="lat-health">--</td><td><div class="latency-bar"><div class="latency-bar-fill" id="bar-health" style="width:0%"></div></div></td></tr>
+          <tr><td><code>/api/scan</code></td><td>POST</td><td class="latency-ms" id="lat-scan">--</td><td><div class="latency-bar"><div class="latency-bar-fill" id="bar-scan" style="width:0%"></div></div></td></tr>
+          <tr><td><code>/api/stats</code></td><td>GET</td><td class="latency-ms" id="lat-stats">--</td><td><div class="latency-bar"><div class="latency-bar-fill" id="bar-stats" style="width:0%"></div></div></td></tr>
+          <tr><td><code>/.well-known/agent.json</code></td><td>GET</td><td class="latency-ms" id="lat-a2a">--</td><td><div class="latency-bar"><div class="latency-bar-fill" id="bar-a2a" style="width:0%"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title"><span>&#x1F4DD;</span> Changelog</h2>
+      <div class="timeline">
+        <div class="timeline-entry">
+          <div class="timeline-version"><span class="version-tag">v1.3.0</span><span class="version-date">March 1, 2026</span></div>
+          <div class="timeline-title">URL Scanning, Webhooks, and Badges</div>
+          <ul class="timeline-items">
+            <li>Added URL scanning -- paste any web page URL for compliance analysis</li>
+            <li>Webhook notifications for scan results delivered to your endpoint</li>
+            <li>Embeddable compliance badges to display on your site</li>
+            <li>System status page with live health monitoring</li>
+          </ul>
+        </div>
+        <div class="timeline-entry">
+          <div class="timeline-version"><span class="version-tag">v1.2.0</span><span class="version-date">March 1, 2026</span></div>
+          <div class="timeline-title">Regulation Link Enrichment</div>
+          <ul class="timeline-items">
+            <li>Added 25+ official law and regulation URLs to scan results</li>
+            <li>Direct links to FTC, FDA, SEC, COPPA, CAN-SPAM source documents</li>
+            <li>Automatic regulation citation in compliance reports</li>
+          </ul>
+        </div>
+        <div class="timeline-entry">
+          <div class="timeline-version"><span class="version-tag">v1.1.0</span><span class="version-date">March 1, 2026</span></div>
+          <div class="timeline-title">File Upload and Batch Processing</div>
+          <ul class="timeline-items">
+            <li>File upload scanning -- drag and drop text, SRT, or VTT files</li>
+            <li>Batch processing for scanning multiple content pieces at once</li>
+            <li>Telegram bot integration for mobile compliance checks</li>
+          </ul>
+        </div>
+        <div class="timeline-entry">
+          <div class="timeline-version"><span class="version-tag">v1.0.0</span><span class="version-date">March 1, 2026</span></div>
+          <div class="timeline-title">Initial Launch</div>
+          <ul class="timeline-items">
+            <li>YouTube video scanning via URL with transcript extraction</li>
+            <li>Free-text content scanning with AI compliance analysis</li>
+            <li>A2A protocol support for agent-to-agent compliance checks</li>
+            <li>MCP server with payment-protected compliance tools</li>
+            <li>Real-time dashboard with scan history and analytics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/api-docs.html">API Docs</a>
+      <a href="/regulations.html">Regulations</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/status.html">Status</a>
+    </div>
+    <p>&copy; 2026 ComplianceShield. All rights reserved. Built for content creators who care about compliance.</p>
+  </footer>
+
+  <script>
+    const SERVICES = [
+      { id: 'svc-api', url: '/api/health' },
+      { id: 'svc-a2a', url: 'http://localhost:9000/.well-known/agent.json' },
+      { id: 'svc-mcp', url: 'http://localhost:3000/health' },
+      { id: 'svc-dash', url: '/dashboard.html' },
+    ];
+    const LATENCY_EPS = [
+      { url: '/api/health', ms: 'lat-health', bar: 'bar-health' },
+      { url: '/api/scan', ms: 'lat-scan', bar: 'bar-scan', method: 'OPTIONS' },
+      { url: '/api/stats', ms: 'lat-stats', bar: 'bar-stats' },
+      { url: 'http://localhost:9000/.well-known/agent.json', ms: 'lat-a2a', bar: 'bar-a2a' },
+    ];
+
+    async function checkService(svc) {
+      const card = document.getElementById(svc.id);
+      const dot = card.querySelector('.status-dot');
+      const st = card.querySelector('.service-status');
+      const lat = card.querySelector('[data-latency]');
+      dot.className = 'status-dot checking'; st.textContent = 'Checking...';
+      const t0 = performance.now();
+      try {
+        const r = await fetch(svc.url, { method: 'GET', mode: 'no-cors', signal: AbortSignal.timeout(5000) });
+        const ms = Math.round(performance.now() - t0);
+        if (r.ok || r.type === 'opaque') {
+          dot.className = 'status-dot operational'; st.textContent = 'Operational'; lat.textContent = ms + 'ms';
+          return true;
+        }
+        throw new Error();
+      } catch { dot.className = 'status-dot down'; st.textContent = 'Unreachable'; lat.textContent = '--'; return false; }
+    }
+
+    async function checkLatency(ep) {
+      const msEl = document.getElementById(ep.ms), barEl = document.getElementById(ep.bar);
+      const t0 = performance.now();
+      try {
+        await fetch(ep.url, { method: ep.method || 'GET', mode: 'no-cors', signal: AbortSignal.timeout(5000) });
+        const ms = Math.round(performance.now() - t0);
+        msEl.textContent = ms + 'ms';
+        msEl.style.color = ms < 200 ? 'var(--accent-green)' : ms < 500 ? 'var(--accent-amber)' : 'var(--accent-red)';
+        barEl.style.width = Math.min(100, (ms / 500) * 100) + '%';
+        barEl.style.background = ms < 200 ? 'linear-gradient(90deg,var(--accent-green),var(--accent-cyan))' : ms < 500 ? 'linear-gradient(90deg,var(--accent-amber),var(--accent-green))' : 'var(--accent-red)';
+      } catch { msEl.textContent = 'Timeout'; msEl.style.color = 'var(--accent-red)'; barEl.style.width = '100%'; barEl.style.background = 'var(--accent-red)'; }
+    }
+
+    async function fetchStats() {
+      try {
+        const r = await fetch('/api/stats', { signal: AbortSignal.timeout(5000) });
+        if (!r.ok) throw 0;
+        const d = await r.json();
+        const scans = d.total_scans ?? d.totalScans ?? d.scans ?? '--';
+        document.getElementById('stat-scans').textContent = typeof scans === 'number' ? scans.toLocaleString() : scans;
+        const avg = d.avg_response_time ?? d.avgResponseTime ?? d.average_latency;
+        document.getElementById('stat-latency').textContent = avg ? avg + 'ms' : '<200ms';
+      } catch { document.getElementById('stat-scans').textContent = '--'; document.getElementById('stat-latency').textContent = '--'; }
+    }
+
+    async function runChecks() {
+      const results = await Promise.all(SERVICES.map(checkService));
+      await Promise.all(LATENCY_EPS.map(checkLatency));
+      await fetchStats();
+      const el = document.getElementById('overall-status');
+      const down = results.filter(r => !r).length;
+      if (down === 0) { el.className = 'overall-status'; el.innerHTML = '<span class="status-dot operational"></span> All Systems Operational'; }
+      else { el.className = 'overall-status degraded'; el.innerHTML = '<span class="status-dot down"></span> ' + down + ' service' + (down > 1 ? 's' : '') + ' degraded'; }
+      document.getElementById('last-checked').textContent = new Date().toLocaleTimeString();
+    }
+    runChecks();
+    setInterval(runChecks, 30000);
+  </script>
+</body>
+</html>

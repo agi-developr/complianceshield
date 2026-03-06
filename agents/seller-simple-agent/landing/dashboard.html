@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — ComplianceShield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --bg-card-solid: #111827;
+      --border-card: rgba(99, 102, 241, 0.15);
+      --border-hover: rgba(99, 102, 241, 0.4);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-xs: 8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── Background Effects ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      animation: bgPulse 12s ease-in-out infinite;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -20%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      animation: bgPulse 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes bgPulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    /* ── Navigation (matching landing page) ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0.85rem 2rem;
+      background: rgba(10, 14, 26, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .nav-logo .shield-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active {
+      position: relative;
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 2px;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1.25rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-stack);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    }
+
+    /* ── Mobile Menu ── */
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ── Main Layout ── */
+    .dashboard {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 6rem 2rem 3rem;
+    }
+
+    /* ── Page Header ── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-header .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--accent-green);
+      font-weight: 500;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      animation: livePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+      50% { opacity: 0.6; box-shadow: 0 0 16px rgba(16, 185, 129, 0.3); }
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      padding: 0.6rem 1.35rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-stack);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-secondary {
+      padding: 0.6rem 1.35rem;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-xs);
+      font-family: var(--font-stack);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-hover);
+    }
+
+    .btn-ghost {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-stack);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* ── Stats Grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-card {
+      position: relative;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan)); }
+    .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent-red), var(--accent-amber)); }
+    .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-amber), var(--accent-green)); }
+    .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 1.15rem;
+    }
+
+    .stat-icon.blue { background: rgba(99, 102, 241, 0.12); color: #818cf8; }
+    .stat-icon.red { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+    .stat-icon.amber { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+    .stat-icon.green { background: rgba(16, 185, 129, 0.12); color: #34d399; }
+
+    .stat-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-change {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--text-muted);
+    }
+
+    .stat-change.up { color: var(--accent-green); }
+    .stat-change.down { color: var(--accent-red); }
+
+    .trend-arrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    .card-header {
+      padding: 1.15rem 1.5rem;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-header .card-icon {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    /* ── Content Layout ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .grid-3-1 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .grid-full {
+      margin-bottom: 1.75rem;
+    }
+
+    /* ── Chart Area ── */
+    .chart-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+
+    .chart-center-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .chart-center-label .count {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .chart-center-label .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-left: 2rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-value {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Table ── */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    .scan-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .scan-table th {
+      text-align: left;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+    }
+
+    .scan-table td {
+      padding: 0.85rem 1.25rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+      color: var(--text-secondary);
+      transition: background 0.15s;
+    }
+
+    .scan-table tbody tr {
+      transition: background 0.15s;
+    }
+
+    .scan-table tbody tr:hover td {
+      background: rgba(99, 102, 241, 0.04);
+    }
+
+    .scan-table .mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Badges / Pills ── */
+    .risk-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .risk-pill.high { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+    .risk-pill.medium { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+    .risk-pill.low { background: rgba(16, 185, 129, 0.12); color: #34d399; }
+    .risk-pill.none { background: rgba(99, 102, 241, 0.12); color: #818cf8; }
+
+    .risk-pill::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+    }
+
+    .type-badge .emoji {
+      font-size: 0.9rem;
+    }
+
+    .issues-count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    .issues-count.zero {
+      color: var(--text-muted);
+    }
+
+    /* ── Quick Actions ── */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .action-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 1rem 1.15rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .action-card:hover {
+      background: rgba(99, 102, 241, 0.06);
+      border-color: rgba(99, 102, 241, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .action-icon.indigo { background: rgba(99, 102, 241, 0.12); }
+    .action-icon.purple { background: rgba(168, 85, 247, 0.12); }
+    .action-icon.cyan { background: rgba(34, 211, 238, 0.12); }
+    .action-icon.green { background: rgba(16, 185, 129, 0.12); }
+
+    .action-text h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .action-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* ── Agent Status Widget ── */
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+
+    .status-row:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .status-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .status-dot-indicator {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .status-dot-indicator.online {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    }
+
+    .status-dot-indicator.offline {
+      background: var(--accent-red);
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+    }
+
+    .status-dot-indicator.checking {
+      background: var(--accent-amber);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+      animation: statusPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .status-url {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .status-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.15rem 0.55rem;
+      border-radius: 100px;
+    }
+
+    .status-label.online {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+    }
+
+    .status-label.offline {
+      background: rgba(239, 68, 68, 0.12);
+      color: #f87171;
+    }
+
+    .status-label.checking {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+    }
+
+    /* ── Refresh badge ── */
+    .refresh-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .refresh-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      animation: livePulse 2s ease-in-out infinite;
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 0.9rem;
+    }
+
+    /* ── Skeleton Loading ── */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+    }
+
+    .skeleton-text {
+      height: 14px;
+      width: 60%;
+      display: inline-block;
+    }
+
+    .skeleton-number {
+      height: 36px;
+      width: 80px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+    }
+
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+    .delay-5 { animation-delay: 0.25s; }
+    .delay-6 { animation-delay: 0.3s; }
+    .delay-7 { animation-delay: 0.35s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-3-1 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+      .dashboard { padding: 5rem 1rem 2rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .actions-grid { grid-template-columns: 1fr; }
+      .chart-container { flex-direction: column; }
+      .chart-legend { margin-left: 0; margin-top: 1rem; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+      .page-header { flex-direction: column; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .scan-table th:nth-child(1),
+      .scan-table td:nth-child(1) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation (matching landing page) -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" class="nav-btn">Login</a></li>
+    </ul>
+    <button class="mobile-toggle" onclick="toggleMobileMenu()">&#9776;</button>
+  </nav>
+
+  <!-- Dashboard Content -->
+  <main class="dashboard">
+
+    <!-- Page Header -->
+    <div class="page-header animate-in delay-1">
+      <div>
+        <h1>Compliance Dashboard</h1>
+        <p class="subtitle">Real-time compliance monitoring and analytics</p>
+      </div>
+      <div class="header-actions">
+        <span class="live-indicator">
+          <span class="live-dot"></span>
+          Live
+        </span>
+        <a href="/" class="btn-secondary">
+          <span>&#x1F4DD;</span> New Text Scan
+        </a>
+        <a href="/?tab=video" class="btn-primary">
+          <span>&#x1F3AC;</span> New Video Scan
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card animate-in delay-1">
+        <div class="stat-top">
+          <span class="stat-label">Total Scans</span>
+          <div class="stat-icon blue">&#x1F50D;</div>
+        </div>
+        <div class="stat-value" id="stat-scans">
+          <div class="skeleton skeleton-number"></div>
+        </div>
+        <div class="stat-change" id="stat-scans-change">
+          <div class="skeleton skeleton-text"></div>
+        </div>
+      </div>
+
+      <div class="stat-card animate-in delay-2">
+        <div class="stat-top">
+          <span class="stat-label">Issues Found</span>
+          <div class="stat-icon red">&#x26A0;&#xFE0F;</div>
+        </div>
+        <div class="stat-value" id="stat-issues">
+          <div class="skeleton skeleton-number"></div>
+        </div>
+        <div class="stat-change" id="stat-issues-change">
+          <div class="skeleton skeleton-text"></div>
+        </div>
+      </div>
+
+      <div class="stat-card animate-in delay-3">
+        <div class="stat-top">
+          <span class="stat-label">Avg Risk Score</span>
+          <div class="stat-icon amber">&#x1F6E1;&#xFE0F;</div>
+        </div>
+        <div class="stat-value" id="stat-risk">
+          <div class="skeleton skeleton-number"></div>
+        </div>
+        <div class="stat-change" id="stat-risk-change">
+          <div class="skeleton skeleton-text"></div>
+        </div>
+      </div>
+
+      <div class="stat-card animate-in delay-4">
+        <div class="stat-top">
+          <span class="stat-label">Uptime</span>
+          <div class="stat-icon green">&#x26A1;</div>
+        </div>
+        <div class="stat-value" id="stat-uptime">
+          <div class="skeleton skeleton-number"></div>
+        </div>
+        <div class="stat-change" id="stat-uptime-change">
+          <div class="skeleton skeleton-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart + Quick Actions Row -->
+    <div class="grid-2 animate-in delay-5">
+      <!-- Scan Types Chart -->
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">&#x1F4CA;</span> Scan Types Breakdown</h3>
+          <span class="refresh-badge"><span class="dot"></span> Live</span>
+        </div>
+        <div class="card-body">
+          <div class="chart-container" id="chart-area">
+            <div class="chart-wrap">
+              <canvas id="scanTypesChart"></canvas>
+              <div class="chart-center-label">
+                <div class="count" id="chart-total">--</div>
+                <div class="label">Total</div>
+              </div>
+            </div>
+            <div class="chart-legend" id="chart-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #6366f1;"></div>
+                <span class="legend-label">Text Scans</span>
+                <span class="legend-value" id="legend-text">--</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #a855f7;"></div>
+                <span class="legend-label">Video Scans</span>
+                <span class="legend-value" id="legend-video">--</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: #22d3ee;"></div>
+                <span class="legend-label">File Uploads</span>
+                <span class="legend-value" id="legend-upload">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">&#x26A1;</span> Quick Actions</h3>
+        </div>
+        <div class="card-body">
+          <div class="actions-grid">
+            <a href="/" class="action-card">
+              <div class="action-icon indigo">&#x1F4DD;</div>
+              <div class="action-text">
+                <h4>New Text Scan</h4>
+                <p>Analyze text content</p>
+              </div>
+            </a>
+            <a href="/?tab=video" class="action-card">
+              <div class="action-icon purple">&#x1F3AC;</div>
+              <div class="action-text">
+                <h4>New Video Scan</h4>
+                <p>Analyze YouTube videos</p>
+              </div>
+            </a>
+            <a href="/api-docs.html" class="action-card">
+              <div class="action-icon cyan">&#x1F4D6;</div>
+              <div class="action-text">
+                <h4>View API Docs</h4>
+                <p>REST & A2A reference</p>
+              </div>
+            </a>
+            <a href="#agent-status" class="action-card" onclick="scrollToStatus(event)">
+              <div class="action-icon green">&#x1F4E1;</div>
+              <div class="action-text">
+                <h4>Agent Status</h4>
+                <p>Check system health</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Scans Table -->
+    <div class="grid-full animate-in delay-6">
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">&#x1F552;</span> Recent Scans</h3>
+          <span class="refresh-badge"><span class="dot"></span> Auto-refresh 10s</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="scan-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Risk Level</th>
+                <th>Issues</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="scans-tbody">
+              <!-- Skeleton rows -->
+              <tr>
+                <td><span class="skeleton skeleton-text" style="width:60px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:80px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:30px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+              </tr>
+              <tr>
+                <td><span class="skeleton skeleton-text" style="width:60px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:80px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:30px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+              </tr>
+              <tr>
+                <td><span class="skeleton skeleton-text" style="width:60px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:80px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:70px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:30px;"></span></td>
+                <td><span class="skeleton skeleton-text" style="width:90px;"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent Status -->
+    <div class="grid-full animate-in delay-7" id="agent-status">
+      <div class="card">
+        <div class="card-header">
+          <h3><span class="card-icon">&#x1F4E1;</span> Agent Status</h3>
+          <button class="btn-ghost" onclick="checkAllHealth()">&#x21BB; Refresh</button>
+        </div>
+        <div class="card-body">
+          <div class="status-list">
+            <div class="status-row" id="status-a2a">
+              <div class="status-info">
+                <div class="status-dot-indicator checking" id="dot-a2a"></div>
+                <div>
+                  <div class="status-name">A2A Agent</div>
+                  <div class="status-url">localhost:8080</div>
+                </div>
+              </div>
+              <span class="status-label checking" id="label-a2a">Checking...</span>
+            </div>
+
+            <div class="status-row" id="status-mcp">
+              <div class="status-info">
+                <div class="status-dot-indicator checking" id="dot-mcp"></div>
+                <div>
+                  <div class="status-name">MCP Server</div>
+                  <div class="status-url">localhost:3000</div>
+                </div>
+              </div>
+              <span class="status-label checking" id="label-mcp">Checking...</span>
+            </div>
+
+            <div class="status-row" id="status-rest">
+              <div class="status-info">
+                <div class="status-dot-indicator checking" id="dot-rest"></div>
+                <div>
+                  <div class="status-name">REST API</div>
+                  <div class="status-url">localhost:8080</div>
+                </div>
+              </div>
+              <span class="status-label checking" id="label-rest">Checking...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ═══════════════════════════════════════════
+       Configuration
+    ═══════════════════════════════════════════ */
+    const API_BASE = '';
+    const A2A_URL = 'http://localhost:8080';
+    const MCP_URL = 'http://localhost:3000';
+    const REST_URL = 'http://localhost:8080';
+    const REFRESH_INTERVAL = 10000;
+
+    /* ═══════════════════════════════════════════
+       Chart.js - Donut Chart
+    ═══════════════════════════════════════════ */
+    let scanChart = null;
+
+    function initChart(textCount, videoCount, uploadCount) {
+      const ctx = document.getElementById('scanTypesChart').getContext('2d');
+      const total = textCount + videoCount + uploadCount;
+
+      document.getElementById('chart-total').textContent = total;
+      document.getElementById('legend-text').textContent = textCount;
+      document.getElementById('legend-video').textContent = videoCount;
+      document.getElementById('legend-upload').textContent = uploadCount;
+
+      if (scanChart) {
+        scanChart.data.datasets[0].data = [textCount, videoCount, uploadCount];
+        scanChart.update('none');
+        return;
+      }
+
+      scanChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Text Scans', 'Video Scans', 'File Uploads'],
+          datasets: [{
+            data: [textCount, videoCount, uploadCount],
+            backgroundColor: [
+              '#6366f1',
+              '#a855f7',
+              '#22d3ee',
+            ],
+            borderColor: 'transparent',
+            borderWidth: 0,
+            hoverBorderColor: 'rgba(255,255,255,0.1)',
+            hoverBorderWidth: 2,
+            borderRadius: 4,
+            spacing: 3,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: '72%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(17, 24, 39, 0.95)',
+              titleColor: '#f1f5f9',
+              bodyColor: '#94a3b8',
+              borderColor: 'rgba(99, 102, 241, 0.2)',
+              borderWidth: 1,
+              padding: 12,
+              cornerRadius: 8,
+              titleFont: { family: "'Inter', sans-serif", weight: '600' },
+              bodyFont: { family: "'Inter', sans-serif" },
+              callbacks: {
+                label: function(ctx) {
+                  const pct = total > 0 ? ((ctx.raw / total) * 100).toFixed(1) : 0;
+                  return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+                }
+              }
+            },
+          },
+          animation: {
+            animateRotate: true,
+            animateScale: true,
+            duration: 800,
+            easing: 'easeOutQuart',
+          },
+        },
+      });
+    }
+
+    /* ═══════════════════════════════════════════
+       Stats Loading
+    ═══════════════════════════════════════════ */
+    async function loadStats() {
+      try {
+        const res = await fetch(API_BASE + '/api/stats');
+        if (!res.ok) throw new Error('Stats API error');
+        const s = await res.json();
+
+        // Total Scans
+        const totalEl = document.getElementById('stat-scans');
+        totalEl.textContent = s.total_scans;
+        const changeEl = document.getElementById('stat-scans-change');
+        changeEl.innerHTML = '<span class="trend-arrow">&#x2191;</span> ' + s.text_scans + ' text, ' + s.video_scans + ' video';
+        changeEl.className = 'stat-change up';
+
+        // Issues Found
+        document.getElementById('stat-issues').textContent = s.issues_found;
+        const issuesChange = document.getElementById('stat-issues-change');
+        issuesChange.textContent = 'Across all scans';
+        issuesChange.className = 'stat-change';
+
+        // Avg Risk Score
+        const riskEl = document.getElementById('stat-risk');
+        const riskVal = s.avg_risk_score > 0 ? s.avg_risk_score.toFixed(1) : 'N/A';
+        riskEl.textContent = riskVal;
+
+        if (s.avg_risk_score >= 7) {
+          riskEl.style.color = 'var(--accent-red)';
+        } else if (s.avg_risk_score >= 4) {
+          riskEl.style.color = 'var(--accent-amber)';
+        } else if (s.avg_risk_score > 0) {
+          riskEl.style.color = 'var(--accent-green)';
+        } else {
+          riskEl.style.color = 'var(--text-muted)';
+        }
+
+        const riskLabel = s.avg_risk_score >= 7 ? 'High risk zone' :
+                          s.avg_risk_score >= 4 ? 'Moderate risk' :
+                          s.avg_risk_score > 0 ? 'Low risk' : 'No data yet';
+        const riskChange = document.getElementById('stat-risk-change');
+        riskChange.textContent = riskLabel + ' (scale 0-10)';
+
+        // Uptime
+        const uptimeEl = document.getElementById('stat-uptime');
+        const totalSecs = Math.floor(s.uptime_seconds || 0);
+        const hrs = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const remainSecs = totalSecs % 60;
+        if (hrs > 0) {
+          uptimeEl.textContent = hrs + 'h ' + mins + 'm';
+        } else {
+          uptimeEl.textContent = mins + 'm ' + remainSecs + 's';
+        }
+        uptimeEl.style.background = 'linear-gradient(135deg, var(--accent-green), var(--accent-cyan))';
+        uptimeEl.style.webkitBackgroundClip = 'text';
+        uptimeEl.style.backgroundClip = 'text';
+        uptimeEl.style.webkitTextFillColor = 'transparent';
+
+        const uptimeChange = document.getElementById('stat-uptime-change');
+        uptimeChange.innerHTML = '<span class="trend-arrow">&#x2191;</span> Server healthy';
+        uptimeChange.className = 'stat-change up';
+
+        // Update chart
+        const uploadCount = s.upload_scans || 0;
+        initChart(s.text_scans || 0, s.video_scans || 0, uploadCount);
+
+      } catch (e) {
+        console.warn('Stats unavailable:', e.message);
+        // Show fallback
+        document.getElementById('stat-scans').textContent = '--';
+        document.getElementById('stat-issues').textContent = '--';
+        document.getElementById('stat-risk').textContent = '--';
+        document.getElementById('stat-uptime').textContent = '--';
+        document.getElementById('stat-scans-change').textContent = 'API unavailable';
+        initChart(0, 0, 0);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       History / Scans Table
+    ═══════════════════════════════════════════ */
+    function formatTimeAgo(timestamp) {
+      const diff = Date.now() - new Date(timestamp).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ' + (mins % 60) + 'm ago';
+      return new Date(timestamp).toLocaleDateString();
+    }
+
+    function getRiskClass(risk) {
+      if (!risk) return 'none';
+      const r = risk.toUpperCase();
+      if (r === 'HIGH' || r === 'CRITICAL') return 'high';
+      if (r === 'MEDIUM') return 'medium';
+      if (r === 'LOW') return 'low';
+      return 'none';
+    }
+
+    async function loadHistory() {
+      try {
+        const res = await fetch(API_BASE + '/api/history');
+        if (!res.ok) throw new Error('History API error');
+        const h = await res.json();
+        const tbody = document.getElementById('scans-tbody');
+
+        if (!h.scans || h.scans.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">&#x1F50D;</div><p>No scans yet. Run your first compliance scan to see results here.</p></div></td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = h.scans.slice(0, 8).map(function(scan, idx) {
+          const riskClass = getRiskClass(scan.risk_level);
+          const typeEmoji = scan.type === 'video' ? '&#x1F3AC;' : scan.type === 'upload' ? '&#x1F4CE;' : '&#x1F4DD;';
+          const typeLabel = scan.type === 'video' ? 'Video' : scan.type === 'upload' ? 'Upload' : 'Text';
+          const scanId = scan.id ? scan.id.substring(0, 8) : ('scan-' + (idx + 1));
+          const issues = scan.issues_count || 0;
+
+          return '<tr>' +
+            '<td class="mono">' + scanId + '</td>' +
+            '<td><span class="type-badge"><span class="emoji">' + typeEmoji + '</span> ' + typeLabel + '</span></td>' +
+            '<td><span class="risk-pill ' + riskClass + '">' + (scan.risk_level || 'N/A') + '</span></td>' +
+            '<td><span class="issues-count ' + (issues === 0 ? 'zero' : '') + '">' + issues + '</span></td>' +
+            '<td>' + formatTimeAgo(scan.timestamp) + '</td>' +
+          '</tr>';
+        }).join('');
+      } catch (e) {
+        console.warn('History unavailable:', e.message);
+        document.getElementById('scans-tbody').innerHTML =
+          '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">&#x1F4E1;</div><p>Waiting for API connection...</p></div></td></tr>';
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       Agent Health Checks
+    ═══════════════════════════════════════════ */
+    async function checkHealth(name, url, dotId, labelId) {
+      const dot = document.getElementById(dotId);
+      const label = document.getElementById(labelId);
+
+      dot.className = 'status-dot-indicator checking';
+      label.className = 'status-label checking';
+      label.textContent = 'Checking...';
+
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(function() { controller.abort(); }, 5000);
+
+        let fetchUrl = url;
+        if (name === 'rest') {
+          fetchUrl = url + '/api/stats';
+        } else if (name === 'mcp') {
+          fetchUrl = url + '/health';
+        } else if (name === 'a2a') {
+          fetchUrl = url + '/.well-known/agent.json';
+        }
+
+        const res = await fetch(fetchUrl, {
+          method: 'GET',
+          signal: controller.signal,
+          mode: 'cors',
+          headers: name === 'a2a' ? { 'ngrok-skip-browser-warning': 'true' } : {},
+        });
+
+        clearTimeout(timeout);
+
+        if (res.ok || res.status === 200) {
+          dot.className = 'status-dot-indicator online';
+          label.className = 'status-label online';
+          label.textContent = 'Online';
+        } else {
+          throw new Error('Status ' + res.status);
+        }
+      } catch (e) {
+        dot.className = 'status-dot-indicator offline';
+        label.className = 'status-label offline';
+        label.textContent = 'Offline';
+      }
+    }
+
+    function checkAllHealth() {
+      checkHealth('a2a', A2A_URL, 'dot-a2a', 'label-a2a');
+      checkHealth('mcp', MCP_URL, 'dot-mcp', 'label-mcp');
+      checkHealth('rest', REST_URL, 'dot-rest', 'label-rest');
+    }
+
+    /* ═══════════════════════════════════════════
+       Utilities
+    ═══════════════════════════════════════════ */
+    function scrollToStatus(e) {
+      e.preventDefault();
+      document.getElementById('agent-status').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function toggleMobileMenu() {
+      const links = document.querySelector('.nav-links');
+      if (links.style.display === 'flex') {
+        links.style.display = 'none';
+      } else {
+        links.style.display = 'flex';
+        links.style.flexDirection = 'column';
+        links.style.position = 'absolute';
+        links.style.top = '100%';
+        links.style.left = '0';
+        links.style.right = '0';
+        links.style.background = 'rgba(10, 14, 26, 0.95)';
+        links.style.padding = '1rem 2rem';
+        links.style.borderBottom = '1px solid rgba(99, 102, 241, 0.1)';
+        links.style.gap = '1rem';
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       Initialize
+    ═══════════════════════════════════════════ */
+    (function init() {
+      loadStats();
+      loadHistory();
+      checkAllHealth();
+
+      // Auto-refresh every 10 seconds
+      setInterval(function() {
+        loadStats();
+        loadHistory();
+      }, REFRESH_INTERVAL);
+
+      // Re-check health every 30 seconds
+      setInterval(checkAllHealth, 30000);
+    })();
+  </script>
+
+</body>
+</html>

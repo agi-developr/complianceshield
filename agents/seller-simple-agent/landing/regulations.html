@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regulations Reference — ComplianceShield</title>
+  <meta name="description" content="All 25+ regulations ComplianceShield checks against. FTC, FDA, SEC, privacy laws, and platform guidelines.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --border-card: rgba(99, 102, 241, 0.2);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 14, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .nav-logo .shield-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active {
+      color: var(--accent-cyan);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 2rem;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-item .label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ── Category Sections ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .category-section {
+      margin-bottom: 4rem;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    }
+
+    .category-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .category-icon.ftc { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.05)); }
+    .category-icon.health { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); }
+    .category-icon.financial { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); }
+    .category-icon.privacy { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05)); }
+    .category-icon.platform { background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.05)); }
+    .category-icon.advertising { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05)); }
+    .category-icon.consumer { background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.05)); }
+
+    .category-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .category-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .reg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── Regulation Card ── */
+    .reg-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reg-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent-blue)), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .reg-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+    }
+
+    .reg-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .reg-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .reg-badge.ftc {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .reg-badge.health {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .reg-badge.financial {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .reg-badge.privacy {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .reg-badge.platform {
+      background: rgba(34, 211, 238, 0.15);
+      color: #67e8f9;
+      border: 1px solid rgba(34, 211, 238, 0.3);
+    }
+
+    .reg-badge.advertising {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .reg-badge.consumer {
+      background: rgba(251, 146, 60, 0.15);
+      color: #fb923c;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+    }
+
+    .reg-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.15rem;
+    }
+
+    .reg-citation {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .reg-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+
+    .reg-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-decoration: none;
+      transition: color 0.2s, gap 0.2s;
+    }
+
+    .reg-link:hover {
+      color: var(--accent-cyan);
+      gap: 0.6rem;
+    }
+
+    .reg-link svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s;
+    }
+
+    .reg-link:hover svg {
+      transform: translateX(2px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(99, 102, 241, 0.1);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav {
+        padding: 0.75rem 1rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+      }
+
+      .nav-links a {
+        font-size: 0.8rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .stat-row {
+        gap: 1.5rem;
+      }
+
+      .reg-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        gap: 0.6rem;
+      }
+
+      .hero {
+        padding: 6rem 1rem 2rem;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reg-card {
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .reg-card:nth-child(1) { animation-delay: 0.05s; }
+    .reg-card:nth-child(2) { animation-delay: 0.1s; }
+    .reg-card:nth-child(3) { animation-delay: 0.15s; }
+    .reg-card:nth-child(4) { animation-delay: 0.2s; }
+    .reg-card:nth-child(5) { animation-delay: 0.25s; }
+    .reg-card:nth-child(6) { animation-delay: 0.3s; }
+
+    .category-section {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    .category-section:nth-child(1) { animation-delay: 0.1s; }
+    .category-section:nth-child(2) { animation-delay: 0.2s; }
+    .category-section:nth-child(3) { animation-delay: 0.3s; }
+    .category-section:nth-child(4) { animation-delay: 0.4s; }
+    .category-section:nth-child(5) { animation-delay: 0.5s; }
+    .category-section:nth-child(6) { animation-delay: 0.6s; }
+    .category-section:nth-child(7) { animation-delay: 0.7s; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span>&#x1F4D6;</span>
+      Regulation Reference
+    </div>
+    <h1>Every Regulation We Check</h1>
+    <p>ComplianceShield scans your content against 25+ federal regulations, industry standards, and platform guidelines. Here is every rule in our compliance engine.</p>
+    <div class="stat-row">
+      <div class="stat-item">
+        <div class="num">25+</div>
+        <div class="label">Regulations Covered</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">6</div>
+        <div class="label">Regulatory Categories</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">3</div>
+        <div class="label">Platform Guidelines</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">Real-Time</div>
+        <div class="label">Compliance Updates</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Regulation Categories -->
+  <div class="container">
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- FTC Compliance -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon ftc">&#x2696;</div>
+        <div>
+          <div class="category-title">FTC Compliance</div>
+          <div class="category-subtitle">Federal Trade Commission rules governing advertising, endorsements, and consumer protection</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #6366f1;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Endorsement Guides</div>
+              <div class="reg-citation">16 CFR Part 255</div>
+            </div>
+            <span class="reg-badge ftc">FTC</span>
+          </div>
+          <div class="reg-desc">Requires clear disclosure of material connections between endorsers and advertisers. Covers sponsored content, affiliate links, gifted products, and paid partnerships.</div>
+          <a class="reg-link" href="https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #6366f1;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Unfair or Deceptive Acts</div>
+              <div class="reg-citation">FTC Act Section 5</div>
+            </div>
+            <span class="reg-badge ftc">FTC</span>
+          </div>
+          <div class="reg-desc">Prohibits unfair or deceptive acts or practices in commerce. The foundational statute that underpins all FTC enforcement against misleading advertising and fraudulent business practices.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/45" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #6366f1;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Made in USA Standards</div>
+              <div class="reg-citation">16 CFR Part 323</div>
+            </div>
+            <span class="reg-badge ftc">FTC</span>
+          </div>
+          <div class="reg-desc">Regulates "Made in USA" and similar origin claims. Products must be "all or virtually all" made in the United States to use unqualified domestic origin claims.</div>
+          <a class="reg-link" href="https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-323" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #6366f1;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Environmental Marketing Claims</div>
+              <div class="reg-citation">16 CFR Part 260 (Green Guides)</div>
+            </div>
+            <span class="reg-badge ftc">FTC</span>
+          </div>
+          <div class="reg-desc">Guides marketers on making truthful environmental claims. Covers terms like "recyclable," "biodegradable," "compostable," and "carbon neutral" to prevent greenwashing.</div>
+          <a class="reg-link" href="https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Health / FDA -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon health">&#x1FA7A;</div>
+        <div>
+          <div class="category-title">Health / FDA</div>
+          <div class="category-subtitle">Food and Drug Administration regulations on labeling, health claims, and product safety</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #10b981;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Food Labeling</div>
+              <div class="reg-citation">21 CFR Part 101</div>
+            </div>
+            <span class="reg-badge health">FDA</span>
+          </div>
+          <div class="reg-desc">Governs nutrition labeling, nutrient content claims, and health claims for food products. Requires specific formatting and substantiation for any health-related statements.</div>
+          <a class="reg-link" href="https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #10b981;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Food, Drug & Cosmetic Act</div>
+              <div class="reg-citation">FDCA (21 U.S.C. Ch. 9)</div>
+            </div>
+            <span class="reg-badge health">FDA</span>
+          </div>
+          <div class="reg-desc">The foundational statute giving FDA authority over food, drugs, medical devices, and cosmetics. Prohibits misbranding and adulteration, with significant penalties for violations.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/21/chapter-9" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #10b981;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Dietary Supplement Labeling</div>
+              <div class="reg-citation">DSHEA (21 U.S.C. 343)</div>
+            </div>
+            <span class="reg-badge health">FDA</span>
+          </div>
+          <div class="reg-desc">Regulates labeling and marketing of dietary supplements. Requires "structure/function" claim disclaimers and prohibits unapproved disease treatment claims.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/21/343" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #10b981;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Drug Advertising</div>
+              <div class="reg-citation">21 CFR Part 202</div>
+            </div>
+            <span class="reg-badge health">FDA</span>
+          </div>
+          <div class="reg-desc">Governs prescription drug advertising. Requires fair balance between benefit claims and risk disclosures, and prohibits false or misleading drug promotion.</div>
+          <a class="reg-link" href="https://www.ecfr.gov/current/title-21/chapter-I/subchapter-C/part-202" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Financial / SEC -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon financial">&#x1F4B0;</div>
+        <div>
+          <div class="category-title">Financial / SEC</div>
+          <div class="category-subtitle">Securities and Exchange Commission rules and FINRA standards governing financial communications</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #f59e0b;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Anti-Fraud Rule</div>
+              <div class="reg-citation">SEC Rule 10b-5</div>
+            </div>
+            <span class="reg-badge financial">SEC</span>
+          </div>
+          <div class="reg-desc">Prohibits fraud, material misstatements, and omissions in connection with securities transactions. Applies to any content promoting stocks, crypto, or investment opportunities.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/cfr/text/17/section-240.10b-5" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #f59e0b;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Communications with the Public</div>
+              <div class="reg-citation">FINRA Rule 2210</div>
+            </div>
+            <span class="reg-badge financial">FINRA</span>
+          </div>
+          <div class="reg-desc">Governs how broker-dealers communicate with the public. Requires fair, balanced, and non-misleading communications about investment products and financial services.</div>
+          <a class="reg-link" href="https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #f59e0b;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Investment Advisers Act</div>
+              <div class="reg-citation">15 U.S.C. 80b-1 et seq.</div>
+            </div>
+            <span class="reg-badge financial">SEC</span>
+          </div>
+          <div class="reg-desc">Regulates investment advisers and prohibits fraudulent advisory practices. Relevant for creators offering financial advice, stock picks, or investment recommendations.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/chapter-2D/subchapter-II" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #f59e0b;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Crypto Asset Guidance</div>
+              <div class="reg-citation">SEC Framework for Digital Assets</div>
+            </div>
+            <span class="reg-badge financial">SEC</span>
+          </div>
+          <div class="reg-desc">SEC guidance on whether crypto tokens qualify as securities. Critical for creators promoting cryptocurrencies, NFTs, or token launches in their content.</div>
+          <a class="reg-link" href="https://www.sec.gov/corpfin/framework-investment-contract-analysis-digital-assets" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Privacy -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon privacy">&#x1F512;</div>
+        <div>
+          <div class="category-title">Privacy</div>
+          <div class="category-subtitle">Data protection and privacy laws governing how content handles user data and audience targeting</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #a855f7;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Children's Online Privacy</div>
+              <div class="reg-citation">COPPA (15 U.S.C. Ch. 91)</div>
+            </div>
+            <span class="reg-badge privacy">COPPA</span>
+          </div>
+          <div class="reg-desc">Protects privacy of children under 13 online. Requires verifiable parental consent before collecting personal information. Critical for family-friendly content creators.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/chapter-91" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #a855f7;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">California Consumer Privacy Act</div>
+              <div class="reg-citation">CCPA (Cal. Civ. Code 1798.100)</div>
+            </div>
+            <span class="reg-badge privacy">CCPA</span>
+          </div>
+          <div class="reg-desc">Gives California consumers rights over their personal data including the right to know, delete, and opt-out of sale. Applies to businesses meeting revenue or data thresholds.</div>
+          <a class="reg-link" href="https://oag.ca.gov/privacy/ccpa" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #a855f7;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">General Data Protection Regulation</div>
+              <div class="reg-citation">GDPR (EU 2016/679)</div>
+            </div>
+            <span class="reg-badge privacy">GDPR</span>
+          </div>
+          <div class="reg-desc">EU regulation requiring lawful basis for data processing, user consent, and data protection by design. Applies to any creator with EU-based viewers or customers.</div>
+          <a class="reg-link" href="https://gdpr-info.eu/" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #a855f7;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">CAN-SPAM Act</div>
+              <div class="reg-citation">15 U.S.C. 7701 et seq.</div>
+            </div>
+            <span class="reg-badge privacy">CAN-SPAM</span>
+          </div>
+          <div class="reg-desc">Regulates commercial email and electronic messaging. Requires opt-out mechanisms, truthful headers, and clear identification of advertising content in emails.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/chapter-103" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Advertising Standards -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon advertising">&#x1F4E2;</div>
+        <div>
+          <div class="category-title">Advertising Standards</div>
+          <div class="category-subtitle">Industry self-regulatory standards and truth-in-advertising requirements</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #ef4444;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Lanham Act - False Advertising</div>
+              <div class="reg-citation">15 U.S.C. 1125(a)</div>
+            </div>
+            <span class="reg-badge advertising">Advertising</span>
+          </div>
+          <div class="reg-desc">Federal statute prohibiting false advertising and misleading representations in commercial advertising. Enables competitors to sue for damages from deceptive ad claims.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/1125" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #ef4444;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">NAD Advertising Guidelines</div>
+              <div class="reg-citation">National Advertising Division</div>
+            </div>
+            <span class="reg-badge advertising">NAD</span>
+          </div>
+          <div class="reg-desc">Self-regulatory body that reviews national advertising for truthfulness. Evaluates performance claims, testimonials, and comparative advertising across all media.</div>
+          <a class="reg-link" href="https://bbbprograms.org/programs/all-programs/national-advertising-division" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #ef4444;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Testimonials & Reviews</div>
+              <div class="reg-citation">FTC Testimonial Guidelines</div>
+            </div>
+            <span class="reg-badge advertising">FTC</span>
+          </div>
+          <div class="reg-desc">Requires that testimonials reflect typical consumer experiences. Prohibits fake reviews, undisclosed paid reviews, and misleading "results not typical" disclaimers.</div>
+          <a class="reg-link" href="https://www.ftc.gov/legal-library/browse/federal-register-notices/16-cfr-part-255-guides-concerning-use-endorsements-testimonials-advertising" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #ef4444;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Alcohol Advertising Standards</div>
+              <div class="reg-citation">TTB / FTC Joint Guidance</div>
+            </div>
+            <span class="reg-badge advertising">TTB</span>
+          </div>
+          <div class="reg-desc">Regulates advertising of alcoholic beverages including age-gating requirements, prohibited health claims, and restrictions on targeting minors in promotional content.</div>
+          <a class="reg-link" href="https://www.ttb.gov/advertising/beverage-alcohol-advertising" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Consumer Protection -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon consumer">&#x1F6E1;</div>
+        <div>
+          <div class="category-title">Consumer Protection</div>
+          <div class="category-subtitle">State and federal laws protecting consumers from deceptive practices and unfair business conduct</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #fb923c;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Truth in Lending Act</div>
+              <div class="reg-citation">TILA (15 U.S.C. 1601)</div>
+            </div>
+            <span class="reg-badge consumer">Consumer</span>
+          </div>
+          <div class="reg-desc">Requires clear disclosure of credit terms and costs. Relevant for creators promoting financial products, BNPL services, or credit-based offers to audiences.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/chapter-41" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #fb923c;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Consumer Product Safety</div>
+              <div class="reg-citation">CPSA (15 U.S.C. 2051)</div>
+            </div>
+            <span class="reg-badge consumer">CPSC</span>
+          </div>
+          <div class="reg-desc">Governs safety of consumer products. Content promoting recalled products or making safety claims must comply. Especially relevant for product review creators.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/chapter-47" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #fb923c;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Warranty Disclosure Rules</div>
+              <div class="reg-citation">Magnuson-Moss (15 U.S.C. 2301)</div>
+            </div>
+            <span class="reg-badge consumer">Consumer</span>
+          </div>
+          <div class="reg-desc">Regulates warranties on consumer products. Requires clear disclosure of warranty terms and prohibits deceptive warranty-related claims in product promotions.</div>
+          <a class="reg-link" href="https://www.law.cornell.edu/uscode/text/15/chapter-50" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════ -->
+    <!-- Platform Guidelines -->
+    <!-- ════════════════════════════════════════════════ -->
+    <section class="category-section">
+      <div class="category-header">
+        <div class="category-icon platform">&#x1F4F1;</div>
+        <div>
+          <div class="category-title">Platform Guidelines</div>
+          <div class="category-subtitle">Community standards and content policies enforced by major social media platforms</div>
+        </div>
+      </div>
+      <div class="reg-grid">
+
+        <div class="reg-card" style="--card-accent: #22d3ee;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">YouTube Community Guidelines</div>
+              <div class="reg-citation">YouTube Platform Policy</div>
+            </div>
+            <span class="reg-badge platform">YouTube</span>
+          </div>
+          <div class="reg-desc">Covers content policies for harmful content, misinformation, harassment, and sponsored content disclosure. Violations lead to strikes, demonetization, or channel termination.</div>
+          <a class="reg-link" href="https://www.youtube.com/howyoutubeworks/policies/community-guidelines/" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #22d3ee;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">TikTok Community Guidelines</div>
+              <div class="reg-citation">TikTok Platform Policy</div>
+            </div>
+            <span class="reg-badge platform">TikTok</span>
+          </div>
+          <div class="reg-desc">Governs content standards including branded content policies, misinformation rules, and advertising restrictions. Requires branded content toggle for paid promotions.</div>
+          <a class="reg-link" href="https://www.tiktok.com/community-guidelines" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #22d3ee;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">Instagram Community Guidelines</div>
+              <div class="reg-citation">Meta/Instagram Platform Policy</div>
+            </div>
+            <span class="reg-badge platform">Instagram</span>
+          </div>
+          <div class="reg-desc">Meta's content policies covering branded content tools, partnership disclosures, prohibited health claims, and advertising standards for influencer marketing.</div>
+          <a class="reg-link" href="https://help.instagram.com/477434105621119" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+        <div class="reg-card" style="--card-accent: #22d3ee;">
+          <div class="card-top">
+            <div>
+              <div class="reg-name">X (Twitter) Content Policies</div>
+              <div class="reg-citation">X Platform Rules</div>
+            </div>
+            <span class="reg-badge platform">X</span>
+          </div>
+          <div class="reg-desc">Platform rules governing financial promotion disclosures, misleading identities, and synthetic/manipulated media. Includes specific crypto and financial content policies.</div>
+          <a class="reg-link" href="https://help.x.com/en/rules-and-policies" target="_blank" rel="noopener">
+            View Official Source
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- CTA Section -->
+  <section style="padding: 4rem 2rem; text-align: center; margin-bottom: 2rem;">
+    <div style="max-width: 600px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius); padding: 3rem 2rem;">
+      <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.75rem; background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Don't Guess. Scan.</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Let ComplianceShield check your content against all of these regulations in under 30 seconds.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/dashboard.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(99,102,241,0.3)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+          Try the Scanner
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        </a>
+        <a href="/pricing.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: transparent; border: 1px solid rgba(99, 102, 241, 0.4); color: var(--text-primary); text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: border-color 0.2s;" onmouseover="this.style.borderColor='rgba(99,102,241,0.8)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.4)'">
+          View Pricing
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/api-docs.html">API Docs</a>
+      <a href="/regulations.html">Regulations</a>
+      <a href="/pricing.html">Pricing</a>
+    </div>
+    <p>&copy; 2026 ComplianceShield. All rights reserved. Built for content creators who care about compliance.</p>
+  </footer>
+
+</body>
+</html>

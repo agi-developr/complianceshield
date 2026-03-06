@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance Report — ComplianceShield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --border-card: rgba(99, 102, 241, 0.2);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 14, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .nav-logo .shield-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-btn {
+      padding: 0.5rem 1.25rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-stack);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Page Container */
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    /* Report Header */
+    .report-hero {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .report-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .report-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .report-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .report-hero h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .report-hero .url-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      margin-bottom: 1.5rem;
+    }
+
+    .risk-badge-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.5rem;
+      border-radius: 100px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .risk-badge-lg.high {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .risk-badge-lg .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    }
+
+    /* Score bar */
+    .score-section {
+      margin-top: 1.5rem;
+    }
+
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .score-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .score-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent-red);
+    }
+
+    .score-track {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1.5s ease-out;
+    }
+
+    .score-fill.red { background: linear-gradient(90deg, var(--accent-red), var(--accent-amber)); }
+    .score-fill.amber { background: linear-gradient(90deg, var(--accent-amber), #fcd34d); }
+    .score-fill.green { background: linear-gradient(90deg, var(--accent-green), #6ee7b7); }
+
+    /* Action buttons */
+    .report-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-stack);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+    }
+
+    .action-btn.primary:hover {
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+    }
+
+    .action-btn.outline:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--accent-blue);
+    }
+
+    /* Section Card */
+    .section-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .section-card-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-card-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .section-card-body {
+      padding: 1.75rem;
+    }
+
+    .section-card-body p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    /* Issues Table */
+    .issues-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .issues-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    }
+
+    .issues-table td {
+      padding: 1rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .issues-table tr:hover td {
+      background: rgba(99, 102, 241, 0.03);
+    }
+
+    .severity-badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .severity-badge.high { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .severity-badge.medium { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .severity-badge.low { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+    /* Category Cards Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .category-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: transform 0.3s, border-color 0.3s;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .category-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .category-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .category-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .category-icon {
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .category-icon.ftc { background: rgba(239, 68, 68, 0.15); }
+    .category-icon.health { background: rgba(16, 185, 129, 0.15); }
+    .category-icon.financial { background: rgba(245, 158, 11, 0.15); }
+    .category-icon.privacy { background: rgba(168, 85, 247, 0.15); }
+    .category-icon.copyright { background: rgba(99, 102, 241, 0.15); }
+    .category-icon.platform { background: rgba(34, 211, 238, 0.15); }
+
+    .category-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .category-risk {
+      font-weight: 600;
+    }
+
+    .category-risk.high { color: #f87171; }
+    .category-risk.medium { color: #fbbf24; }
+    .category-risk.low { color: #34d399; }
+    .category-risk.clear { color: var(--text-muted); }
+
+    .category-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .category-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1.2s ease-out;
+    }
+
+    .category-bar-fill.high { background: var(--accent-red); }
+    .category-bar-fill.medium { background: var(--accent-amber); }
+    .category-bar-fill.low { background: var(--accent-green); }
+    .category-bar-fill.clear { background: var(--text-muted); width: 5% !important; }
+
+    .category-violations {
+      list-style: none;
+    }
+
+    .category-violations li {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .category-violations li:last-child { border-bottom: none; }
+
+    .line-ref {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--accent-cyan);
+      padding: 0.1rem 0.4rem;
+      background: rgba(34, 211, 238, 0.1);
+      border-radius: 4px;
+    }
+
+    /* Suggested Fixes */
+    .fix-item {
+      padding: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .fix-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+
+    .fix-label.before { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .fix-label.after { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+    .fix-text {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      padding: 1rem;
+      border-radius: var(--radius-xs);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+    }
+
+    .fix-text.before-text {
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      text-decoration: line-through;
+      text-decoration-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .fix-text.after-text {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+    }
+
+    .fix-arrow {
+      text-align: center;
+      padding: 0.5rem;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+
+    /* Section Label */
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-cyan);
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    .page-footer {
+      border-top: 1px solid rgba(99, 102, 241, 0.1);
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .page-footer p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .page-footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 0.75rem 1.25rem; }
+      .nav-links { display: none; }
+      .page { padding: 5rem 1.25rem 3rem; }
+      .category-grid { grid-template-columns: 1fr; }
+      .report-hero { padding: 1.75rem; }
+      .report-hero-top { flex-direction: column; }
+      .report-actions { flex-direction: column; }
+      .action-btn { justify-content: center; }
+      .issues-table th:nth-child(4),
+      .issues-table td:nth-child(4) { display: none; }
+    }
+
+    @media (max-width: 1024px) {
+      .category-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" class="nav-btn">Login</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <!-- Report Header -->
+    <div class="report-hero">
+      <div class="report-hero-top">
+        <div>
+          <div class="report-meta">
+            <span>&#x1F4C5; March 1, 2026</span>
+            <span>&#x1F3AC; YouTube Video</span>
+            <span>&#x23F1; 14m 32s duration</span>
+            <span>&#x1F4CB; Report #RPT-20260301-0042</span>
+          </div>
+        </div>
+        <div class="risk-badge-lg high">
+          <span class="dot"></span>
+          HIGH RISK
+        </div>
+      </div>
+
+      <h1>Compliance Report: Fitness Supplement Review</h1>
+      <p class="url-text">youtube.com/watch?v=xK3fQ9mBz2w</p>
+
+      <div class="score-section">
+        <div class="score-row">
+          <span class="score-label">Overall Compliance Score</span>
+          <span class="score-value">28 / 100</span>
+        </div>
+        <div class="score-track">
+          <div class="score-fill red" style="width: 28%;"></div>
+        </div>
+      </div>
+
+      <div class="report-actions">
+        <button class="action-btn primary" onclick="alert('PDF export coming soon!')">&#x1F4E5; Download PDF</button>
+        <button class="action-btn outline" onclick="navigator.clipboard.writeText(window.location.href); this.textContent='Copied!'">&#x1F517; Share Report</button>
+        <a href="/dashboard.html" class="action-btn outline">&#x2190; Back to Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="section-card" style="animation-delay: 0.1s;">
+      <div class="section-card-header">
+        <h2>Executive Summary</h2>
+      </div>
+      <div class="section-card-body">
+        <p>
+          This video contains <strong>8 compliance issues</strong> across 4 regulatory categories, with
+          <strong>3 high-severity violations</strong> that require immediate attention. The primary risks involve
+          undisclosed brand partnerships (FTC), unsubstantiated health claims related to supplement efficacy (FDA/FTC),
+          and unqualified financial projections regarding affiliate earnings (SEC). The creator mentions specific health
+          outcomes without scientific backing and fails to disclose a paid relationship with the supplement brand
+          mentioned throughout the video. We strongly recommend adding clear sponsorship disclosures, qualifying all
+          health claims with appropriate disclaimers, and removing or reframing the income projection statements before
+          the content goes live or remains published.
+        </p>
+      </div>
+    </div>
+
+    <!-- Issues Table -->
+    <div class="section-card" style="animation-delay: 0.15s;">
+      <div class="section-card-header">
+        <h2>Issues Found (8)</h2>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Sorted by severity</span>
+      </div>
+      <div class="section-card-body" style="padding: 0;">
+        <div style="overflow-x: auto;">
+          <table class="issues-table">
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>Category</th>
+                <th>Issue</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="severity-badge high">HIGH</span></td>
+                <td>FTC</td>
+                <td>Undisclosed paid partnership with SupplementBrand. Creator says "I use this every day" without sponsorship disclosure.</td>
+                <td><span class="line-ref">2:34</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge high">HIGH</span></td>
+                <td>Health Claims</td>
+                <td>"This supplement completely cured my anxiety and depression" - therapeutic claim requiring FDA substantiation.</td>
+                <td><span class="line-ref">5:12</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge high">HIGH</span></td>
+                <td>Health Claims</td>
+                <td>"Clinically proven to boost metabolism by 300%" - Unverified clinical claim with no study reference.</td>
+                <td><span class="line-ref">7:45</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge medium">MEDIUM</span></td>
+                <td>Financial</td>
+                <td>"You can easily make $5,000/month selling this" - Income projection without disclaimer.</td>
+                <td><span class="line-ref">9:18</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge medium">MEDIUM</span></td>
+                <td>FTC</td>
+                <td>Affiliate link in description without #ad or #affiliate disclosure in video or description.</td>
+                <td><span class="line-ref">desc</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge medium">MEDIUM</span></td>
+                <td>Platform</td>
+                <td>Medical advice content may trigger YouTube's health misinformation policy review.</td>
+                <td><span class="line-ref">5:12-8:30</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge low">LOW</span></td>
+                <td>Copyright</td>
+                <td>Background music at intro may be copyrighted. Unable to verify license.</td>
+                <td><span class="line-ref">0:00-0:30</span></td>
+              </tr>
+              <tr>
+                <td><span class="severity-badge low">LOW</span></td>
+                <td>Privacy</td>
+                <td>Shows supplement label with batch number visible. Minor data exposure risk.</td>
+                <td><span class="line-ref">3:22</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <span class="section-label">Per-Category Breakdown</span>
+
+    <div class="category-grid">
+      <!-- FTC -->
+      <div class="category-card" style="animation-delay: 0.2s;">
+        <div class="category-card-header">
+          <span class="category-name">FTC Compliance</span>
+          <div class="category-icon ftc">&#x26A0;</div>
+        </div>
+        <div class="category-stats">
+          <span>Risk: <span class="category-risk high">HIGH</span></span>
+          <span>2 issues</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-bar-fill high" style="width: 85%;"></div>
+        </div>
+        <ul class="category-violations">
+          <li><span class="line-ref">2:34</span> Undisclosed sponsorship with SupplementBrand</li>
+          <li><span class="line-ref">desc</span> Missing #ad/#affiliate on affiliate link</li>
+        </ul>
+      </div>
+
+      <!-- Health Claims -->
+      <div class="category-card" style="animation-delay: 0.25s;">
+        <div class="category-card-header">
+          <span class="category-name">Health Claims</span>
+          <div class="category-icon health">&#x2695;</div>
+        </div>
+        <div class="category-stats">
+          <span>Risk: <span class="category-risk high">HIGH</span></span>
+          <span>2 issues</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-bar-fill high" style="width: 90%;"></div>
+        </div>
+        <ul class="category-violations">
+          <li><span class="line-ref">5:12</span> Therapeutic cure claim without substantiation</li>
+          <li><span class="line-ref">7:45</span> Unverified "clinically proven" metabolism claim</li>
+        </ul>
+      </div>
+
+      <!-- Financial -->
+      <div class="category-card" style="animation-delay: 0.3s;">
+        <div class="category-card-header">
+          <span class="category-name">Financial Advice</span>
+          <div class="category-icon financial">&#x1F4B0;</div>
+        </div>
+        <div class="category-stats">
+          <span>Risk: <span class="category-risk medium">MEDIUM</span></span>
+          <span>1 issue</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-bar-fill medium" style="width: 55%;"></div>
+        </div>
+        <ul class="category-violations">
+          <li><span class="line-ref">9:18</span> Income projection without earnings disclaimer</li>
+        </ul>
+      </div>
+
+      <!-- Privacy -->
+      <div class="category-card" style="animation-delay: 0.35s;">
+        <div class="category-card-header">
+          <span class="category-name">Privacy</span>
+          <div class="category-icon privacy">&#x1F512;</div>
+        </div>
+        <div class="category-stats">
+          <span>Risk: <span class="category-risk low">LOW</span></span>
+          <span>1 issue</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-bar-fill low" style="width: 20%;"></div>
+        </div>
+        <ul class="category-violations">
+          <li><span class="line-ref">3:22</span> Product batch number visible on screen</li>
+        </ul>
+      </div>
+
+      <!-- Copyright -->
+      <div class="category-card" style="animation-delay: 0.4s;">
+        <div class="category-card-header">
+          <span class="category-name">Copyright</span>
+          <div class="category-icon copyright">&copy;</div>
+        </div>
+        <div class="category-stats">
+          <span>Risk: <span class="category-risk low">LOW</span></span>
+          <span>1 issue</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-bar-fill low" style="width: 15%;"></div>
+        </div>
+        <ul class="category-violations">
+          <li><span class="line-ref">0:00</span> Potentially unlicensed background music in intro</li>
+        </ul>
+      </div>
+
+      <!-- Platform Policy -->
+      <div class="category-card" style="animation-delay: 0.45s;">
+        <div class="category-card-header">
+          <span class="category-name">Platform Policy</span>
+          <div class="category-icon platform">&#x1F4F1;</div>
+        </div>
+        <div class="category-stats">
+          <span>Risk: <span class="category-risk medium">MEDIUM</span></span>
+          <span>1 issue</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-bar-fill medium" style="width: 45%;"></div>
+        </div>
+        <ul class="category-violations">
+          <li><span class="line-ref">5:12-8:30</span> Health misinformation flag risk on YouTube</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Suggested Fixes -->
+    <div class="section-card" style="animation-delay: 0.5s;">
+      <div class="section-card-header">
+        <h2>Suggested Fixes</h2>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Before / After rewrites</span>
+      </div>
+      <div class="section-card-body">
+
+        <!-- Fix 1 -->
+        <div class="fix-item">
+          <span class="fix-label before">Before</span>
+          <div class="fix-text before-text">"I use this supplement every day and it changed my life. This stuff completely cured my anxiety and depression."</div>
+          <div class="fix-arrow">&#x2193;</div>
+          <span class="fix-label after">After (Compliant)</span>
+          <div class="fix-text after-text">"#ad This video is sponsored by SupplementBrand. I've been taking this supplement daily and have personally noticed improvements in my mood. Note: individual results may vary. This is not medical advice and these statements have not been evaluated by the FDA. Consult your healthcare provider before starting any supplement."</div>
+        </div>
+
+        <!-- Fix 2 -->
+        <div class="fix-item">
+          <span class="fix-label before">Before</span>
+          <div class="fix-text before-text">"This is clinically proven to boost your metabolism by 300%. You can easily make $5,000 a month selling this as an affiliate."</div>
+          <div class="fix-arrow">&#x2193;</div>
+          <span class="fix-label after">After (Compliant)</span>
+          <div class="fix-text after-text">"Some studies suggest ingredients in this formula may support metabolic function (see link in description for research). Their affiliate program is available if you're interested -- results vary and this should not be taken as a guarantee of income. See income disclosure in description."</div>
+        </div>
+
+        <!-- Fix 3 -->
+        <div class="fix-item">
+          <span class="fix-label before">Before</span>
+          <div class="fix-text before-text">[Video description contains affiliate link with no disclosure]</div>
+          <div class="fix-arrow">&#x2193;</div>
+          <span class="fix-label after">After (Compliant)</span>
+          <div class="fix-text after-text">"DISCLOSURE: This video contains paid promotion and affiliate links. I may earn a commission if you purchase through my links at no extra cost to you. #ad #affiliate"</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Regulations Referenced -->
+    <div class="section-card" style="animation-delay: 0.55s;">
+      <div class="section-card-header">
+        <h2>Regulations Referenced</h2>
+      </div>
+      <div class="section-card-body">
+        <ul style="list-style: none;">
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; color: var(--text-secondary);">
+            <strong style="color: var(--accent-cyan);">16 CFR Part 255</strong> — FTC Guides Concerning Use of Endorsements and Testimonials
+          </li>
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; color: var(--text-secondary);">
+            <strong style="color: var(--accent-cyan);">FTC Act Section 5</strong> — Prohibition of Unfair or Deceptive Acts (Health Claims)
+          </li>
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; color: var(--text-secondary);">
+            <strong style="color: var(--accent-cyan);">21 CFR 101.93</strong> — FDA Dietary Supplement Structure/Function Claims
+          </li>
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; color: var(--text-secondary);">
+            <strong style="color: var(--accent-cyan);">SEC Rule 202(a)(11)</strong> — Investment Adviser Act Definition
+          </li>
+          <li style="padding: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);">
+            <strong style="color: var(--accent-cyan);">YouTube Community Guidelines</strong> — Health Misinformation Policy (Dec 2025 update)
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <p>Generated by <a href="/">ComplianceShield</a> &mdash; AI-powered legal compliance for content creators</p>
+      <p style="margin-top: 0.5rem;">Built at Nevermined AI Hackathon 2026</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

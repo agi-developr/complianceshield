@@ -32,6 +32,7 @@ import httpx
 from dotenv import load_dotenv
 from strands import Agent
 from strands.models.openai import OpenAIModel
+from strands.models.bedrock import BedrockModel
 
 from a2a.server.agent_execution.agent_executor import AgentExecutor
 from a2a.server.events.event_queue import EventQueue
@@ -330,13 +331,13 @@ def _register_with_buyer(buyer_url: str, agent_url: str):
 # ---------------------------------------------------------------------------
 
 def _parse_args():
-    parser = argparse.ArgumentParser(description="Data Selling Agent — A2A Mode")
+    parser = argparse.ArgumentParser(description="Compliance Checker Agent — A2A Mode")
     parser.add_argument(
         "--tools",
         nargs="*",
         choices=list(ALL_TOOLS.keys()),
         default=None,
-        help="Tools to expose (default: all). Options: search, summarize, research",
+        help="Tools to expose (default: all). Options: quick, full, deep",
     )
     parser.add_argument(
         "--port",
@@ -368,10 +369,11 @@ def main():
 
     # Build dynamic agent card
     base_agent_card = {
-        "name": "Data Selling Agent",
+        "name": "Compliance Checker Agent",
         "description": (
-            "AI-powered data agent that provides web search, content summarization, "
-            "and market research services with tiered pricing."
+            "AI-powered legal compliance checker for content creators. "
+            "Analyzes scripts, transcripts, and posts for FTC, health, "
+            "financial, and privacy compliance issues."
         ),
         "url": f"http://localhost:{port}",
         "version": "0.1.0",
@@ -394,10 +396,24 @@ def main():
     )
 
     # Create strands agent and executor
-    model = OpenAIModel(
-        client_args={"api_key": os.environ.get("OPENAI_API_KEY", "")},
-        model_id=os.getenv("MODEL_ID", "gpt-4o-mini"),
-    )
+    provider = os.getenv("COMPLIANCE_LLM_PROVIDER", "openai")
+    if provider == "bedrock":
+        model = BedrockModel(
+            model_id=os.getenv("BEDROCK_MODEL_ID", "us.anthropic.claude-3-5-sonnet-20241022-v2:0"),
+            region_name=os.getenv("AWS_REGION", "us-west-2"),
+        )
+    elif provider == "anthropic":
+        from strands.models.anthropic import AnthropicModel
+        model = AnthropicModel(
+            client_args={"api_key": os.environ.get("ANTHROPIC_API_KEY", "")},
+            model_id=os.getenv("COMPLIANCE_MODEL_ID", "claude-haiku-4-5-20251001"),
+            max_tokens=4096,
+        )
+    else:
+        model = OpenAIModel(
+            client_args={"api_key": os.environ.get("OPENAI_API_KEY", "")},
+            model_id=os.getenv("MODEL_ID", "gpt-4o-mini"),
+        )
 
     agent = create_plain_agent(model, tool_names)
     executor = StrandsA2AExecutor(
@@ -408,7 +424,7 @@ def main():
 
     tool_label = ", ".join(tool_names) if tool_names else "all"
     log(_logger, "SERVER", "STARTUP",
-        f"Data Selling Agent — A2A Mode on port {port}")
+        f"Compliance Checker Agent — A2A Mode on port {port}")
     log(_logger, "SERVER", "STARTUP",
         f"card=http://localhost:{port}/.well-known/agent.json")
     log(_logger, "SERVER", "STARTUP",
@@ -466,6 +482,23 @@ def main():
         hooks=hooks,
         custom_request_handler=handler,
     )
+
+    # Add a GET / handler so browsers don't see "Method Not Allowed"
+    from fastapi.responses import JSONResponse
+
+    @result.app.get("/")
+    async def root():
+        return JSONResponse({
+            "service": "ComplianceShield A2A Agent",
+            "status": "running",
+            "protocol": "A2A (Agent-to-Agent) with Nevermined x402 payments",
+            "agent_card": f"http://localhost:{port}/.well-known/agent.json",
+            "skills": [s.get("name") for s in agent_card.get("skills", [])
+                       ] if isinstance(agent_card, dict) else [
+                           s.name for s in getattr(agent_card, "skills", [])],
+            "pricing": cost_description,
+            "usage": "POST / with JSON-RPC and payment-signature header",
+        })
 
     asyncio.run(result.server.serve())
 

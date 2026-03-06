@@ -30,8 +30,6 @@ from fastapi.staticfiles import StaticFiles
 from sse_starlette.sse import EventSourceResponse
 from starlette.responses import FileResponse
 
-from strands.models.openai import OpenAIModel
-
 from .log import enable_web_logging, get_logger, log
 from .registration_server import RegistrationExecutor, _build_buyer_agent_card
 from .strands_agent import (
@@ -43,18 +41,42 @@ from .strands_agent import (
 )
 from .tools.balance import check_balance_impl
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 BUYER_PORT = int(os.getenv("BUYER_PORT", "8000"))
 
-if not OPENAI_API_KEY:
-    print("OPENAI_API_KEY is required. Set it in .env file.")
-    sys.exit(1)
 
-# Create agent with no console callback handler for web mode
-model = OpenAIModel(
-    client_args={"api_key": OPENAI_API_KEY},
-    model_id=os.getenv("MODEL_ID", "gpt-4o-mini"),
-)
+def _create_model():
+    """Create the Strands model — Anthropic, Bedrock, or OpenAI."""
+    provider = os.getenv("COMPLIANCE_LLM_PROVIDER", "openai")
+    if provider == "anthropic":
+        from strands.models.anthropic import AnthropicModel
+        api_key = os.getenv("ANTHROPIC_API_KEY", "")
+        if not api_key:
+            print("ANTHROPIC_API_KEY is required when using Anthropic provider.")
+            sys.exit(1)
+        return AnthropicModel(
+            client_args={"api_key": api_key},
+            model_id=os.getenv("COMPLIANCE_MODEL_ID", "claude-haiku-4-5-20251001"),
+            max_tokens=4096,
+        )
+    elif provider == "bedrock":
+        from strands.models.bedrock import BedrockModel
+        return BedrockModel(
+            model_id=os.getenv("BEDROCK_MODEL_ID", "us.anthropic.claude-3-5-sonnet-20241022-v2:0"),
+            region_name=os.getenv("AWS_REGION", "us-west-2"),
+        )
+    else:
+        from strands.models.openai import OpenAIModel
+        api_key = os.getenv("OPENAI_API_KEY", "")
+        if not api_key:
+            print("OPENAI_API_KEY is required when using OpenAI provider.")
+            sys.exit(1)
+        return OpenAIModel(
+            client_args={"api_key": api_key},
+            model_id=os.getenv("MODEL_ID", "gpt-4o-mini"),
+        )
+
+
+model = _create_model()
 agent = create_agent(model, mode=os.getenv("BUYER_AGENT_MODE", "a2a"))
 
 # Serialize concurrent chat requests (Strands Agent is not thread-safe)

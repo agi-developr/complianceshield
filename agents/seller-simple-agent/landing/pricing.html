@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — ComplianceShield | AI Compliance for Content Creators</title>
+  <meta name="description" content="Choose the right ComplianceShield plan. Free, Pro, or Enterprise — AI-powered compliance scanning for content creators.">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --border-card: rgba(99, 102, 241, 0.2);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 14, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .nav-logo .shield-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active {
+      position: relative;
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 1px;
+    }
+
+    /* ── Mobile Menu ── */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    /* ── Hero / Page Header ── */
+    .page-header {
+      position: relative;
+      padding: 10rem 2rem 5rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(99, 102, 241, 0.06) 40%,
+        rgba(139, 92, 246, 0.08) 50%,
+        rgba(34, 211, 238, 0.06) 60%,
+        transparent 70%
+      );
+      animation: heroGradient 15s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes heroGradient {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-5%, 5%) rotate(2deg); }
+      50% { transform: translate(5%, -5%) rotate(-1deg); }
+      75% { transform: translate(-3%, -3%) rotate(1deg); }
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: 0;
+    }
+
+    .page-header > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      animation: fadeInDown 0.6s ease-out 0.1s both;
+    }
+
+    .page-header h1 .gradient-text {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 50%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-header p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInDown 0.6s ease-out 0.2s both;
+    }
+
+    /* ── Toggle Annual/Monthly ── */
+    .billing-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      animation: fadeInDown 0.6s ease-out 0.3s both;
+    }
+
+    .billing-toggle span {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .billing-toggle span.active-label {
+      color: var(--text-primary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 56px;
+      height: 28px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 999px;
+      transition: all 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(28px);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: rgba(99, 102, 241, 0.35);
+    }
+
+    .save-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    /* ── Pricing Cards Section ── */
+    .pricing-section {
+      padding: 2rem 2rem 5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      align-items: stretch;
+    }
+
+    .pricing-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .pricing-card:nth-child(1) { animation-delay: 0.1s; }
+    .pricing-card:nth-child(2) { animation-delay: 0.2s; }
+    .pricing-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .pricing-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 20px 60px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Featured Card */
+    .pricing-card.featured {
+      border-color: rgba(99, 102, 241, 0.5);
+      background: rgba(99, 102, 241, 0.08);
+      box-shadow: 0 0 80px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(99, 102, 241, 0.2);
+      transform: scale(1.04);
+    }
+
+    .pricing-card.featured:hover {
+      transform: scale(1.04) translateY(-6px);
+      box-shadow: 0 25px 80px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(99, 102, 241, 0.3);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 1.25rem;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .card-tier-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tier-free .card-tier-icon {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .tier-pro .card-tier-icon {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+
+    .tier-enterprise .card-tier-icon {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+
+    .card-tier-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-price .currency {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      align-self: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .card-price .amount {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-price .period {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .card-price-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      min-height: 1.2rem;
+    }
+
+    .card-description {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    .card-features {
+      list-style: none;
+      margin-bottom: 2rem;
+      flex: 1;
+    }
+
+    .card-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .card-features li .check {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      margin-top: 1px;
+    }
+
+    .tier-free .card-features .check {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--accent-green);
+    }
+
+    .tier-pro .card-features .check {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--accent-blue);
+    }
+
+    .tier-enterprise .card-features .check {
+      background: rgba(168, 85, 247, 0.12);
+      color: var(--accent-purple);
+    }
+
+    .card-cta {
+      display: block;
+      width: 100%;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-family: inherit;
+    }
+
+    .card-cta.outline {
+      background: transparent;
+      border: 1px solid var(--border-card);
+      color: var(--text-primary);
+    }
+
+    .card-cta.outline:hover {
+      border-color: var(--accent-blue);
+      background: rgba(99, 102, 241, 0.06);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+    }
+
+    .card-cta.primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .card-cta.primary:hover {
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .card-cta.gradient-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+
+    .card-cta.gradient-outline:hover {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.06);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);
+    }
+
+    /* ── Feature Comparison Table ── */
+    .comparison-section {
+      padding: 4rem 2rem 5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+    }
+
+    .comparison-table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .comparison-table thead th {
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      background: rgba(99, 102, 241, 0.04);
+    }
+
+    .comparison-table thead th:first-child {
+      text-align: left;
+    }
+
+    .comparison-table thead th.pro-col {
+      color: var(--accent-blue);
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .comparison-table tbody td {
+      padding: 1rem 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.06);
+    }
+
+    .comparison-table tbody td:first-child {
+      text-align: left;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .comparison-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: rgba(99, 102, 241, 0.03);
+    }
+
+    .table-check {
+      color: var(--accent-green);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .table-cross {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .table-value {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ── FAQ Section ── */
+    .faq-section {
+      padding: 4rem 2rem 5rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s;
+    }
+
+    .faq-item:hover {
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+
+    .faq-question {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      gap: 1rem;
+      transition: color 0.2s;
+    }
+
+    .faq-question:hover {
+      color: var(--accent-cyan);
+    }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+      font-size: 0.8rem;
+    }
+
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--accent-cyan);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+    }
+
+    .faq-answer-inner {
+      padding: 0 1.5rem 1.25rem;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Final CTA Section ── */
+    .final-cta-section {
+      padding: 5rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+      filter: blur(60px);
+      z-index: 0;
+    }
+
+    .final-cta-section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .final-cta-section h2 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .final-cta-section p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 550px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      box-shadow: 0 4px 25px rgba(99, 102, 241, 0.35);
+      transition: all 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      box-shadow: 0 8px 40px rgba(99, 102, 241, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .cta-subtext {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(99, 102, 241, 0.1);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-powered {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-powered a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    .footer-powered a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .footer-hackathon {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Floating Particles (decorative) ── */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0);
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-10vh) scale(1);
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pricing-card.featured {
+        transform: none;
+        grid-column: 1 / -1;
+        max-width: 420px;
+        justify-self: center;
+        width: 100%;
+      }
+
+      .pricing-card.featured:hover {
+        transform: translateY(-6px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 0.75rem 1.25rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .page-header {
+        padding: 8rem 1.25rem 3rem;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .pricing-card.featured {
+        max-width: none;
+        grid-column: auto;
+      }
+
+      .pricing-section {
+        padding: 1rem 1.25rem 3rem;
+      }
+
+      .comparison-section {
+        padding: 3rem 1rem 3rem;
+      }
+
+      .comparison-table thead th,
+      .comparison-table tbody td {
+        padding: 0.75rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .faq-section {
+        padding: 3rem 1.25rem 3rem;
+      }
+
+      .final-cta-section {
+        padding: 3rem 1.25rem 4rem;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .card-price .amount {
+        font-size: 2.75rem;
+      }
+
+      .comparison-table-wrap {
+        overflow-x: auto;
+      }
+
+      .comparison-table {
+        min-width: 500px;
+      }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html" class="active">Pricing</a></li>
+      <li><a href="/login.html" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
+    </ul>
+    <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').style.display = document.querySelector('.nav-links').style.display === 'flex' ? 'none' : 'flex'">&#9776;</button>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="badge">&#x2728; Simple, transparent pricing</div>
+    <h1>Choose the plan that<br><span class="gradient-text">scales with you</span></h1>
+    <p>Start free. Upgrade when you need unlimited scans, video analysis, and API access.</p>
+
+    <!-- Billing Toggle -->
+    <div class="billing-toggle">
+      <span class="active-label" id="label-monthly">Monthly</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="billing-toggle" onchange="toggleBilling()">
+        <span class="toggle-slider"></span>
+      </label>
+      <span id="label-annual">Annual</span>
+      <span class="save-badge">Save 20%</span>
+    </div>
+  </section>
+
+  <!-- Pricing Cards -->
+  <section class="pricing-section">
+    <div class="pricing-grid">
+
+      <!-- Free Tier -->
+      <div class="pricing-card tier-free">
+        <div class="card-tier-icon">&#x1F331;</div>
+        <div class="card-tier-name">Free</div>
+        <div class="card-price">
+          <span class="currency">$</span>
+          <span class="amount" data-monthly="0" data-annual="0">0</span>
+          <span class="period">/mo</span>
+        </div>
+        <div class="card-price-note">Free forever</div>
+        <p class="card-description">Perfect for trying out compliance scanning on your latest posts.</p>
+        <ul class="card-features">
+          <li><span class="check">&#10003;</span> 5 scans per month</li>
+          <li><span class="check">&#10003;</span> Quick scan mode</li>
+          <li><span class="check">&#10003;</span> FTC & basic regulation checks</li>
+          <li><span class="check">&#10003;</span> Text content analysis</li>
+          <li><span class="check">&#10003;</span> Community support</li>
+        </ul>
+        <a href="login.html" class="card-cta outline">Get Started Free</a>
+      </div>
+
+      <!-- Pro Tier (Featured) -->
+      <div class="pricing-card tier-pro featured">
+        <div class="popular-badge">Most Popular</div>
+        <div class="card-tier-icon">&#x26A1;</div>
+        <div class="card-tier-name">Pro</div>
+        <div class="card-price">
+          <span class="currency">$</span>
+          <span class="amount" data-monthly="29" data-annual="23">29</span>
+          <span class="period" data-monthly="/mo" data-annual="/mo">/mo</span>
+        </div>
+        <div class="card-price-note" data-monthly="Billed monthly" data-annual="$276/year &mdash; billed annually">Billed monthly</div>
+        <p class="card-description">Unlimited scanning with full analysis depth for serious creators.</p>
+        <ul class="card-features">
+          <li><span class="check">&#10003;</span> Unlimited scans</li>
+          <li><span class="check">&#10003;</span> Full + Deep analysis modes</li>
+          <li><span class="check">&#10003;</span> YouTube video scanning</li>
+          <li><span class="check">&#10003;</span> All regulation checks (FTC, GDPR, COPPA, FDA...)</li>
+          <li><span class="check">&#10003;</span> Detailed compliance reports</li>
+          <li><span class="check">&#10003;</span> Priority email support</li>
+          <li><span class="check">&#10003;</span> Scan history & exports</li>
+        </ul>
+        <a href="login.html" class="card-cta primary">Start Pro Trial</a>
+      </div>
+
+      <!-- Enterprise Tier -->
+      <div class="pricing-card tier-enterprise">
+        <div class="card-tier-icon">&#x1F3E2;</div>
+        <div class="card-tier-name">Enterprise</div>
+        <div class="card-price">
+          <span class="currency">$</span>
+          <span class="amount" data-monthly="99" data-annual="79">99</span>
+          <span class="period" data-monthly="/mo" data-annual="/mo">/mo</span>
+        </div>
+        <div class="card-price-note" data-monthly="Billed monthly" data-annual="$948/year &mdash; billed annually">Billed monthly</div>
+        <p class="card-description">Full platform access with API, custom rules, and dedicated support.</p>
+        <ul class="card-features">
+          <li><span class="check">&#10003;</span> Everything in Pro</li>
+          <li><span class="check">&#10003;</span> REST API access</li>
+          <li><span class="check">&#10003;</span> Custom compliance rules</li>
+          <li><span class="check">&#10003;</span> Telegram bot integration</li>
+          <li><span class="check">&#10003;</span> MCP server for AI agents</li>
+          <li><span class="check">&#10003;</span> Dedicated account manager</li>
+          <li><span class="check">&#10003;</span> SLA & priority support</li>
+          <li><span class="check">&#10003;</span> Team management (coming soon)</li>
+        </ul>
+        <a href="login.html" class="card-cta gradient-outline">Contact Sales</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Feature Comparison Table -->
+  <section class="comparison-section fade-in">
+    <div class="section-header">
+      <h2>Compare Plans Side by Side</h2>
+      <p>Every feature, every plan, at a glance.</p>
+    </div>
+
+    <div class="comparison-table-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th class="pro-col">Pro</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monthly scans</td>
+            <td class="table-value">5</td>
+            <td class="table-value">Unlimited</td>
+            <td class="table-value">Unlimited</td>
+          </tr>
+          <tr>
+            <td>Quick scan</td>
+            <td><span class="table-check">&#10003;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Full analysis</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Deep analysis</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>YouTube video scanning</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Regulations covered</td>
+            <td class="table-value">FTC basics</td>
+            <td class="table-value">All (FTC, GDPR, COPPA, FDA...)</td>
+            <td class="table-value">All + custom rules</td>
+          </tr>
+          <tr>
+            <td>Compliance reports</td>
+            <td class="table-value">Summary</td>
+            <td class="table-value">Detailed</td>
+            <td class="table-value">Detailed + exports</td>
+          </tr>
+          <tr>
+            <td>Scan history</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>REST API access</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Custom compliance rules</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Telegram bot</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>MCP server (AI agents)</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Support</td>
+            <td class="table-value">Community</td>
+            <td class="table-value">Priority email</td>
+            <td class="table-value">Dedicated manager</td>
+          </tr>
+          <tr>
+            <td>SLA guarantee</td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-cross">&#x2014;</span></td>
+            <td><span class="table-check">&#10003;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section fade-in">
+    <div class="section-header">
+      <h2>Frequently Asked Questions</h2>
+      <p>Everything you need to know about ComplianceShield.</p>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span>What counts as a scan?</span>
+        <span class="faq-chevron">&#x25BC;</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          A scan is one compliance check against a single piece of content. This can be a blog post, social media caption, product description, or any text you submit. Pasting text and clicking "Scan" uses one scan credit. Submitting a YouTube URL also uses one scan credit, regardless of video length. Re-scanning the same content counts as a new scan.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span>Can I scan YouTube videos?</span>
+        <span class="faq-chevron">&#x25BC;</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes. Pro and Enterprise plans support YouTube video scanning. Just paste the video URL and ComplianceShield will automatically extract the transcript, metadata, and description to check for compliance issues. We analyze the spoken content, title, description, and tags against applicable regulations like FTC disclosure requirements.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span>What regulations do you check?</span>
+        <span class="faq-chevron">&#x25BC;</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          ComplianceShield checks against a comprehensive set of regulations relevant to content creators: FTC endorsement and disclosure guidelines, GDPR data privacy requirements, COPPA children's content rules, FDA health claims regulations, CAN-SPAM email marketing rules, and platform-specific policies. Enterprise customers can also add custom rules for their industry or brand guidelines.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span>Is this legal advice?</span>
+        <span class="faq-chevron">&#x25BC;</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          No. ComplianceShield is an AI-powered tool that identifies potential compliance issues in your content. It is not a substitute for professional legal counsel. Our analysis highlights areas of concern and provides educational context, but you should consult a qualified attorney for legal advice specific to your situation. Think of it as a smart first pass that catches obvious issues before they become problems.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span>How does agent integration work?</span>
+        <span class="faq-chevron">&#x25BC;</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Enterprise plans include access to our MCP (Model Context Protocol) server and A2A (Agent-to-Agent) protocol support. This means AI agents like Claude, GPT, or your custom agents can call ComplianceShield as a tool to check content compliance programmatically. Agents discover our capabilities via the standard <code>/.well-known/agent.json</code> endpoint and make payment-protected requests through the Nevermined protocol. This enables automated compliance checking in your content pipeline.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta-section fade-in">
+    <h2>Ready to create with confidence?</h2>
+    <p>Join thousands of creators who scan before they post. Start with 5 free scans today.</p>
+    <a href="login.html" class="cta-btn">
+      Start Scanning Free &#x2192;
+    </a>
+    <span class="cta-subtext">No credit card required. 5 scans/month included.</span>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">ComplianceShield</div>
+      <p class="footer-powered">
+        Powered by <a href="https://nevermined.io" target="_blank" rel="noopener">Nevermined Payments Protocol</a>
+      </p>
+      <ul class="footer-links">
+        <li><a href="api-docs.html">API Docs</a></li>
+        <li><a href="index.html#agent-integration">MCP Server</a></li>
+        <li><a href="http://localhost:9000/.well-known/agent.json" target="_blank" rel="noopener">A2A Agent</a></li>
+      </ul>
+      <p class="footer-hackathon">Built at Nevermined AI Hackathon 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── Scroll Animations ──
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+    // ── Billing Toggle ──
+    function toggleBilling() {
+      const isAnnual = document.getElementById('billing-toggle').checked;
+      const labelMonthly = document.getElementById('label-monthly');
+      const labelAnnual = document.getElementById('label-annual');
+
+      labelMonthly.classList.toggle('active-label', !isAnnual);
+      labelAnnual.classList.toggle('active-label', isAnnual);
+
+      document.querySelectorAll('.card-price .amount').forEach((el) => {
+        const monthly = el.dataset.monthly;
+        const annual = el.dataset.annual;
+        if (monthly && annual) {
+          el.textContent = isAnnual ? annual : monthly;
+        }
+      });
+
+      document.querySelectorAll('.card-price .period').forEach((el) => {
+        const monthly = el.dataset.monthly;
+        const annual = el.dataset.annual;
+        if (monthly && annual) {
+          el.textContent = isAnnual ? annual : monthly;
+        }
+      });
+
+      document.querySelectorAll('.card-price-note').forEach((el) => {
+        const monthly = el.dataset.monthly;
+        const annual = el.dataset.annual;
+        if (monthly && annual) {
+          el.innerHTML = isAnnual ? annual : monthly;
+        }
+      });
+    }
+
+    // ── FAQ Accordion ──
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.faq-item').forEach((faq) => {
+        faq.classList.remove('open');
+      });
+
+      // Open clicked (if it was closed)
+      if (!wasOpen) {
+        item.classList.add('open');
+      }
+    }
+
+    // ── Floating Particles ──
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const colors = [
+        'rgba(99, 102, 241, 0.3)',
+        'rgba(34, 211, 238, 0.25)',
+        'rgba(168, 85, 247, 0.2)',
+        'rgba(99, 102, 241, 0.15)',
+      ];
+
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        const size = Math.random() * 4 + 2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left = Math.random() * 100;
+        const duration = Math.random() * 20 + 15;
+        const delay = Math.random() * 20;
+
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.background = color;
+        particle.style.left = left + '%';
+        particle.style.animationDuration = duration + 's';
+        particle.style.animationDelay = delay + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    createParticles();
+  </script>
+
+</body>
+</html>

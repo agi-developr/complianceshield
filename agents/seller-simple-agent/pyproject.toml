@@ -6,7 +6,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-strands-agents = {version = ">=1.0.0", extras = ["openai", "a2a"]}
+strands-agents = {version = ">=1.0.0", extras = ["openai", "anthropic", "a2a"]}
 payments-py = {version = ">=1.3.3", extras = ["strands", "langchain"]}
 fastapi = "^0.120.0"
 uvicorn = ">=0.34.2,<1.0.0"
@@ -15,6 +15,10 @@ openai = "^1.40.0"
 python-dotenv = "^1.0.0"
 langchain-openai = ">=0.3.0"
 langgraph = ">=0.3.0"
+anthropic = "^0.84.0"
+groq = "^1.0.0"
+python-multipart = "^0.0.22"
+python-telegram-bot = "^21.0"
 
 [tool.poetry.extras]
 agentcore = ["bedrock-agentcore"]
@@ -27,6 +31,9 @@ demo = "src.demo:main"
 agent-a2a = "src.agent_a2a:main"
 agent-a2a-agentcore = "src.agent_a2a_agentcore:main"
 agent-langgraph = "src.server_langgraph:main"
+mcp-server = "src.mcp_server:main"
+web-demo = "src.web_demo:main"
+telegram-bot = "src.telegram_bot:main"
 
 [build-system]
 requires = ["poetry-core"]

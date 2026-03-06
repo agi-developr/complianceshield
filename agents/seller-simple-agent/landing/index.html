@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplianceShield — AI-Powered Legal Compliance for Content Creators</title>
+  <meta name="description" content="Your content. Legally clear. AI-powered compliance scanning for content creators.">
+  <meta property="og:title" content="ComplianceShield — Your content. Legally clear.">
+  <meta property="og:description" content="AI-powered FTC, FDA, SEC compliance scanning for content creators. Scan videos, text, and audio in seconds.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://complianceshield.ai">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ComplianceShield">
+  <meta name="twitter:description" content="Your content. Legally clear.">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --border-card: rgba(99, 102, 241, 0.15);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ---- Navigation ---- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      background: rgba(10, 14, 26, 0.6);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.4s;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .nav-logo .shield-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 400;
+      transition: color 0.3s var(--ease-out-expo);
+      letter-spacing: 0.01em;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-links .nav-cta {
+      padding: 0.4rem 1rem;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 8px;
+      color: var(--accent-blue) !important;
+      font-weight: 500;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .nav-links .nav-cta:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: white !important;
+    }
+
+    /* ---- Scroll Reveal System ---- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ---- Section 1: The Reveal (Hero) ---- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      animation: heroBreath 10s ease-in-out infinite;
+    }
+
+    @keyframes heroBreath {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.15); }
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-intro {
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeInSoft 1.2s var(--ease-out-expo) 0.2s forwards;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      opacity: 0;
+      animation: fadeInSoft 1.2s var(--ease-out-expo) 0.4s forwards;
+    }
+
+    .hero h1 .gradient-text {
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      color: var(--text-muted);
+      max-width: 480px;
+      margin-bottom: 3.5rem;
+      line-height: 1.7;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeInSoft 1.2s var(--ease-out-expo) 0.6s forwards;
+    }
+
+    .hero-cta {
+      opacity: 0;
+      animation: fadeInSoft 1.2s var(--ease-out-expo) 0.8s forwards;
+    }
+
+    .hero-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.2rem;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 100px;
+      font-family: var(--font-stack);
+      font-size: 0.95rem;
+      font-weight: 400;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: all 0.4s var(--ease-out-expo);
+    }
+
+    .hero-cta a:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
+    }
+
+    .hero-cta a .arrow {
+      transition: transform 0.3s var(--ease-out-expo);
+    }
+
+    .hero-cta a:hover .arrow {
+      transform: translateX(3px);
+    }
+
+    @keyframes fadeInSoft {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- Section 2: The Problem ---- */
+    .problem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    .problem-number {
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    .problem-sub {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+      margin-bottom: 2.5rem;
+    }
+
+    .problem-detail {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      max-width: 400px;
+      line-height: 1.8;
+    }
+
+    /* ---- Section 3: The Scanner ---- */
+    .scanner-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem 8rem;
+    }
+
+    .scanner-label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .scan-container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* Tab Bar */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 3px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tab-bar button {
+      padding: 8px 20px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-stack);
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.3s var(--ease-out-expo);
+      letter-spacing: 0.01em;
+    }
+
+    .tab-bar button.active {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-blue);
+    }
+
+    /* Scan Inputs */
+    .scan-input-wrapper {
+      display: flex;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0.3rem;
+      transition: border-color 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+    }
+
+    .scan-input-wrapper:focus-within {
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06), 0 0 60px rgba(99, 102, 241, 0.04);
+    }
+
+    .scan-input-wrapper input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 1rem 1.25rem;
+      color: var(--text-primary);
+      font-family: var(--font-stack);
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    .scan-input-wrapper input::placeholder {
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    .scan-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--accent-blue);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 9px;
+      font-family: var(--font-stack);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out-expo);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+
+    .scan-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
+    }
+
+    .scan-btn:active {
+      transform: scale(0.98);
+    }
+
+    .scan-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .scan-btn .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(99, 102, 241, 0.3);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .scan-btn.loading .spinner {
+      display: inline-block;
+    }
+
+    .scan-btn.loading .btn-text {
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Try Sample */
+    .try-sample-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-stack);
+      font-size: 0.78rem;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      transition: color 0.3s var(--ease-out-expo);
+      opacity: 0.6;
+    }
+
+    .try-sample-btn:hover {
+      color: var(--accent-cyan);
+      opacity: 1;
+    }
+
+    /* Scanning Indicator */
+    .scanning-indicator {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 2.5rem 1rem;
+      margin-top: 2rem;
+    }
+
+    .scanning-indicator.active {
+      display: flex;
+      animation: fadeInSoft 0.4s var(--ease-out-expo);
+    }
+
+    .scanning-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 100px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .scanning-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -40%;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-cyan), transparent);
+      border-radius: 100px;
+      animation: scanSlide 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scanSlide {
+      0% { left: -40%; }
+      100% { left: 100%; }
+    }
+
+    .scanning-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.03em;
+    }
+
+    .scanning-dots::after {
+      content: '';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+    }
+
+    .scan-error {
+      color: var(--accent-red);
+      font-size: 0.82rem;
+      margin-top: 0.75rem;
+      display: none;
+      font-weight: 300;
+    }
+
+    /* ---- Results Area ---- */
+    #results-area {
+      margin-top: 3rem;
+      display: none;
+    }
+
+    #results-area.visible {
+      display: block;
+      animation: fadeInUp 0.6s var(--ease-out-expo);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- Report Card (shared by results and demo) ---- */
+    .report-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .report-header {
+      padding: 1.75rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .report-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .report-header-left h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .report-header-left .url-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    .risk-badge.high {
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .risk-badge.medium {
+      background: rgba(245, 158, 11, 0.1);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .risk-badge.low {
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .risk-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .report-score-bar {
+      padding: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .score-gauge-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+    }
+
+    .score-gauge-svg {
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+    }
+
+    .score-gauge-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.04);
+      stroke-width: 8;
+    }
+
+    .score-gauge-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke 0.3s ease;
+      filter: drop-shadow(0 0 6px var(--gauge-glow-color, rgba(16, 185, 129, 0.4)));
+      animation: gaugeStrokeIn 1.4s var(--ease-out-expo) forwards;
+    }
+
+    .score-gauge-glow {
+      fill: none;
+      stroke-width: 12;
+      stroke-linecap: round;
+      opacity: 0.1;
+      filter: blur(4px);
+      animation: gaugeStrokeIn 1.4s var(--ease-out-expo) forwards;
+    }
+
+    @keyframes gaugeStrokeIn {
+      from { stroke-dashoffset: var(--gauge-circumference, 339.292); }
+      to { stroke-dashoffset: var(--gauge-offset, 339.292); }
+    }
+
+    @keyframes gaugeNumberCount {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      40% { opacity: 1; }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes gaugeGlowPulse {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.2; }
+    }
+
+    .score-gauge-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .score-gauge-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .score-gauge-max {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: block;
+    }
+
+    .score-gauge-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .score-gauge-info .score-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .score-gauge-info .score-sublabel {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    .report-issues {
+      padding: 1.5rem 2rem;
+    }
+
+    .report-issues h4 {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.25rem;
+    }
+
+    .issue-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+      transition: border-color 0.3s var(--ease-out-expo);
+    }
+
+    .issue-item:hover {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .issue-severity {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .issue-severity.critical { background: rgba(239, 68, 68, 0.1); }
+    .issue-severity.warning { background: rgba(245, 158, 11, 0.1); }
+
+    .issue-content h5 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .issue-content p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    .issue-content .citation {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--accent-cyan);
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      opacity: 0.7;
+    }
+
+    /* ---- Section 4: How it Works ---- */
+    .how-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .how-label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4rem;
+    }
+
+    .how-grid {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+    }
+
+    .how-step {
+      flex: 1;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .how-step-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .how-step h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .how-step p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .how-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.05), rgba(99, 102, 241, 0.3), rgba(34, 211, 238, 0.3), rgba(34, 211, 238, 0.05));
+      flex-shrink: 0;
+    }
+
+    /* ---- Section 5: Three Protocols ---- */
+    .protocols-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .protocols-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+
+    .protocols-title strong {
+      font-weight: 800;
+    }
+
+    .protocols-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+
+    .protocols-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    .protocol-card {
+      padding: 2rem 1.75rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      transition: border-color 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+    }
+
+    .protocol-card:hover {
+      border-color: rgba(99, 102, 241, 0.2);
+      box-shadow: 0 0 60px rgba(99, 102, 241, 0.04);
+    }
+
+    .protocol-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+    }
+
+    .protocol-tag.rest { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+    .protocol-tag.a2a { background: rgba(168, 85, 247, 0.1); color: #c084fc; }
+    .protocol-tag.mcp { background: rgba(34, 211, 238, 0.1); color: #67e8f9; }
+
+    .protocol-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .protocol-card p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .protocol-code {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-xs);
+      padding: 12px 14px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .protocol-code .key { color: var(--accent-cyan); }
+    .protocol-code .val { color: var(--accent-green); }
+    .protocol-code .comment { color: var(--text-muted); opacity: 0.5; }
+
+    .protocols-footnote {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---- Section 6: Final CTA ---- */
+    .final-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+    }
+
+    .final-cta > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      line-height: 1.3;
+      margin-bottom: 3rem;
+    }
+
+    .final-cta h2 strong {
+      font-weight: 800;
+      display: block;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.2rem;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--accent-blue);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 100px;
+      font-family: var(--font-stack);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.4s var(--ease-out-expo);
+    }
+
+    .cta-primary:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
+    }
+
+    .cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.2rem;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      font-family: var(--font-stack);
+      font-size: 0.95rem;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.4s var(--ease-out-expo);
+    }
+
+    .cta-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+    }
+
+    /* ---- Footer ---- */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .footer-powered {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .footer-powered a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .footer-powered a:hover {
+      opacity: 0.7;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 300;
+      transition: color 0.3s var(--ease-out-expo);
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-hackathon {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    /* ---- Textarea (text scan) ---- */
+    .scan-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-stack);
+      font-size: 0.92rem;
+      font-weight: 300;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+    }
+
+    .scan-textarea:focus {
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06);
+    }
+
+    /* ---- Drop Zone ---- */
+    .drop-zone {
+      width: 100%;
+      min-height: 140px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-family: var(--font-stack);
+      font-size: 0.9rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s var(--ease-out-expo), background 0.3s var(--ease-out-expo);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .drop-zone:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+      background: rgba(99, 102, 241, 0.03);
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      nav { padding: 0.75rem 1.25rem; }
+      .nav-links { display: none; }
+
+      .hero h1 { font-size: 2.4rem; }
+
+      .how-grid {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .how-line {
+        width: 1px;
+        height: 40px;
+        background: linear-gradient(180deg, rgba(99, 102, 241, 0.05), rgba(99, 102, 241, 0.3), rgba(34, 211, 238, 0.3), rgba(34, 211, 238, 0.05));
+      }
+
+      .protocols-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .tab-bar {
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .tab-bar button {
+        flex: 1;
+        min-width: calc(50% - 2px);
+      }
+
+      .scan-input-wrapper {
+        flex-direction: column;
+      }
+
+      .scan-btn {
+        margin-top: 0.25rem;
+      }
+
+      .report-score-bar {
+        padding: 1.25rem;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .score-gauge-info {
+        align-items: center;
+      }
+
+      .report-header { padding: 1.25rem; }
+      .report-issues { padding: 1.25rem; }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+
+      .problem-number {
+        font-size: 4rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" class="nav-cta">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Section 1: The Reveal -->
+  <section class="hero">
+    <span class="hero-intro">Introducing</span>
+
+    <h1>
+      Your content.<br>
+      <span class="gradient-text">Legally clear.</span>
+    </h1>
+
+    <p class="hero-sub">
+      AI-powered compliance scanning for content creators.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#scanner">Try it free <span class="arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <!-- Section 2: The Problem -->
+  <section class="problem">
+    <div class="problem-number reveal">$53,088</div>
+    <p class="problem-sub reveal reveal-delay-1">per FTC violation. Per video. Per post.</p>
+    <p class="problem-detail reveal reveal-delay-2">200 million creators. Zero compliance tools.<br>Until now.</p>
+  </section>
+
+  <!-- Section 3: The Scanner -->
+  <section class="scanner-section" id="scanner">
+    <span class="scanner-label reveal">Try it</span>
+
+    <div class="scan-container reveal reveal-delay-1" id="scanner-container">
+      <!-- Tab toggle -->
+      <div class="tab-bar">
+        <button id="tab-video" onclick="switchTab('video')" class="active">YouTube</button>
+        <button id="tab-text" onclick="switchTab('text')">Text</button>
+        <button id="tab-upload" onclick="switchTab('upload')">Upload</button>
+        <button id="tab-url" onclick="switchTab('url')">URL</button>
+      </div>
+
+      <!-- Video input -->
+      <div id="input-video" class="scan-input-wrapper">
+        <input
+          type="url"
+          id="youtube-url"
+          placeholder="Paste a YouTube URL..."
+          aria-label="YouTube video URL"
+        >
+        <button class="scan-btn" id="scan-btn" onclick="handleScan()">
+          <span class="btn-text">Scan</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+      <div id="sample-video" style="text-align: center; margin-top: 6px;">
+        <button class="try-sample-btn" onclick="fillSampleVideo()">Try sample video</button>
+      </div>
+
+      <!-- Text input -->
+      <div id="input-text" style="display: none;">
+        <textarea id="text-content" class="scan-textarea" placeholder="Paste your script, transcript, or post..."></textarea>
+        <button class="scan-btn" id="scan-btn-text" onclick="handleTextScan()" style="margin-top: 8px; width: 100%;">
+          <span class="btn-text">Scan Text</span>
+          <span class="spinner"></span>
+        </button>
+        <div style="text-align: center; margin-top: 6px;">
+          <button class="try-sample-btn" onclick="fillSampleText()">Try sample text</button>
+        </div>
+      </div>
+
+      <!-- Upload input -->
+      <div id="input-upload" style="display: none;">
+        <div id="drop-zone" class="drop-zone"
+          ondragover="event.preventDefault(); this.style.borderColor='rgba(99,102,241,0.4)'; this.style.background='rgba(99,102,241,0.05)'"
+          ondragleave="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(255,255,255,0.02)'"
+          ondrop="event.preventDefault(); this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(255,255,255,0.02)'; handleFileDrop(event.dataTransfer.files[0])"
+          onclick="document.getElementById('file-input').click()">
+          <span style="font-size: 1.5rem; opacity: 0.5;">&#x2191;</span>
+          <span style="font-weight: 500; color: var(--text-primary); font-size: 0.9rem;">Upload audio or video</span>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">MP3, MP4, WAV, WebM, M4A, OGG, FLAC &middot; Max 25MB</span>
+          <span id="file-name" style="color: var(--accent-cyan); font-size: 0.8rem; display: none;"></span>
+        </div>
+        <input type="file" id="file-input" accept=".mp3,.mp4,.wav,.webm,.m4a,.ogg,.flac" style="display: none;" onchange="handleFileDrop(this.files[0])">
+        <button class="scan-btn" id="scan-btn-upload" onclick="handleUploadScan()" style="margin-top: 8px; width: 100%;" disabled>
+          <span class="btn-text">Transcribe &amp; Scan</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+
+      <!-- URL input -->
+      <div id="input-url" style="display: none;">
+        <div class="scan-input-wrapper">
+          <input
+            type="url"
+            id="webpage-url"
+            placeholder="Paste any webpage URL..."
+            aria-label="Webpage URL"
+          >
+          <button class="scan-btn" id="scan-btn-url" onclick="handleUrlScan()">
+            <span class="btn-text">Scan URL</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scanning progress -->
+      <div class="scanning-indicator" id="scanning-indicator">
+        <div class="scanning-bar"></div>
+        <span class="scanning-text">Analyzing content<span class="scanning-dots"></span></span>
+      </div>
+
+      <div class="scan-error" id="scan-error"></div>
+    </div>
+
+    <!-- Results area -->
+    <div style="width: 100%; max-width: 800px;">
+      <div id="results-area"></div>
+    </div>
+  </section>
+
+  <!-- Section 4: How it Works -->
+  <section class="how-section" id="how-it-works">
+    <span class="how-label reveal">How it works</span>
+
+    <div class="how-grid">
+      <div class="how-step reveal reveal-delay-1">
+        <div class="how-step-icon">&#x270B;</div>
+        <h3>Paste</h3>
+        <p>Drop a YouTube URL, paste text, or upload audio.</p>
+      </div>
+      <div class="how-line reveal reveal-delay-2"></div>
+      <div class="how-step reveal reveal-delay-2">
+        <div class="how-step-icon">&#x26A1;</div>
+        <h3>Scan</h3>
+        <p>AI analyzes against FTC, FDA, SEC, and platform rules.</p>
+      </div>
+      <div class="how-line reveal reveal-delay-3"></div>
+      <div class="how-step reveal reveal-delay-3">
+        <div class="how-step-icon">&#x2714;</div>
+        <h3>Ship safely</h3>
+        <p>Get a compliance report with fixes before you publish.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Three Protocols -->
+  <section class="protocols-section" id="protocols">
+    <h2 class="protocols-title reveal">One engine. <strong>Three protocols.</strong></h2>
+    <p class="protocols-sub reveal reveal-delay-1">Any human. Any agent. Any tool.</p>
+
+    <div class="protocols-grid">
+      <!-- REST API -->
+      <div class="protocol-card reveal reveal-delay-1">
+        <span class="protocol-tag rest">REST API</span>
+        <h3>HTTP Endpoints</h3>
+        <p>Direct JSON integration for any language or platform.</p>
+        <div class="protocol-code">
+<span class="comment"># scan text content</span>
+<span class="key">curl</span> <span class="val">-X POST /api/scan</span> \
+  <span class="key">-d</span> <span class="val">'{"content": "...",
+    "detail_level": "full"}'</span>
+        </div>
+      </div>
+
+      <!-- A2A -->
+      <div class="protocol-card reveal reveal-delay-2">
+        <span class="protocol-tag a2a">A2A Protocol</span>
+        <h3>Agent-to-Agent</h3>
+        <p>Autonomous agent discovery and payment-protected messaging.</p>
+        <div class="protocol-code">
+<span class="comment"># agent card discovery</span>
+<span class="key">GET</span> <span class="val">/.well-known/agent.json</span>
+
+<span class="comment"># payment-protected scan</span>
+<span class="key">POST</span> <span class="val">/a2a/message</span>
+        </div>
+      </div>
+
+      <!-- MCP -->
+      <div class="protocol-card reveal reveal-delay-3">
+        <span class="protocol-tag mcp">MCP Tools</span>
+        <h3>Model Context Protocol</h3>
+        <p>4 payment-protected tools for LLM agents.</p>
+        <div class="protocol-code">
+<span class="comment"># available tools</span>
+<span class="val">quick_scan</span>
+<span class="val">full_analysis</span>
+<span class="val">deep_review</span>
+<span class="val">scan_video</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="protocols-footnote reveal reveal-delay-4">Powered by Nevermined Payments Protocol</p>
+  </section>
+
+  <!-- Section 6: Final CTA -->
+  <section class="final-cta">
+    <h2 class="reveal">
+      Stop getting fined.
+      <strong>Start creating safely.</strong>
+    </h2>
+
+    <div class="cta-buttons reveal reveal-delay-1">
+      <a href="#scanner" class="cta-primary">Try Scanner</a>
+      <a href="/pricing.html" class="cta-secondary">View Pricing</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">ComplianceShield</div>
+      <p class="footer-powered">
+        Powered by <a href="https://nevermined.io" target="_blank" rel="noopener">Nevermined</a>
+      </p>
+      <ul class="footer-links">
+        <li><a href="/api-docs.html">API</a></li>
+        <li><a href="#protocols">Protocols</a></li>
+        <li><a href="http://localhost:9000/.well-known/agent.json" target="_blank" rel="noopener">A2A Agent</a></li>
+      </ul>
+      <p class="footer-hackathon">Built at Nevermined AI Hackathon 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Scroll Reveal (IntersectionObserver) ----
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+    );
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // ---- YouTube URL Validation ----
+    function isValidYouTubeUrl(url) {
+      const patterns = [
+        /^https?:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+/,
+        /^https?:\/\/youtu\.be\/[\w-]+/,
+        /^https?:\/\/(www\.)?youtube\.com\/shorts\/[\w-]+/,
+      ];
+      return patterns.some((p) => p.test(url));
+    }
+
+    // ---- Scanning Indicator Helpers ----
+    function showScanningIndicator() {
+      document.getElementById('scanning-indicator').classList.add('active');
+    }
+
+    function hideScanningIndicator() {
+      document.getElementById('scanning-indicator').classList.remove('active');
+    }
+
+    // ---- Scan Handler (YouTube Video) ----
+    async function handleScan() {
+      const input = document.getElementById('youtube-url');
+      const btn = document.getElementById('scan-btn');
+      const errorEl = document.getElementById('scan-error');
+      const resultsArea = document.getElementById('results-area');
+      const url = input.value.trim();
+
+      // Reset
+      errorEl.style.display = 'none';
+      errorEl.textContent = '';
+      resultsArea.classList.remove('visible');
+
+      // Validate
+      if (!url) {
+        errorEl.textContent = 'Please enter a YouTube video URL.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      if (!isValidYouTubeUrl(url)) {
+        errorEl.textContent = 'Please enter a valid YouTube URL (e.g., https://youtube.com/watch?v=...)';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      // Start loading
+      btn.classList.add('loading');
+      btn.disabled = true;
+      showScanningIndicator();
+
+      try {
+        const response = await fetch('/api/scan-video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ youtube_url: url, detail_level: 'full' }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}`);
+        }
+
+        const data = await response.json();
+        // Map API response to renderer format
+        const report = data.report || {};
+        renderResults({
+          risk_level: report.overall_risk || 'UNKNOWN',
+          score: report.compliance_score ?? (report.overall_risk === 'LOW' ? 85 : report.overall_risk === 'MEDIUM' ? 55 : 25),
+          issues: (report.issues || []).map(i => ({
+            severity: i.risk_level,
+            category: i.category,
+            description: i.explanation,
+            quote: i.problematic_text,
+            regulation: i.regulation,
+            regulation_url: i.regulation_url || '',
+            regulation_name: i.regulation_name || '',
+            fix: i.recommended_fix,
+          })),
+          summary: report.summary,
+          video_id: data.video_id,
+          duration: data.duration_seconds,
+        });
+      } catch (err) {
+        errorEl.textContent = `Scan failed: ${err.message}. Make sure the demo server is running (poetry run web-demo).`;
+        errorEl.style.display = 'block';
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        hideScanningIndicator();
+      }
+    }
+
+    // ---- Tab Switching ----
+    let activeTab = 'video';
+    function switchTab(tab) {
+      activeTab = tab;
+      document.getElementById('input-video').style.display = tab === 'video' ? '' : 'none';
+      document.getElementById('sample-video').style.display = tab === 'video' ? '' : 'none';
+      document.getElementById('input-text').style.display = tab === 'text' ? '' : 'none';
+      document.getElementById('input-upload').style.display = tab === 'upload' ? '' : 'none';
+      document.getElementById('input-url').style.display = tab === 'url' ? '' : 'none';
+      ['tab-video', 'tab-text', 'tab-upload', 'tab-url'].forEach(id => {
+        const el = document.getElementById(id);
+        const isActive = id === 'tab-' + tab;
+        el.classList.toggle('active', isActive);
+      });
+    }
+
+    // ---- File Upload Handler ----
+    let uploadedFile = null;
+    function handleFileDrop(file) {
+      if (!file) return;
+      uploadedFile = file;
+      const nameEl = document.getElementById('file-name');
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      nameEl.textContent = `${file.name} (${sizeMB} MB)`;
+      nameEl.style.display = '';
+      document.getElementById('scan-btn-upload').disabled = false;
+    }
+
+    async function handleUploadScan() {
+      if (!uploadedFile) return;
+      const btn = document.getElementById('scan-btn-upload');
+      const errorEl = document.getElementById('scan-error');
+      const resultsArea = document.getElementById('results-area');
+
+      errorEl.style.display = 'none';
+      resultsArea.classList.remove('visible');
+      btn.classList.add('loading');
+      btn.disabled = true;
+      showScanningIndicator();
+
+      try {
+        const formData = new FormData();
+        formData.append('file', uploadedFile);
+        formData.append('detail_level', 'full');
+
+        const response = await fetch('/api/scan-upload?detail_level=full', {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `Server returned ${response.status}`);
+        }
+        const data = await response.json();
+        const report = data.report || {};
+        document.getElementById('youtube-url').value = `Uploaded: ${uploadedFile.name}`;
+        renderResults({
+          risk_level: report.overall_risk || 'UNKNOWN',
+          score: report.compliance_score ?? (report.overall_risk === 'LOW' ? 85 : report.overall_risk === 'MEDIUM' ? 55 : 25),
+          issues: (report.issues || []).map(i => ({
+            severity: i.risk_level, category: i.category, description: i.explanation,
+            quote: i.problematic_text, regulation: i.regulation,
+            regulation_url: i.regulation_url || '', regulation_name: i.regulation_name || '',
+            fix: i.recommended_fix,
+          })),
+          summary: report.summary,
+        });
+      } catch (err) {
+        errorEl.textContent = `Upload scan failed: ${err.message}`;
+        errorEl.style.display = 'block';
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        hideScanningIndicator();
+      }
+    }
+
+    // ---- Try Sample Handlers ----
+    function fillSampleVideo() {
+      document.getElementById('youtube-url').value = 'https://www.youtube.com/watch?v=q_Vd7i4ZpgA';
+      document.getElementById('youtube-url').focus();
+    }
+
+    function fillSampleText() {
+      document.getElementById('text-content').value = "Hey guys! I've been using this amazing supplement called KetoBlast Pro and I lost 30 pounds in just 2 weeks! You HAVE to try it - it literally cures inflammation and reverses aging. My doctor was SHOCKED. Use my code HEALTH50 for 50% off at the link in my bio. Also, I've been investing in this new crypto token and it's guaranteed to 10x by next month - not financial advice lol but seriously put your savings in it.";
+      document.getElementById('text-content').focus();
+    }
+
+    // ---- Text Scan Handler ----
+    async function handleTextScan() {
+      const textarea = document.getElementById('text-content');
+      const btn = document.getElementById('scan-btn-text');
+      const errorEl = document.getElementById('scan-error');
+      const resultsArea = document.getElementById('results-area');
+      const text = textarea.value.trim();
+
+      errorEl.style.display = 'none';
+      resultsArea.classList.remove('visible');
+
+      if (!text) {
+        errorEl.textContent = 'Please paste some content to scan.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      showScanningIndicator();
+
+      try {
+        const response = await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: text, detail_level: 'full' }),
+        });
+        if (!response.ok) throw new Error(`Server returned ${response.status}`);
+        const data = await response.json();
+        const report = data.report || {};
+        document.getElementById('youtube-url').value = 'Text content scan';
+        renderResults({
+          risk_level: report.overall_risk || 'UNKNOWN',
+          score: report.compliance_score ?? (report.overall_risk === 'LOW' ? 85 : report.overall_risk === 'MEDIUM' ? 55 : 25),
+          issues: (report.issues || []).map(i => ({
+            severity: i.risk_level, category: i.category, description: i.explanation,
+            quote: i.problematic_text, regulation: i.regulation,
+            regulation_url: i.regulation_url || '', regulation_name: i.regulation_name || '',
+            fix: i.recommended_fix,
+          })),
+          summary: report.summary,
+        });
+      } catch (err) {
+        errorEl.textContent = `Scan failed: ${err.message}`;
+        errorEl.style.display = 'block';
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        hideScanningIndicator();
+      }
+    }
+
+    // ---- URL Scan Handler ----
+    async function handleUrlScan() {
+      const urlInput = document.getElementById('webpage-url');
+      const btn = document.getElementById('scan-btn-url');
+      const errorEl = document.getElementById('scan-error');
+      const resultsArea = document.getElementById('results-area');
+      const url = urlInput.value.trim();
+
+      errorEl.style.display = 'none';
+      resultsArea.classList.remove('visible');
+
+      if (!url) {
+        errorEl.textContent = 'Please enter a webpage URL to scan.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      showScanningIndicator();
+
+      try {
+        const response = await fetch('/api/scan-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: url, detail_level: 'full' }),
+        });
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `Server returned ${response.status}`);
+        }
+        const data = await response.json();
+        const report = data.report || {};
+        document.getElementById('youtube-url').value = url;
+        renderResults({
+          risk_level: report.overall_risk || 'UNKNOWN',
+          score: report.compliance_score ?? (report.overall_risk === 'LOW' ? 85 : report.overall_risk === 'MEDIUM' ? 55 : 25),
+          issues: (report.issues || []).map(i => ({
+            severity: i.risk_level, category: i.category, description: i.explanation,
+            quote: i.problematic_text, regulation: i.regulation,
+            regulation_url: i.regulation_url || '', regulation_name: i.regulation_name || '',
+            fix: i.recommended_fix,
+          })),
+          summary: report.summary,
+        });
+      } catch (err) {
+        errorEl.textContent = `URL scan failed: ${err.message}`;
+        errorEl.style.display = 'block';
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        hideScanningIndicator();
+      }
+    }
+
+    // ---- Scroll to Scanner (from pricing/CTA buttons) ----
+    function scrollToScanner(tab) {
+      switchTab(tab);
+      document.querySelector('.scan-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Focus the appropriate input after scroll
+      setTimeout(() => {
+        if (tab === 'video') {
+          document.getElementById('youtube-url').focus();
+        } else if (tab === 'text') {
+          document.getElementById('text-content').focus();
+        } else if (tab === 'url') {
+          document.getElementById('webpage-url').focus();
+        }
+      }, 600);
+    }
+
+    // ---- Enter Key Support ----
+    document.getElementById('youtube-url').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleScan();
+    });
+    document.getElementById('text-content').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) handleTextScan();
+    });
+    document.getElementById('webpage-url').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleUrlScan();
+    });
+
+    // ---- Render Scan Results ----
+    function renderResults(data) {
+      const resultsArea = document.getElementById('results-area');
+      const riskLevel = data.risk_level || 'UNKNOWN';
+      const score = data.score || 0;
+      const issues = data.issues || [];
+      const summary = data.summary || '';
+
+      const riskClass = riskLevel.toLowerCase().includes('high')
+        ? 'high'
+        : riskLevel.toLowerCase().includes('medium')
+        ? 'medium'
+        : 'low';
+
+      const riskEmoji = { high: '\u{1F534}', medium: '\u{1F7E1}', low: '\u{1F7E2}' }[riskClass] || '\u26AA';
+      const scoreColor = score >= 70 ? 'var(--accent-green)' : score >= 40 ? 'var(--accent-amber)' : 'var(--accent-red)';
+
+      // Category icons
+      const catIcons = {
+        'FTC': '\u{1F4CB}', 'Health': '\u{1F3E5}', 'Financial': '\u{1F4B0}',
+        'Privacy': '\u{1F512}', 'Copyright': '\u{00A9}', 'Platform': '\u{1F4F1}'
+      };
+
+      // Count by category
+      const catCounts = {};
+      issues.forEach(i => { catCounts[i.category] = (catCounts[i.category] || 0) + 1; });
+
+      let issuesHtml = '';
+      issues.forEach((issue, idx) => {
+        const sev = (issue.severity || 'MEDIUM').toUpperCase();
+        const sevClass = sev === 'HIGH' ? 'high' : sev === 'MEDIUM' ? 'medium' : 'low';
+        const sevColor = sev === 'HIGH' ? 'var(--accent-red)' : sev === 'MEDIUM' ? 'var(--accent-amber)' : 'var(--accent-green)';
+        const icon = catIcons[issue.category] || '\u26A0\uFE0F';
+
+        issuesHtml += `
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 12px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='${sevColor}'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <span style="background: ${sevColor}22; color: ${sevColor}; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">${sev} RISK</span>
+              <span style="background: var(--accent-blue); color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;">${icon} ${issue.category}</span>
+            </div>
+            ${issue.quote ? `<div style="background: rgba(239,68,68,0.08); border-left: 3px solid ${sevColor}; padding: 10px 14px; border-radius: 0 var(--radius-xs) var(--radius-xs) 0; margin-bottom: 12px; font-style: italic; color: var(--text-secondary); font-size: 14px;">"${issue.quote}"</div>` : ''}
+            <p style="color: var(--text-primary); font-size: 14px; line-height: 1.6; margin-bottom: 10px;">${issue.description}</p>
+            ${issue.regulation ? `<p style="color: var(--accent-cyan); font-size: 13px; margin-bottom: 10px;">\u{1F4D6} <strong>Regulation:</strong> ${issue.regulation}${issue.regulation_url ? ` &mdash; <a href="${issue.regulation_url}" target="_blank" rel="noopener" style="color: var(--accent-blue); text-decoration: underline; font-weight: 500;">View Official Source \u2197</a>` : ''}</p>` : ''}
+            ${issue.fix ? `<div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius-xs); padding: 10px 14px; margin-top: 8px;">
+              <p style="color: var(--accent-green); font-size: 13px; margin: 0;">\u2705 <strong>Recommended Fix:</strong> <span style="color: var(--text-secondary);">${issue.fix}</span></p>
+            </div>` : ''}
+          </div>`;
+      });
+
+      // Category summary chips
+      let catChips = Object.entries(catCounts).map(([cat, count]) => {
+        const icon = catIcons[cat] || '\u26A0\uFE0F';
+        return `<span style="background: rgba(99,102,241,0.15); color: var(--accent-blue); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;">${icon} ${cat}: ${count}</span>`;
+      }).join('');
+
+      resultsArea.innerHTML = `
+        <div class="report-card" style="animation: fadeInUp 0.5s ease;">
+          <div class="report-header">
+            <div class="report-header-left">
+              <h3 style="font-size: 22px;">${riskEmoji} Compliance Report</h3>
+              <span class="url-text" style="font-size: 13px; opacity: 0.6;">${document.getElementById('youtube-url').value}</span>
+            </div>
+            <div class="risk-badge ${riskClass}" style="font-size: 16px; padding: 8px 20px;">
+              <span class="dot"></span>
+              ${riskLevel.toUpperCase()} RISK
+            </div>
+          </div>
+
+          <div class="report-score-bar">
+            <div class="score-gauge-container">
+              <svg class="score-gauge-svg" viewBox="0 0 120 120">
+                <circle class="score-gauge-track" cx="60" cy="60" r="54" />
+                <circle class="score-gauge-glow" cx="60" cy="60" r="54"
+                  stroke="${scoreColor}"
+                  stroke-dasharray="${2 * Math.PI * 54}"
+                  stroke-dashoffset="${2 * Math.PI * 54}"
+                  style="--gauge-circumference: ${2 * Math.PI * 54}; --gauge-offset: ${2 * Math.PI * 54 - (score / 100) * 2 * Math.PI * 54}; --gauge-glow-color: ${scoreColor}40; animation: gaugeStrokeIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards, gaugeGlowPulse 3s ease-in-out 1.4s infinite;" />
+                <circle class="score-gauge-fill" cx="60" cy="60" r="54"
+                  stroke="${scoreColor}"
+                  stroke-dasharray="${2 * Math.PI * 54}"
+                  stroke-dashoffset="${2 * Math.PI * 54}"
+                  style="--gauge-circumference: ${2 * Math.PI * 54}; --gauge-offset: ${2 * Math.PI * 54 - (score / 100) * 2 * Math.PI * 54}; --gauge-glow-color: ${scoreColor}66;" />
+              </svg>
+              <div class="score-gauge-center" style="animation: gaugeNumberCount 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;">
+                <span class="score-gauge-number" style="color: ${scoreColor};">${score}</span>
+                <span class="score-gauge-max">out of 100</span>
+              </div>
+            </div>
+            <div class="score-gauge-info">
+              <span class="score-label">Compliance Score</span>
+              <span class="score-sublabel">${score >= 70 ? 'Your content meets most compliance standards.' : score >= 40 ? 'Several compliance issues need attention.' : 'Critical compliance problems detected.'}</span>
+            </div>
+          </div>
+
+          ${summary ? `<div style="background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0;">
+            <p style="color: var(--text-primary); font-size: 14px; line-height: 1.7; margin: 0;">\u{1F4CB} <strong>Summary:</strong> ${summary}</p>
+          </div>` : ''}
+
+          ${catChips ? `<div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 16px;">${catChips}</div>` : ''}
+
+          <div class="report-issues">
+            <h4 style="font-size: 18px; margin-bottom: 16px;">\u26A0\uFE0F ${issues.length} Issue${issues.length !== 1 ? 's' : ''} Found</h4>
+            ${issuesHtml || '<p style="color: var(--accent-green); font-size: 16px;">\u2705 No compliance issues found. Your content looks clean!</p>'}
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <button onclick="window.print()" style="flex: 1; padding: 10px; background: rgba(99,102,241,0.15); color: var(--accent-blue); border: 1px solid rgba(99,102,241,0.3); border-radius: var(--radius-xs); cursor: pointer; font-size: 14px; font-weight: 500;">\u{1F5A8}\uFE0F Save Report</button>
+            <button onclick="navigator.clipboard.writeText(document.querySelector('.report-card').innerText).then(()=>this.textContent='\u2705 Copied!')" style="flex: 1; padding: 10px; background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-xs); cursor: pointer; font-size: 14px; font-weight: 500;">\u{1F4CB} Copy Report</button>
+          </div>
+        </div>
+      `;
+
+      resultsArea.classList.add('visible');
+      resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+
+</body>
+</html>

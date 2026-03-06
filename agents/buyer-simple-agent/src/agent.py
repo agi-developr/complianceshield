@@ -20,17 +20,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from strands.models.openai import OpenAIModel
-
 from .strands_agent import create_agent, NVM_PLAN_ID, SELLER_URL, seller_registry
 from .registration_server import start_registration_server
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 BUYER_PORT = int(os.getenv("BUYER_PORT", "8000"))
-
-if not OPENAI_API_KEY:
-    print("OPENAI_API_KEY is required. Set it in .env file.")
-    sys.exit(1)
 
 
 def _parse_args():
@@ -56,10 +49,29 @@ def main():
     mode = args.mode
     port = args.port
 
-    model = OpenAIModel(
-        client_args={"api_key": OPENAI_API_KEY},
-        model_id=os.getenv("MODEL_ID", "gpt-4o-mini"),
-    )
+    def _create_model():
+        provider = os.getenv("COMPLIANCE_LLM_PROVIDER", "openai")
+        if provider == "anthropic":
+            from strands.models.anthropic import AnthropicModel
+            return AnthropicModel(
+                client_args={"api_key": os.environ.get("ANTHROPIC_API_KEY", "")},
+                model_id=os.getenv("COMPLIANCE_MODEL_ID", "claude-haiku-4-5-20251001"),
+                max_tokens=4096,
+            )
+        elif provider == "bedrock":
+            from strands.models.bedrock import BedrockModel
+            return BedrockModel(
+                model_id=os.getenv("BEDROCK_MODEL_ID", "us.anthropic.claude-3-5-sonnet-20241022-v2:0"),
+                region_name=os.getenv("AWS_REGION", "us-west-2"),
+            )
+        else:
+            from strands.models.openai import OpenAIModel
+            return OpenAIModel(
+                client_args={"api_key": os.environ.get("OPENAI_API_KEY", "")},
+                model_id=os.getenv("MODEL_ID", "gpt-4o-mini"),
+            )
+
+    model = _create_model()
     agent = create_agent(model, mode=mode)
 
     # Start registration server in A2A mode

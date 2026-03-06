@@ -1,25 +1,25 @@
-"""Pricing tiers for the data selling agent."""
+"""Pricing tiers for the compliance checker agent."""
 
 PRICING_TIERS = {
-    "simple": {
+    "quick": {
         "credits": 1,
-        "description": "Basic web search - returns raw search results",
-        "tool": "search_data",
+        "description": "Quick compliance scan - flags obvious legal issues in content",
+        "tool": "quick_scan",
     },
-    "medium": {
+    "full": {
         "credits": 5,
-        "description": "Content summarization - LLM-powered analysis",
-        "tool": "summarize_data",
+        "description": "Full compliance analysis - detailed per-section report with risk scores",
+        "tool": "full_analysis",
     },
-    "complex": {
+    "deep": {
         "credits": 10,
-        "description": "Full market research - multi-source report",
-        "tool": "research_data",
+        "description": "Deep compliance review - full analysis + legal citations + edit suggestions",
+        "tool": "deep_review",
     },
 }
 
 
 def get_credits_for_complexity(complexity: str) -> int:
     """Return the credit cost for a given complexity tier."""
-    tier = PRICING_TIERS.get(complexity, PRICING_TIERS["simple"])
+    tier = PRICING_TIERS.get(complexity, PRICING_TIERS["quick"])
     return tier["credits"]

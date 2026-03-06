@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect to ComplianceShield — AI Compliance from Any Tool</title>
+  <meta name="description" content="Connect ComplianceShield to Claude Desktop, MCP clients, A2A agents, Telegram, and REST API. Compliance scanning from your favorite AI tools.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --bg-code: #0d1117;
+      --border-card: rgba(99, 102, 241, 0.2);
+      --border-code: rgba(99, 102, 241, 0.15);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* -- Navigation -- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 14, 26, 0.8);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-weight: 700; font-size: 1.25rem;
+      text-decoration: none; color: var(--text-primary);
+    }
+    .nav-logo .shield-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+    /* -- Hero -- */
+    .page-hero {
+      padding: 8rem 2rem 3rem; text-align: center;
+      background: linear-gradient(180deg, rgba(99,102,241,0.06) 0%, transparent 60%);
+    }
+    .page-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 1rem;
+    }
+    .page-hero h1 .gradient-text {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-hero p {
+      color: var(--text-secondary); font-size: 1.15rem; max-width: 600px; margin: 0 auto;
+    }
+
+    /* -- Content -- */
+    .content { max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+    /* -- Section Card -- */
+    .section-card {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius); padding: 2.5rem; margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    .section-card.featured {
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.08);
+    }
+    .section-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .section-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .section-icon.claude { background: rgba(99, 102, 241, 0.15); }
+    .section-icon.a2a { background: rgba(168, 85, 247, 0.15); }
+    .section-icon.telegram { background: rgba(34, 211, 238, 0.15); }
+    .section-icon.rest { background: rgba(16, 185, 129, 0.15); }
+    .section-header h2 { font-size: 1.5rem; font-weight: 700; }
+    .section-header .badge {
+      font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem;
+      border-radius: 100px; background: rgba(99,102,241,0.15);
+      color: var(--accent-cyan); letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .section-card p { color: var(--text-secondary); margin-bottom: 1rem; }
+
+    /* -- Steps -- */
+    .step {
+      display: flex; gap: 1rem; margin-bottom: 1.25rem;
+      padding: 1rem; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm);
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: white;
+    }
+    .step-body h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .step-body p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0; }
+
+    /* -- Code Block -- */
+    .code-block {
+      position: relative; background: var(--bg-code);
+      border: 1px solid var(--border-code); border-radius: var(--radius-sm);
+      margin: 1rem 0; overflow: hidden;
+    }
+    .code-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.5rem 1rem; background: rgba(99,102,241,0.06);
+      border-bottom: 1px solid var(--border-code);
+      font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);
+    }
+    .copy-btn {
+      background: none; border: 1px solid var(--border-code); color: var(--text-muted);
+      padding: 0.2rem 0.6rem; border-radius: var(--radius-xs);
+      font-size: 0.7rem; cursor: pointer; font-family: var(--font-stack);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .copy-btn:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+    .code-body {
+      padding: 1rem; font-family: var(--font-mono); font-size: 0.82rem;
+      line-height: 1.6; overflow-x: auto; color: var(--text-secondary);
+      white-space: pre;
+    }
+    .code-body .key { color: #7dd3fc; }
+    .code-body .str { color: #86efac; }
+    .code-body .comment { color: var(--text-muted); font-style: italic; }
+
+    /* -- Tools Mockup -- */
+    .tools-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .tool-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem; background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(99,102,241,0.12); border-radius: var(--radius-sm);
+    }
+    .tool-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);
+      box-shadow: 0 0 6px rgba(16,185,129,0.4);
+    }
+    .tool-name { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500; }
+    .tool-desc { font-size: 0.72rem; color: var(--text-muted); }
+
+    /* -- Prompt Examples -- */
+    .prompt-example {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.85rem 1rem; background: rgba(34,211,238,0.05);
+      border: 1px solid rgba(34,211,238,0.12); border-radius: var(--radius-sm);
+      margin: 0.5rem 0; font-size: 0.88rem; color: var(--text-secondary);
+    }
+    .prompt-icon { color: var(--accent-cyan); flex-shrink: 0; font-size: 1rem; }
+
+    /* -- Chat Mockup -- */
+    .chat-mockup { margin: 1rem 0; }
+    .chat-msg {
+      display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start;
+    }
+    .chat-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+    }
+    .chat-avatar.user { background: rgba(99,102,241,0.2); }
+    .chat-avatar.bot { background: rgba(34,211,238,0.2); }
+    .chat-bubble {
+      padding: 0.65rem 1rem; border-radius: 12px; font-size: 0.85rem;
+      max-width: 80%; line-height: 1.5;
+    }
+    .chat-bubble.user-msg {
+      background: rgba(99,102,241,0.12); color: var(--text-primary);
+    }
+    .chat-bubble.bot-msg {
+      background: rgba(34,211,238,0.08); color: var(--text-secondary);
+    }
+
+    /* -- Footer -- */
+    footer {
+      text-align: center; padding: 3rem 2rem; color: var(--text-muted);
+      font-size: 0.8rem; border-top: 1px solid rgba(99,102,241,0.08);
+    }
+    footer a { color: var(--accent-blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* -- Responsive -- */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .page-hero h1 { font-size: 2rem; }
+      .section-card { padding: 1.5rem; }
+      .tools-grid { grid-template-columns: 1fr; }
+      .step { flex-direction: column; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html" class="active">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <h1>Connect to <span class="gradient-text">ComplianceShield</span></h1>
+    <p>Use compliance scanning from your favorite AI tools &mdash; Claude Desktop, MCP clients, autonomous agents, and Telegram.</p>
+  </section>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ============================================ -->
+    <!-- Claude Desktop / OpenClaw (MCP)              -->
+    <!-- ============================================ -->
+    <div class="section-card featured" id="claude-desktop">
+      <div class="section-header">
+        <div class="section-icon claude">&#x1F916;</div>
+        <div>
+          <h2>Claude Desktop / OpenClaw</h2>
+          <span class="badge">Recommended</span>
+        </div>
+      </div>
+      <p>Connect ComplianceShield as an MCP server in Claude Desktop (or any MCP-compatible client like OpenClaw, Cursor, or Windsurf). Get four compliance tools directly in your chat.</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Copy the MCP configuration</h4>
+          <p>Add this JSON to your Claude Desktop MCP config file.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>claude_desktop_config.json</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body">{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"compliance-shield"</span>: {
+      <span class="key">"url"</span>: <span class="str">"http://localhost:3000/mcp"</span>,
+      <span class="key">"headers"</span>: {
+        <span class="key">"Authorization"</span>: <span class="str">"Bearer YOUR_NVM_API_KEY"</span>
+      }
+    }
+  }
+}</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Open Claude Desktop settings</h4>
+          <p>Go to <strong>Settings &rarr; Developer &rarr; MCP Servers</strong> and paste the config, or edit the file directly at <code style="background:rgba(0,0,0,0.3); padding:0.15rem 0.4rem; border-radius:4px; font-family:var(--font-mono); font-size:0.82rem;">~/Library/Application Support/Claude/claude_desktop_config.json</code></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Restart Claude Desktop</h4>
+          <p>Close and reopen Claude Desktop. The MCP server will connect automatically.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>4 compliance tools are now available</h4>
+          <p>You will see these tools listed in the Claude Desktop tool panel:</p>
+        </div>
+      </div>
+
+      <div class="tools-grid">
+        <div class="tool-item">
+          <div class="tool-dot"></div>
+          <div>
+            <div class="tool-name">quick_scan</div>
+            <div class="tool-desc">Fast compliance check (1 credit)</div>
+          </div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-dot"></div>
+          <div>
+            <div class="tool-name">full_analysis</div>
+            <div class="tool-desc">Deep multi-regulation scan (5 credits)</div>
+          </div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-dot"></div>
+          <div>
+            <div class="tool-name">deep_review</div>
+            <div class="tool-desc">Expert legal review (10 credits)</div>
+          </div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-dot"></div>
+          <div>
+            <div class="tool-name">scan_video</div>
+            <div class="tool-desc">YouTube video compliance scan</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:1.25rem; margin-bottom:0.5rem; font-weight:600; color:var(--text-primary);">Example prompts to try:</p>
+
+      <div class="prompt-example">
+        <span class="prompt-icon">&#x2192;</span>
+        <span>"Scan this text for compliance issues: I lost 30 pounds using this supplement, doctors hate it!"</span>
+      </div>
+      <div class="prompt-example">
+        <span class="prompt-icon">&#x2192;</span>
+        <span>"Run a full_analysis on my product description and check FTC and FDA regulations."</span>
+      </div>
+      <div class="prompt-example">
+        <span class="prompt-icon">&#x2192;</span>
+        <span>"scan_video https://youtube.com/watch?v=example &mdash; check for undisclosed sponsorships."</span>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- A2A Agent Integration                        -->
+    <!-- ============================================ -->
+    <div class="section-card" id="a2a">
+      <div class="section-header">
+        <div class="section-icon a2a">&#x1F517;</div>
+        <h2>A2A Agent Integration</h2>
+      </div>
+      <p>Connect agent-to-agent using the A2A protocol. Your AI agent can discover ComplianceShield capabilities and purchase scans autonomously.</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Discover the agent card</h4>
+          <p>Fetch capabilities and pricing from the standard well-known endpoint.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>Agent Card URL</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body">http://localhost:9000/.well-known/agent.json</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Purchase a scan with the Python SDK</h4>
+          <p>Use the <code style="background:rgba(0,0,0,0.3); padding:0.15rem 0.4rem; border-radius:4px; font-family:var(--font-mono); font-size:0.82rem;">payments_py</code> SDK to create a payment token, then send a scan request.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>Python (payments_py)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body"><span class="comment"># pip install payments-py httpx</span>
+from payments_py import Payments, PaymentOptions
+
+payments = Payments.get_instance(
+    PaymentOptions(
+        nvm_api_key=<span class="str">"YOUR_NVM_API_KEY"</span>,
+        environment=<span class="str">"sandbox"</span>
+    )
+)
+
+<span class="comment"># Create access token for the plan</span>
+token = payments.create_token(plan_id=<span class="str">"PLAN_ID"</span>, credits=<span class="str">1</span>)
+
+<span class="comment"># Send scan request via A2A</span>
+import httpx
+response = httpx.post(
+    <span class="str">"http://localhost:9000/a2a"</span>,
+    headers={<span class="str">"payment-signature"</span>: token.access_token},
+    json={
+        <span class="key">"jsonrpc"</span>: <span class="str">"2.0"</span>,
+        <span class="key">"method"</span>: <span class="str">"message/send"</span>,
+        <span class="key">"params"</span>: {
+            <span class="key">"message"</span>: {
+                <span class="key">"role"</span>: <span class="str">"user"</span>,
+                <span class="key">"parts"</span>: [{<span class="key">"type"</span>: <span class="str">"text"</span>, <span class="key">"text"</span>: <span class="str">"Scan: Buy now, limited time offer!"</span>}]
+            }
+        }
+    }
+)
+print(response.json())</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Or use cURL directly</h4>
+          <p>Pass the payment signature as a header for quick testing.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>cURL</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body">curl -X POST http://localhost:9000/a2a \
+  -H "Content-Type: application/json" \
+  -H "payment-signature: YOUR_ACCESS_TOKEN" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "message/send",
+    "params": {
+      "message": {
+        "role": "user",
+        "parts": [{"type": "text", "text": "Scan this for FTC compliance: Amazing results guaranteed!"}]
+      }
+    }
+  }'</div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- Telegram Bot                                 -->
+    <!-- ============================================ -->
+    <div class="section-card" id="telegram">
+      <div class="section-header">
+        <div class="section-icon telegram">&#x2708;</div>
+        <h2>Telegram Bot</h2>
+      </div>
+      <p>Scan content directly from Telegram. Send text or YouTube links and get compliance results in seconds.</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Find the bot</h4>
+          <p>Search <strong>@ComplianceShieldBot</strong> on Telegram, or tap the link below.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>Telegram</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body">https://t.me/ComplianceShieldBot</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Use these commands</h4>
+          <p><code style="background:rgba(0,0,0,0.3); padding:0.15rem 0.4rem; border-radius:4px; font-family:var(--font-mono); font-size:0.82rem;">/scan</code> &mdash; Quick compliance check on text<br>
+          <code style="background:rgba(0,0,0,0.3); padding:0.15rem 0.4rem; border-radius:4px; font-family:var(--font-mono); font-size:0.82rem;">/scanfull</code> &mdash; Full multi-regulation analysis<br>
+          <code style="background:rgba(0,0,0,0.3); padding:0.15rem 0.4rem; border-radius:4px; font-family:var(--font-mono); font-size:0.82rem;">/video</code> &mdash; Scan a YouTube video URL</p>
+        </div>
+      </div>
+
+      <p style="font-weight:600; color:var(--text-primary); margin-top:1rem; margin-bottom:0.75rem;">Example conversation:</p>
+
+      <div class="chat-mockup">
+        <div class="chat-msg">
+          <div class="chat-avatar user">&#x1F464;</div>
+          <div class="chat-bubble user-msg">/scan This protein powder cures diabetes and reverses aging. FDA approved results!</div>
+        </div>
+        <div class="chat-msg">
+          <div class="chat-avatar bot">&#x1F6E1;</div>
+          <div class="chat-bubble bot-msg"><strong>Compliance Report</strong><br><br>Risk: <span style="color:var(--accent-red);">HIGH</span><br><br>&#x26A0; <strong>FDA violation</strong> &mdash; Unapproved disease claims ("cures diabetes")<br>&#x26A0; <strong>FTC violation</strong> &mdash; Unsubstantiated health claims ("reverses aging")<br>&#x26A0; <strong>FDA violation</strong> &mdash; Misleading approval claim ("FDA approved results")<br><br>3 issues found across FDA, FTC regulations.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- REST API                                     -->
+    <!-- ============================================ -->
+    <div class="section-card" id="rest-api">
+      <div class="section-header">
+        <div class="section-icon rest">&#x26A1;</div>
+        <h2>REST API</h2>
+      </div>
+      <p>Direct HTTP access for custom integrations. The scan endpoint is free and requires no authentication.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>Quick scan &mdash; no auth required</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body">curl -X POST http://localhost:3000/api/scan \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Buy now! Limited time offer, guaranteed results!"}'</div>
+      </div>
+
+      <p>For full endpoint documentation including video scanning, upload, history, and stats, see the <a href="/api-docs.html" style="color:var(--accent-cyan); text-decoration:none; font-weight:600;">API Docs &rarr;</a></p>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>ComplianceShield &mdash; AI-powered compliance for content creators</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="/index.html">Home</a> &middot;
+      <a href="/api-docs.html">API Docs</a> &middot;
+      <a href="/pricing.html">Pricing</a> &middot;
+      <a href="/dashboard.html">Dashboard</a>
+    </p>
+  </footer>
+
+  <script>
+    function copyCode(btn) {
+      const block = btn.closest('.code-block');
+      const body = block.querySelector('.code-body');
+      const text = body.innerText || body.textContent;
+      navigator.clipboard.writeText(text.trim()).then(() => {
+        btn.textContent = 'Copied!';
+        btn.style.color = '#10b981';
+        btn.style.borderColor = '#10b981';
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 1500);
+      });
+    }
+  </script>
+
+</body>
+</html>

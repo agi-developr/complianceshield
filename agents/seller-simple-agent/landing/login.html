@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — ComplianceShield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --border-card: rgba(99, 102, 241, 0.2);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 14, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .nav-logo .shield-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+
+    /* ── Split Layout ── */
+    .split-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Left Panel — Brand + Particles ── */
+    .left-panel {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 4rem 4rem;
+      overflow: hidden;
+      background: var(--bg-primary);
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(99, 102, 241, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 70%, rgba(34, 211, 238, 0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 50% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+      animation: gradientShift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes gradientShift {
+      0% { opacity: 0.8; filter: hue-rotate(0deg); }
+      50% { opacity: 1; filter: hue-rotate(15deg); }
+      100% { opacity: 0.8; filter: hue-rotate(-10deg); }
+    }
+
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+    }
+
+    /* Mesh grid overlay */
+    .mesh-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%);
+    }
+
+    /* Particle canvas */
+    #particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .orb-1 {
+      width: 350px; height: 350px;
+      background: rgba(99, 102, 241, 0.3);
+      top: 15%; left: -5%;
+      animation: orbDrift1 18s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 250px; height: 250px;
+      background: rgba(34, 211, 238, 0.25);
+      bottom: 20%; right: 5%;
+      animation: orbDrift2 22s ease-in-out infinite;
+    }
+
+    .orb-3 {
+      width: 180px; height: 180px;
+      background: rgba(168, 85, 247, 0.2);
+      top: 60%; left: 30%;
+      animation: orbDrift3 15s ease-in-out infinite;
+    }
+
+    @keyframes orbDrift1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -20px) scale(1.05); }
+      66% { transform: translate(-15px, 15px) scale(0.95); }
+    }
+
+    @keyframes orbDrift2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-25px, -30px) scale(1.08); }
+    }
+
+    @keyframes orbDrift3 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(20px, -25px); }
+    }
+
+    /* Brand content */
+    .brand-content {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--accent-cyan);
+      margin-bottom: 2rem;
+      animation: fadeSlideUp 0.8s ease-out 0.2s both;
+    }
+
+    .brand-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .brand-content h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      animation: fadeSlideUp 0.8s ease-out 0.3s both;
+    }
+
+    .brand-content h1 .gradient-text {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 50%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-content p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      animation: fadeSlideUp 0.8s ease-out 0.4s both;
+    }
+
+    /* Feature highlights */
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      animation: fadeSlideUp 0.8s ease-out 0.5s both;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .feature-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .feature-icon.blue {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .feature-icon.cyan {
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+    }
+
+    .feature-icon.green {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .feature-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .feature-text strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Social proof */
+    .social-proof {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      animation: fadeSlideUp 0.8s ease-out 0.6s both;
+    }
+
+    .avatar-stack {
+      display: flex;
+    }
+
+    .avatar-stack .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-primary);
+      margin-left: -8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .avatar-stack .avatar:first-child { margin-left: 0; }
+    .avatar-stack .avatar:nth-child(1) { background: linear-gradient(135deg, #6366f1, #818cf8); }
+    .avatar-stack .avatar:nth-child(2) { background: linear-gradient(135deg, #22d3ee, #06b6d4); }
+    .avatar-stack .avatar:nth-child(3) { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+    .avatar-stack .avatar:nth-child(4) { background: linear-gradient(135deg, #10b981, #059669); z-index: 1; }
+
+    .proof-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .proof-text strong {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Right Panel — Form ── */
+    .right-panel {
+      width: 520px;
+      min-width: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 6rem 3rem 3rem;
+      background: rgba(17, 24, 39, 0.4);
+      border-left: 1px solid rgba(99, 102, 241, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .right-panel::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 380px;
+      position: relative;
+      z-index: 1;
+      animation: formEnter 0.7s ease-out 0.1s both;
+    }
+
+    @keyframes formEnter {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Form header */
+    .form-header {
+      margin-bottom: 2rem;
+    }
+
+    .form-header h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    /* Social login buttons */
+    .social-login-btns {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-xs);
+      color: var(--text-primary);
+      font-family: var(--font-stack);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(34, 211, 238, 0.05));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .social-btn:hover::before { opacity: 1; }
+
+    .social-btn:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .social-btn:active { transform: translateY(0); }
+
+    .social-btn svg {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .social-btn span { position: relative; z-index: 1; }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .divider span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* ── Floating Label Inputs ── */
+    .input-group {
+      position: relative;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      max-height: 70px;
+      opacity: 1;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.3s ease,
+                  margin-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-group.hidden {
+      max-height: 0;
+      opacity: 0;
+      margin-bottom: 0;
+      pointer-events: none;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 1.15rem 1rem 0.55rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-xs);
+      color: var(--text-primary);
+      font-family: var(--font-stack);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      -webkit-appearance: none;
+    }
+
+    .input-group input::placeholder {
+      color: transparent;
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: left center;
+    }
+
+    /* Float up on focus or filled */
+    .input-group input:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label {
+      top: 0.55rem;
+      transform: translateY(0) scale(0.78);
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+
+    .input-group input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12), 0 0 20px rgba(99, 102, 241, 0.06);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Input highlight bar */
+    .input-highlight {
+      position: absolute;
+      bottom: 0; left: 50%;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      transition: width 0.35s ease, left 0.35s ease;
+      border-radius: 2px;
+    }
+
+    .input-group input:focus ~ .input-highlight {
+      width: 100%;
+      left: 0;
+    }
+
+    /* Password toggle */
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-toggle:hover { color: var(--text-secondary); }
+
+    .password-toggle svg { width: 18px; height: 18px; }
+
+    /* Form options row */
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.84rem;
+      transition: opacity 0.3s, max-height 0.3s;
+    }
+
+    .form-options.hidden {
+      opacity: 0;
+      max-height: 0;
+      margin-bottom: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px; height: 16px;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px; top: 1px;
+      width: 5px; height: 9px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .forgot-link {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: var(--accent-blue);
+      text-decoration: underline;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 0.9rem 1.5rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-stack);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.01em;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .submit-btn:hover::before { opacity: 1; }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35), 0 0 60px rgba(99, 102, 241, 0.1);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    }
+
+    .submit-btn span {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn .arrow {
+      transition: transform 0.3s;
+    }
+
+    .submit-btn:hover .arrow { transform: translateX(3px); }
+
+    /* Loading state */
+    .submit-btn.loading span { opacity: 0; }
+
+    .submit-btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      top: 50%; left: 50%;
+      margin-left: -10px; margin-top: -10px;
+      z-index: 2;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toggle text */
+    .toggle-text {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .toggle-text a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .toggle-text a:hover {
+      color: var(--accent-blue);
+      text-decoration: underline;
+    }
+
+    /* Terms text (signup only) */
+    .terms-text {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    }
+
+    .terms-text.show {
+      max-height: 60px;
+      opacity: 1;
+    }
+
+    .terms-text a {
+      color: var(--text-secondary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .left-panel { display: none; }
+
+      .right-panel {
+        width: 100%;
+        min-width: unset;
+        border-left: none;
+        min-height: 100vh;
+        background: var(--bg-primary);
+      }
+
+      .right-panel::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse 80% 50% at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 40% at 30% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 60%);
+        pointer-events: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0.75rem 1.25rem; }
+      .nav-links { display: none; }
+      .right-panel { padding: 5rem 1.5rem 2rem; }
+      .form-wrapper { max-width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .social-login-btns { flex-direction: column; }
+      .form-header h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" class="active" style="padding: 0.45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white; font-weight: 600;">Login</a></li>
+    </ul>
+  </nav>
+
+  <div class="split-layout">
+
+    <!-- ── Left Panel: Brand + Particles ── -->
+    <div class="left-panel">
+      <div class="mesh-grid"></div>
+      <canvas id="particle-canvas"></canvas>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+
+      <div class="brand-content">
+        <div class="brand-badge">
+          <span class="dot"></span>
+          AI-Powered Compliance Engine
+        </div>
+
+        <h1>
+          Protect your content.<br>
+          <span class="gradient-text">Ship with confidence.</span>
+        </h1>
+
+        <p>
+          ComplianceShield scans your listings, ads, and product pages against
+          FTC, GDPR, and platform-specific regulations in seconds -- not days.
+        </p>
+
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-icon blue">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span class="feature-text"><strong>Real-time scanning</strong> across 50+ regulatory frameworks</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon cyan">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <span class="feature-text"><strong>Detailed reports</strong> with fix suggestions you can apply instantly</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon green">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="feature-text"><strong>One-click remediation</strong> to fix issues before they become fines</span>
+          </div>
+        </div>
+
+        <div class="social-proof">
+          <div class="avatar-stack">
+            <div class="avatar">JK</div>
+            <div class="avatar">AL</div>
+            <div class="avatar">MR</div>
+            <div class="avatar">TS</div>
+          </div>
+          <div class="proof-text">
+            <strong>2,400+ creators</strong> trust ComplianceShield<br>
+            to keep their content compliant.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right Panel: Login Form ── -->
+    <div class="right-panel">
+      <div class="form-wrapper">
+
+        <div class="form-header">
+          <h2 id="form-title">Welcome back</h2>
+          <p id="form-subtitle">Sign in to your account to continue</p>
+        </div>
+
+        <!-- Social Login -->
+        <div class="social-login-btns">
+          <button class="social-btn" onclick="handleSubmit(event)" type="button">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          <button class="social-btn" onclick="handleSubmit(event)" type="button">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+            </svg>
+            <span>GitHub</span>
+          </button>
+        </div>
+
+        <div class="divider"><span>or continue with email</span></div>
+
+        <!-- Auth Form -->
+        <form id="auth-form" onsubmit="handleSubmit(event)" novalidate>
+
+          <!-- Name (signup only) -->
+          <div class="input-group hidden" id="name-field">
+            <input type="text" id="full-name" placeholder="Full Name" autocomplete="name">
+            <label for="full-name">Full Name</label>
+            <div class="input-highlight"></div>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <input type="email" id="email" placeholder="Email" required autocomplete="email">
+            <label for="email">Email address</label>
+            <div class="input-highlight"></div>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+            <label for="password">Password</label>
+            <div class="input-highlight"></div>
+            <button type="button" class="password-toggle" onclick="togglePassword()" aria-label="Toggle password visibility">
+              <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Login options -->
+          <div class="form-options" id="login-options">
+            <label class="checkbox-wrapper">
+              <input type="checkbox" checked>
+              Remember me
+            </label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="submit-btn" id="submit-btn">
+            <span id="btn-text">Sign in <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+          </button>
+        </form>
+
+        <!-- Terms (signup) -->
+        <div class="terms-text" id="terms-text">
+          By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </div>
+
+        <!-- Toggle -->
+        <div class="toggle-text" id="toggle-text">
+          Don't have an account? <a onclick="switchMode('signup')" id="toggle-link">Sign up</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Particle System ──
+    (function() {
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let animId;
+      let w, h;
+
+      function resize() {
+        const panel = canvas.parentElement;
+        w = canvas.width = panel.offsetWidth;
+        h = canvas.height = panel.offsetHeight;
+      }
+
+      function createParticle() {
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          r: Math.random() * 2 + 0.5,
+          opacity: Math.random() * 0.5 + 0.1,
+          color: Math.random() > 0.5
+            ? `rgba(99, 102, 241, ${Math.random() * 0.6 + 0.2})`
+            : `rgba(34, 211, 238, ${Math.random() * 0.5 + 0.15})`,
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.02 + 0.005
+        };
+      }
+
+      function init() {
+        resize();
+        const count = Math.min(Math.floor((w * h) / 8000), 80);
+        particles = [];
+        for (let i = 0; i < count; i++) {
+          particles.push(createParticle());
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+
+        // Draw connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+              const alpha = (1 - dist / 120) * 0.12;
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw particles
+        for (const p of particles) {
+          p.pulse += p.pulseSpeed;
+          const pulseScale = 1 + Math.sin(p.pulse) * 0.3;
+          const currentR = p.r * pulseScale;
+          const currentOpacity = p.opacity * (0.7 + Math.sin(p.pulse) * 0.3);
+
+          // Glow
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, currentR * 4);
+          grad.addColorStop(0, p.color);
+          grad.addColorStop(1, 'transparent');
+          ctx.beginPath();
+          ctx.fillStyle = grad;
+          ctx.arc(p.x, p.y, currentR * 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Core
+          ctx.beginPath();
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = currentOpacity;
+          ctx.arc(p.x, p.y, currentR, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+
+          // Move
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Wrap
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+          if (p.y < -10) p.y = h + 10;
+          if (p.y > h + 10) p.y = -10;
+        }
+
+        animId = requestAnimationFrame(draw);
+      }
+
+      init();
+      draw();
+
+      window.addEventListener('resize', () => {
+        cancelAnimationFrame(animId);
+        init();
+        draw();
+      });
+    })();
+
+    // ── Form Toggle (Login / Signup) ──
+    let currentMode = 'login';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      const title = document.getElementById('form-title');
+      const subtitle = document.getElementById('form-subtitle');
+      const nameField = document.getElementById('name-field');
+      const loginOptions = document.getElementById('login-options');
+      const btnText = document.getElementById('btn-text');
+      const toggleText = document.getElementById('toggle-text');
+      const termsText = document.getElementById('terms-text');
+
+      if (mode === 'signup') {
+        title.textContent = 'Create an account';
+        subtitle.textContent = 'Get started with ComplianceShield for free';
+        nameField.classList.remove('hidden');
+        loginOptions.classList.add('hidden');
+        btnText.innerHTML = 'Create account <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        toggleText.innerHTML = 'Already have an account? <a onclick="switchMode(\'login\')">Sign in</a>';
+        termsText.classList.add('show');
+        document.getElementById('password').autocomplete = 'new-password';
+      } else {
+        title.textContent = 'Welcome back';
+        subtitle.textContent = 'Sign in to your account to continue';
+        nameField.classList.add('hidden');
+        loginOptions.classList.remove('hidden');
+        btnText.innerHTML = 'Sign in <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        toggleText.innerHTML = 'Don\'t have an account? <a onclick="switchMode(\'signup\')">Sign up</a>';
+        termsText.classList.remove('show');
+        document.getElementById('password').autocomplete = 'current-password';
+      }
+    }
+
+    // ── Password Visibility Toggle ──
+    function togglePassword() {
+      const input = document.getElementById('password');
+      const eyeOpen = document.getElementById('eye-open');
+      const eyeClosed = document.getElementById('eye-closed');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.style.display = 'none';
+        eyeClosed.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeOpen.style.display = 'block';
+        eyeClosed.style.display = 'none';
+      }
+    }
+
+    // ── Form Submission ──
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.classList.add('loading');
+
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 800);
+    }
+  </script>
+
+</body>
+</html>

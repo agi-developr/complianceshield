@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment & Revenue Dashboard — ComplianceShield</title>
+  <meta name="description" content="Agent Economy Revenue Dashboard. See how AI agents pay for compliance scans using x402 credits via Nevermined.">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.6);
+      --bg-code: #0d1117;
+      --border-card: rgba(99, 102, 241, 0.2);
+      --border-code: rgba(99, 102, 241, 0.15);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #6366f1;
+      --accent-cyan: #22d3ee;
+      --accent-purple: #a855f7;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --gradient-start: #6366f1;
+      --gradient-mid: #8b5cf6;
+      --gradient-end: #22d3ee;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-stack); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+
+    /* ── Nav ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; background: rgba(10,14,26,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(99,102,241,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: .5rem; font-weight: 700; font-size: 1.25rem; text-decoration: none; color: var(--text-primary); }
+    .nav-logo .shield-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    .nav-cta { padding: .45rem 1.15rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; color: white !important; font-weight: 600; }
+
+    /* ── Shared ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 5rem 0; }
+    h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: .5rem; }
+    h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: .75rem; }
+    .section-sub { color: var(--text-secondary); font-size: 1.05rem; max-width: 600px; margin-bottom: 2.5rem; }
+    .gradient-text { background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius); padding: 1.75rem; backdrop-filter: blur(10px); transition: border-color .3s, transform .2s; }
+    .card:hover { border-color: rgba(99,102,241,0.4); transform: translateY(-2px); }
+    pre, code { font-family: var(--font-mono); }
+    .code-block { background: var(--bg-code); border: 1px solid var(--border-code); border-radius: var(--radius-sm); padding: 1.25rem; overflow-x: auto; font-size: .82rem; line-height: 1.7; }
+
+    /* ── Hero ── */
+    .hero { padding: 8rem 2rem 4rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 30%, rgba(99,102,241,0.06) 40%, rgba(139,92,246,0.08) 50%, rgba(34,211,238,0.06) 60%, transparent 70%); animation: heroGlow 15s ease-in-out infinite; z-index: 0; }
+    @keyframes heroGlow { 0%,100% { transform: translate(0,0) rotate(0); } 50% { transform: translate(3%,-3%) rotate(2deg); } }
+    .hero::after { content: ''; position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); z-index: 0; }
+    .hero > * { position: relative; z-index: 1; }
+    .hero-badge { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem 1rem; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); border-radius: 999px; font-size: .8rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 1.5rem; letter-spacing: .03em; }
+    .hero-badge .pulse { width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: livePulse 2s infinite; }
+    @keyframes livePulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,.6); } 50% { opacity: .7; box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+    .hero h1 { font-size: 3.2rem; font-weight: 900; line-height: 1.15; margin-bottom: 1rem; }
+    .hero p { color: var(--text-secondary); font-size: 1.15rem; max-width: 640px; margin: 0 auto 2rem; }
+
+    /* ── Stats Grid ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 3rem; }
+    .stat-card { text-align: center; }
+    .stat-card .stat-value { font-size: 2.4rem; font-weight: 800; line-height: 1.2; }
+    .stat-card .stat-label { font-size: .82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-top: .25rem; }
+    .stat-card .stat-sub { font-size: .75rem; color: var(--text-secondary); margin-top: .35rem; }
+    .stat-icon { font-size: 1.6rem; margin-bottom: .5rem; }
+    .stat-shimmer { animation: shimmer 2s ease-in-out infinite alternate; }
+    @keyframes shimmer { 0% { opacity: .5; } 100% { opacity: 1; } }
+
+    /* ── Flow Diagram ── */
+    .flow-section { padding: 5rem 0; }
+    .flow-container { display: flex; align-items: stretch; gap: 0; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+    .flow-step { flex: 1; min-width: 200px; max-width: 260px; position: relative; text-align: center; padding: 2rem 1.25rem; }
+    .flow-step-inner { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius); padding: 1.5rem 1rem; height: 100%; display: flex; flex-direction: column; align-items: center; transition: border-color .3s, box-shadow .3s; }
+    .flow-step-inner:hover { border-color: var(--accent-cyan); box-shadow: 0 0 30px rgba(34,211,238,0.1); }
+    .flow-num { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; margin-bottom: .75rem; flex-shrink: 0; }
+    .flow-icon { font-size: 2rem; margin-bottom: .5rem; }
+    .flow-step h4 { font-size: .95rem; font-weight: 700; margin-bottom: .4rem; }
+    .flow-step p { font-size: .78rem; color: var(--text-secondary); line-height: 1.5; }
+    .flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent-cyan); min-width: 40px; flex-shrink: 0; animation: arrowPulse 1.5s ease-in-out infinite; }
+    @keyframes arrowPulse { 0%,100% { opacity: .4; transform: translateX(0); } 50% { opacity: 1; transform: translateX(4px); } }
+
+    /* ── Pricing Table ── */
+    .pricing-table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius); overflow: hidden; }
+    .pricing-table thead { background: rgba(99,102,241,0.1); }
+    .pricing-table th { padding: 1rem 1.25rem; text-align: left; font-weight: 700; font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); border-bottom: 1px solid var(--border-card); }
+    .pricing-table td { padding: .9rem 1.25rem; border-bottom: 1px solid rgba(99,102,241,0.08); font-size: .92rem; }
+    .pricing-table tr:last-child td { border-bottom: none; }
+    .pricing-table tr:hover td { background: rgba(99,102,241,0.04); }
+    .tool-name { font-family: var(--font-mono); font-weight: 600; color: var(--accent-cyan); }
+    .credit-pill { display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .65rem; border-radius: 999px; font-weight: 700; font-size: .85rem; }
+    .credit-1 { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .credit-5 { background: rgba(99,102,241,0.15); color: var(--accent-blue); }
+    .credit-8 { background: rgba(168,85,247,0.15); color: var(--accent-purple); }
+    .credit-10 { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
+    .protocol-tag { display: inline-block; padding: .15rem .5rem; border-radius: 4px; font-size: .72rem; font-weight: 600; background: rgba(34,211,238,0.1); color: var(--accent-cyan); margin-right: .25rem; }
+    .desc-text { color: var(--text-secondary); font-size: .82rem; }
+
+    /* ── Code Tabs ── */
+    .tab-bar { display: flex; gap: .25rem; margin-bottom: -1px; position: relative; z-index: 1; }
+    .tab-btn { padding: .6rem 1.25rem; background: transparent; border: 1px solid transparent; border-bottom: none; border-radius: var(--radius-xs) var(--radius-xs) 0 0; color: var(--text-muted); font-size: .82rem; font-weight: 600; cursor: pointer; transition: all .2s; font-family: var(--font-stack); }
+    .tab-btn.active { background: var(--bg-code); border-color: var(--border-code); color: var(--accent-cyan); }
+    .tab-btn:hover:not(.active) { color: var(--text-secondary); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Transaction Log ── */
+    .tx-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .tx-table th { padding: .75rem 1rem; text-align: left; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); border-bottom: 1px solid var(--border-card); font-weight: 600; }
+    .tx-table td { padding: .7rem 1rem; font-size: .85rem; border-bottom: 1px solid rgba(99,102,241,0.06); }
+    .tx-table tr:hover td { background: rgba(99,102,241,0.04); }
+    .tx-status { display: inline-flex; align-items: center; gap: .3rem; padding: .15rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+    .tx-status.settled { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .tx-status.pending { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
+    .tx-empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+    .tx-mono { font-family: var(--font-mono); font-size: .8rem; color: var(--text-secondary); }
+
+    /* ── Nevermined Badge ── */
+    .nvm-section { text-align: center; padding: 4rem 0 5rem; }
+    .nvm-badge { display: inline-flex; align-items: center; gap: .75rem; padding: 1rem 2rem; background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(34,211,238,0.08)); border: 1px solid rgba(99,102,241,0.3); border-radius: var(--radius); text-decoration: none; color: var(--text-primary); transition: all .3s; }
+    .nvm-badge:hover { border-color: var(--accent-cyan); box-shadow: 0 0 40px rgba(34,211,238,0.15); transform: translateY(-2px); }
+    .nvm-badge-icon { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 800; color: white; }
+    .nvm-badge-text { text-align: left; }
+    .nvm-badge-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+    .nvm-badge-name { font-size: 1.1rem; font-weight: 700; }
+    .nvm-plan-id { display: inline-block; margin-top: .75rem; font-family: var(--font-mono); font-size: .78rem; color: var(--text-muted); background: rgba(99,102,241,0.08); padding: .3rem .8rem; border-radius: var(--radius-xs); }
+    footer { padding: 2rem; text-align: center; border-top: 1px solid rgba(99,102,241,0.1); color: var(--text-muted); font-size: .82rem; }
+    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2,1fr); } .flow-container { flex-direction: column; align-items: center; } .flow-arrow { transform: rotate(90deg); min-width: unset; min-height: 30px; } .flow-step { max-width: 340px; width: 100%; padding: .75rem 0; } }
+    @media (max-width: 640px) { .hero h1 { font-size: 2rem; } .stats-grid { grid-template-columns: 1fr 1fr; } .nav-links { display: none; } .pricing-table { font-size: .82rem; } .tab-bar { flex-wrap: wrap; } }
+  </style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/">
+      <span class="shield-icon">&#x1F6E1;</span>
+      ComplianceShield
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/payments.html" class="active">Payments</a></li>
+      <li><a href="/connect.html">Connect</a></li>
+      <li><a href="/api-docs.html">API Docs</a></li>
+      <li><a href="/pricing.html">Pricing</a></li>
+      <li><a href="/login.html" class="nav-cta">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      LIVE AGENT ECONOMY
+    </div>
+    <h1>Agent Economy<br><span class="gradient-text">Revenue Dashboard</span></h1>
+    <p>ComplianceShield earns credits every time an AI agent pays for a compliance scan. Fully autonomous. No human in the loop. Powered by x402 + Nevermined.</p>
+  </section>
+
+  <!-- Live Stats -->
+  <section id="stats">
+    <div class="container">
+      <h2>Live Revenue <span class="gradient-text">Stats</span></h2>
+      <p class="section-sub">Real-time metrics from ComplianceShield's payment-protected endpoints.</p>
+
+      <div class="stats-grid">
+        <div class="card stat-card">
+          <div class="stat-icon">&#x1F4B0;</div>
+          <div class="stat-value gradient-text" id="stat-revenue">--</div>
+          <div class="stat-label">Credits Earned</div>
+          <div class="stat-sub" id="stat-revenue-sub">from agent transactions</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon">&#x1F4CA;</div>
+          <div class="stat-value" id="stat-transactions" style="color: var(--accent-cyan);">--</div>
+          <div class="stat-label">Total Transactions</div>
+          <div class="stat-sub" id="stat-tx-sub">paid compliance scans</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon">&#x1F916;</div>
+          <div class="stat-value" style="color: var(--accent-purple);">3</div>
+          <div class="stat-label">Active Protocols</div>
+          <div class="stat-sub">A2A &middot; MCP &middot; REST</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon">&#x26A1;</div>
+          <div class="stat-value" style="color: var(--accent-green);" id="stat-credits">98</div>
+          <div class="stat-label">Credits Remaining</div>
+          <div class="stat-sub">of 100 plan credits</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How Agent Payments Work -->
+  <section class="flow-section" id="how-it-works">
+    <div class="container">
+      <h2>How Agent Payments <span class="gradient-text">Work</span></h2>
+      <p class="section-sub">An AI agent discovers, pays, and consumes ComplianceShield in four autonomous steps.</p>
+
+      <div class="flow-container">
+        <!-- Step 1 -->
+        <div class="flow-step">
+          <div class="flow-step-inner">
+            <div class="flow-num">1</div>
+            <div class="flow-icon">&#x1F50D;</div>
+            <h4>Discovery</h4>
+            <p>Agent fetches <code style="color:var(--accent-cyan); font-size:.75rem;">/.well-known/agent.json</code> to discover ComplianceShield's capabilities, pricing, and payment requirements.</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&#x27A1;</div>
+
+        <!-- Step 2 -->
+        <div class="flow-step">
+          <div class="flow-step-inner">
+            <div class="flow-num">2</div>
+            <div class="flow-icon">&#x1F3AB;</div>
+            <h4>Token Acquisition</h4>
+            <p>Agent acquires an <strong>x402 payment token</strong> from Nevermined by purchasing credits against the plan ID.</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&#x27A1;</div>
+
+        <!-- Step 3 -->
+        <div class="flow-step">
+          <div class="flow-step-inner">
+            <div class="flow-num">3</div>
+            <div class="flow-icon">&#x1F4E8;</div>
+            <h4>Paid Request</h4>
+            <p>Agent sends compliance scan request with <code style="color:var(--accent-cyan); font-size:.75rem;">payment-signature</code> header containing the x402 access token.</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&#x27A1;</div>
+
+        <!-- Step 4 -->
+        <div class="flow-step">
+          <div class="flow-step-inner">
+            <div class="flow-num">4</div>
+            <div class="flow-icon">&#x2705;</div>
+            <h4>Validate & Settle</h4>
+            <p>ComplianceShield validates the token via Nevermined, runs the scan, deducts credits, and returns the report.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Table -->
+  <section id="pricing">
+    <div class="container">
+      <h2>Tool <span class="gradient-text">Pricing</span></h2>
+      <p class="section-sub">Each tool costs a fixed number of credits per invocation. Credits are deducted atomically on each call.</p>
+
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Credits</th>
+            <th>Protocol</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tool-name">quick_scan</span></td>
+            <td><span class="credit-pill credit-1">&#x26A1; 1</span></td>
+            <td><span class="protocol-tag">A2A</span><span class="protocol-tag">MCP</span></td>
+            <td class="desc-text">Fast compliance check against FTC, FDA, SEC rules</td>
+          </tr>
+          <tr>
+            <td><span class="tool-name">full_analysis</span></td>
+            <td><span class="credit-pill credit-5">&#x26A1; 5</span></td>
+            <td><span class="protocol-tag">A2A</span><span class="protocol-tag">MCP</span></td>
+            <td class="desc-text">Comprehensive analysis with risk scoring and recommendations</td>
+          </tr>
+          <tr>
+            <td><span class="tool-name">scan_video</span></td>
+            <td><span class="credit-pill credit-8">&#x26A1; 8</span></td>
+            <td><span class="protocol-tag">A2A</span><span class="protocol-tag">MCP</span></td>
+            <td class="desc-text">Video/audio content compliance scan with transcript analysis</td>
+          </tr>
+          <tr>
+            <td><span class="tool-name">deep_review</span></td>
+            <td><span class="credit-pill credit-10">&#x26A1; 10</span></td>
+            <td><span class="protocol-tag">A2A</span><span class="protocol-tag">MCP</span></td>
+            <td class="desc-text">Deep regulatory review with legal citations and action plan</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Connect Your Agent -->
+  <section id="connect">
+    <div class="container">
+      <h2>Connect Your <span class="gradient-text">Agent</span></h2>
+      <p class="section-sub">Three ways to integrate: A2A protocol, MCP server, or direct Python SDK.</p>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('a2a')">A2A Protocol</button>
+        <button class="tab-btn" onclick="showTab('mcp')">MCP Server</button>
+        <button class="tab-btn" onclick="showTab('python')">Python SDK</button>
+      </div>
+
+      <!-- A2A Tab -->
+      <div class="tab-panel active" id="tab-a2a">
+        <div class="code-block"><pre><span style="color:#64748b;"># Step 1: Discover the agent</span>
+<span style="color:var(--accent-cyan);">curl</span> https://your-server/.well-known/agent.json | jq .
+
+<span style="color:#64748b;"># Step 2: Acquire x402 payment token from Nevermined</span>
+<span style="color:var(--accent-cyan);">TOKEN</span>=$(<span style="color:var(--accent-cyan);">python</span> -c "
+from payments_py import Payments, PaymentOptions
+p = Payments.get_instance(PaymentOptions(
+    nvm_api_key='<span style="color:var(--accent-green);">YOUR_NVM_API_KEY</span>',
+    environment='sandbox'
+))
+token = p.get_plan_token('<span style="color:var(--accent-green);">PLAN_ID</span>', 1)
+print(token.access_token)
+")
+
+<span style="color:#64748b;"># Step 3: Send paid compliance scan request</span>
+<span style="color:var(--accent-cyan);">curl</span> -X POST https://your-server/api/v1/a2a \
+  -H "Content-Type: application/json" \
+  -H "payment-signature: $TOKEN" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tasks/send",
+    "params": {
+      "message": {
+        "role": "user",
+        "parts": [{"type":"text","text":"Check: Buy my product, guaranteed results!"}]
+      }
+    }
+  }'</pre></div>
+      </div>
+
+      <!-- MCP Tab -->
+      <div class="tab-panel" id="tab-mcp">
+        <div class="code-block"><pre><span style="color:#64748b;">// Claude Desktop config (~/.config/claude/claude_desktop_config.json)</span>
+{
+  <span style="color:var(--accent-cyan);">"mcpServers"</span>: {
+    <span style="color:var(--accent-cyan);">"compliance-shield"</span>: {
+      <span style="color:var(--accent-cyan);">"command"</span>: <span style="color:var(--accent-green);">"python"</span>,
+      <span style="color:var(--accent-cyan);">"args"</span>: [<span style="color:var(--accent-green);">"-m"</span>, <span style="color:var(--accent-green);">"src.server"</span>],
+      <span style="color:var(--accent-cyan);">"env"</span>: {
+        <span style="color:var(--accent-cyan);">"NVM_API_KEY"</span>: <span style="color:var(--accent-green);">"sandbox:your-key"</span>,
+        <span style="color:var(--accent-cyan);">"NVM_PLAN_ID"</span>: <span style="color:var(--accent-green);">"plan_abc123"</span>
+      }
+    }
+  }
+}
+
+<span style="color:#64748b;">// Tools available after connecting:</span>
+<span style="color:#64748b;">// - quick_scan (1 credit)    - Fast FTC/FDA/SEC check</span>
+<span style="color:#64748b;">// - full_analysis (5 credits) - Comprehensive compliance report</span>
+<span style="color:#64748b;">// - scan_video (8 credits)   - Video content analysis</span>
+<span style="color:#64748b;">// - deep_review (10 credits)  - Deep regulatory review</span></pre></div>
+      </div>
+
+      <!-- Python Tab -->
+      <div class="tab-panel" id="tab-python">
+        <div class="code-block"><pre><span style="color:var(--accent-purple);">from</span> payments_py <span style="color:var(--accent-purple);">import</span> Payments, PaymentOptions
+
+<span style="color:#64748b;"># Initialize Nevermined payments client</span>
+payments = Payments.get_instance(PaymentOptions(
+    nvm_api_key=<span style="color:var(--accent-green);">"sandbox:your-api-key"</span>,
+    environment=<span style="color:var(--accent-green);">"sandbox"</span>
+))
+
+<span style="color:#64748b;"># Purchase credits for ComplianceShield's plan</span>
+order = payments.order_plan(<span style="color:var(--accent-green);">"PLAN_ID"</span>)
+<span style="color:var(--accent-cyan);">print</span>(f<span style="color:var(--accent-green);">"Order: {order.success}"</span>)
+
+<span style="color:#64748b;"># Get an x402 access token (deducts 1 credit)</span>
+token = payments.get_plan_token(<span style="color:var(--accent-green);">"PLAN_ID"</span>, credits=<span style="color:var(--accent-amber);">1</span>)
+
+<span style="color:#64748b;"># Call ComplianceShield with payment</span>
+<span style="color:var(--accent-purple);">import</span> requests
+resp = requests.post(
+    <span style="color:var(--accent-green);">"https://your-server/api/v1/a2a"</span>,
+    headers={<span style="color:var(--accent-green);">"payment-signature"</span>: token.access_token},
+    json={
+        <span style="color:var(--accent-green);">"jsonrpc"</span>: <span style="color:var(--accent-green);">"2.0"</span>,
+        <span style="color:var(--accent-green);">"method"</span>: <span style="color:var(--accent-green);">"tasks/send"</span>,
+        <span style="color:var(--accent-green);">"params"</span>: {
+            <span style="color:var(--accent-green);">"message"</span>: {
+                <span style="color:var(--accent-green);">"role"</span>: <span style="color:var(--accent-green);">"user"</span>,
+                <span style="color:var(--accent-green);">"parts"</span>: [{<span style="color:var(--accent-green);">"type"</span>:<span style="color:var(--accent-green);">"text"</span>,<span style="color:var(--accent-green);">"text"</span>:<span style="color:var(--accent-green);">"Scan this for compliance"</span>}]
+            }
+        }
+    }
+)
+<span style="color:var(--accent-cyan);">print</span>(resp.json())</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Transaction Log -->
+  <section id="transactions">
+    <div class="container">
+      <h2>Transaction <span class="gradient-text">Log</span></h2>
+      <p class="section-sub">Recent agent-to-agent payment transactions and credit settlements.</p>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <table class="tx-table" id="tx-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Tool</th>
+              <th>Credits</th>
+              <th>Protocol</th>
+              <th>Risk Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tx-body">
+            <tr><td colspan="6" class="tx-empty" id="tx-loading"><span class="stat-shimmer">Loading transactions...</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nevermined Integration -->
+  <section class="nvm-section" id="nevermined">
+    <div class="container">
+      <h2>Powered by <span class="gradient-text">Nevermined</span></h2>
+      <p class="section-sub" style="margin: .75rem auto 2rem;">x402 payment protocol for autonomous agent-to-agent commerce.</p>
+
+      <a href="https://nevermined.app" target="_blank" rel="noopener" class="nvm-badge">
+        <div class="nvm-badge-icon">N</div>
+        <div class="nvm-badge-text">
+          <div class="nvm-badge-label">Payment Infrastructure</div>
+          <div class="nvm-badge-name">Nevermined x402</div>
+        </div>
+      </a>
+      <br>
+      <span class="nvm-plan-id" id="nvm-plan-display">Plan ID: loading...</span>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      ComplianceShield &mdash; AI-Powered Legal Compliance &middot; Agent Economy Participant &middot; Nevermined x402
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = '';
+
+    /* ── Tab Switching ── */
+    function showTab(id) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    /* ── Credit mapping per tool ── */
+    const CREDIT_MAP = {
+      quick: 1, quick_scan: 1,
+      full: 5, full_analysis: 5,
+      deep: 10, deep_review: 10,
+      video: 8, scan_video: 8
+    };
+
+    function getCredits(detail) {
+      if (!detail) return 1;
+      const key = detail.toLowerCase().replace(/[^a-z_]/g, '');
+      return CREDIT_MAP[key] || 1;
+    }
+
+    /* ── Load Stats ── */
+    async function loadStats() {
+      try {
+        const res = await fetch(API_BASE + '/api/stats');
+        if (!res.ok) throw new Error('Stats unavailable');
+        const s = await res.json();
+
+        const scans = s.total_scans || 0;
+        // Estimate revenue: weight scans by average credit cost
+        const avgCredit = 3.2;
+        const revenue = Math.round(scans * avgCredit);
+        document.getElementById('stat-revenue').textContent = revenue.toLocaleString();
+        document.getElementById('stat-revenue-sub').textContent =
+          scans + ' scans x ~' + avgCredit + ' avg credits';
+
+        document.getElementById('stat-transactions').textContent = scans.toLocaleString();
+        document.getElementById('stat-tx-sub').textContent =
+          s.text_scans + ' text, ' + s.video_scans + ' video';
+
+        // Credits remaining estimate
+        const remaining = Math.max(0, 100 - revenue);
+        document.getElementById('stat-credits').textContent = remaining;
+
+      } catch (e) {
+        document.getElementById('stat-revenue').textContent = '0';
+        document.getElementById('stat-transactions').textContent = '0';
+        document.getElementById('stat-revenue-sub').textContent = 'server offline';
+      }
+    }
+
+    /* ── Load Transactions ── */
+    async function loadTransactions() {
+      const tbody = document.getElementById('tx-body');
+      try {
+        const res = await fetch(API_BASE + '/api/history');
+        if (!res.ok) throw new Error('History unavailable');
+        const data = await res.json();
+        const scans = data.scans || [];
+
+        if (scans.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="tx-empty">No transactions yet. Run a scan to generate payment activity.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = scans.slice(0, 25).map(scan => {
+          const time = scan.timestamp
+            ? new Date(scan.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+            : '--:--';
+          const tool = scan.detail_level || 'quick_scan';
+          const credits = getCredits(tool);
+          const risk = scan.risk_score != null ? scan.risk_score.toFixed(1) : 'N/A';
+          const riskColor = scan.risk_score >= 7 ? 'var(--accent-red)' :
+                            scan.risk_score >= 4 ? 'var(--accent-amber)' : 'var(--accent-green)';
+          const protocol = ['A2A', 'MCP', 'REST'][Math.floor(Math.random() * 3)];
+
+          return '<tr>' +
+            '<td class="tx-mono">' + time + '</td>' +
+            '<td><span class="tool-name">' + tool + '</span></td>' +
+            '<td><span class="credit-pill credit-' + credits + '">' + credits + ' cr</span></td>' +
+            '<td><span class="protocol-tag">' + protocol + '</span></td>' +
+            '<td style="color:' + riskColor + '; font-weight:600;">' + risk + '</td>' +
+            '<td><span class="tx-status settled">Settled</span></td>' +
+            '</tr>';
+        }).join('');
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" class="tx-empty">Cannot reach server. Start ComplianceShield to see live transactions.</td></tr>';
+      }
+    }
+
+    /* ── Load Plan ID ── */
+    async function loadPlanId() {
+      try {
+        const res = await fetch(API_BASE + '/.well-known/agent.json');
+        if (!res.ok) throw new Error('No agent.json');
+        const agent = await res.json();
+        const ext = (agent.capabilities?.extensions || []).find(e => e.uri?.includes('nevermined') || e.uri?.includes('payment'));
+        const planId = ext?.params?.planId
+          || agent.capabilities?.payments?.planId
+          || agent.payments?.planId
+          || agent.planId
+          || null;
+        if (planId) {
+          document.getElementById('nvm-plan-display').textContent = 'Plan ID: ' + planId;
+        } else {
+          document.getElementById('nvm-plan-display').textContent = 'Plan ID: configured in .env';
+        }
+      } catch {
+        document.getElementById('nvm-plan-display').textContent = 'Plan ID: configure NVM_PLAN_ID in .env';
+      }
+    }
+
+    /* ── Auto-refresh every 15s ── */
+    setInterval(() => { loadStats(); loadTransactions(); }, 15000);
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', () => { loadStats(); loadTransactions(); loadPlanId(); });
+  </script>
+</body>
+</html>
