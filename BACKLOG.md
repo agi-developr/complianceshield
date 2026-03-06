@@ -7,9 +7,7 @@
   - Team name: ComplianceShield
   - Agent URL: https://candelaria-fierce-ingeniously.ngrok-free.dev
   - Description: AI-powered legal compliance checker for content creators
-- [ ] **Restart services** to pick up code improvements (rate limiting, error handling)
-  - Run: `bash ~/hackathon-compliance/restart-all.sh`
-  - Then: `ngrok http 9000` in a separate terminal
+- [x] ~~Restart services~~ — already restarted, new code is live (rate limiting, validation, demo endpoint)
 - [ ] **Practice the 3-minute pitch** — see DEMO-DAY-CHEATSHEET.md
 
 ### Networking (For "Most Interconnected" Prize)
