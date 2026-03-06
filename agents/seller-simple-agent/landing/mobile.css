@@ -1,0 +1,229 @@
+/* ══════════════════════════════════════════════════════
+   ComplianceShield — Shared Mobile Responsive Styles
+   CSS-only hamburger menu + responsive utilities
+   ══════════════════════════════════════════════════════ */
+
+/* ── Hamburger Toggle (CSS-only, no JS) ── */
+#mobile-nav-toggle {
+  display: none;
+}
+
+.hamburger-label {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  gap: 5px;
+  z-index: 200;
+  position: relative;
+}
+
+.hamburger-label span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #f1f5f9;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Hamburger -> X animation */
+#mobile-nav-toggle:checked ~ nav .hamburger-label span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+#mobile-nav-toggle:checked ~ nav .hamburger-label span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+#mobile-nav-toggle:checked ~ nav .hamburger-label span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* ── Mobile Nav Overlay ── */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 26, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 99;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  padding-top: 60px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.mobile-nav-overlay a {
+  color: #f1f5f9;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 0.9rem 2rem;
+  width: 100%;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+}
+
+.mobile-nav-overlay a:hover,
+.mobile-nav-overlay a.active {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.mobile-nav-overlay .mobile-nav-cta {
+  margin-top: 1rem;
+  padding: 0.75rem 2.5rem;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  width: auto;
+  border-bottom: none;
+}
+
+.mobile-nav-overlay .mobile-nav-cta:hover {
+  background: linear-gradient(135deg, #818cf8, #c084fc);
+}
+
+#mobile-nav-toggle:checked ~ .mobile-nav-overlay {
+  display: flex;
+}
+
+/* ── Tablet Breakpoint (1024px) ── */
+@media (max-width: 1024px) {
+  .mobile-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
+  }
+}
+
+/* ── Mobile Breakpoint (768px) ── */
+@media (max-width: 768px) {
+  /* Show hamburger, hide desktop nav */
+  .hamburger-label {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  /* Hide old mobile toggle buttons if present */
+  .mobile-toggle,
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  /* Nav padding reduction */
+  nav {
+    padding: 0.75rem 1.25rem;
+  }
+
+  /* Section padding reduction */
+  section {
+    padding: 3rem 0;
+  }
+
+  /* Container padding */
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  /* Hero adjustments */
+  .hero {
+    padding: 6rem 1.25rem 2.5rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  /* Stack flex layouts */
+  .cta-buttons,
+  .scan-input-wrapper {
+    flex-direction: column;
+  }
+
+  /* Code blocks horizontal scroll */
+  pre,
+  .code-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.78rem;
+    max-width: 100%;
+  }
+
+  /* Tables responsive wrap */
+  .mobile-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Footer */
+  footer {
+    padding: 1.5rem 1rem;
+    font-size: 0.78rem;
+  }
+
+  /* Tab bars */
+  .tab-bar {
+    flex-wrap: wrap;
+  }
+
+  .tab-bar button,
+  .tab-btn {
+    flex: 1;
+    min-width: calc(50% - 4px);
+    font-size: 0.78rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* ── Small Mobile (480px) ── */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.65rem;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+
+  pre,
+  .code-block {
+    font-size: 0.72rem;
+    padding: 0.75rem;
+  }
+}
